@@ -1,0 +1,159 @@
+// Skema basis data sistem RMP Lampung.
+// Nominal memakai Decimal (bukan floating point). Snapshot dokumen memakai Json.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Peran {
+  PEMILIK
+  ADMIN
+  USER
+}
+
+enum StatusPendaftaran {
+  PENDING
+  PAID
+  CANCELLED
+  EXPIRED
+}
+
+enum StatusPembayaran {
+  PENDING
+  PAID
+  FAILED
+  EXPIRED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  nama         String
+  email        String   @unique
+  telepon      String?
+  passwordHash String
+  peran        Peran    @default(USER)
+  aktif        Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  enrollments      Enrollment[]
+  sesiYangDibuat   AttendanceSession[] @relation("SesiDibuatOleh")
+
+  @@index([peran])
+}
+
+model CourseClass {
+  id            String   @id @default(cuid())
+  judul         String
+  slug          String   @unique
+  deskripsi     String
+  harga         Decimal  @db.Decimal(12, 2)
+  kuota         Int
+  jadwalMulai   DateTime
+  jadwalSelesai DateTime?
+  lokasi        String
+  gambarUrl     String?
+  aktif         Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  enrollments Enrollment[]
+  sesiAbsensi AttendanceSession[]
+
+  @@index([aktif, jadwalMulai])
+}
+
+model Enrollment {
+  id        String            @id @default(cuid())
+  userId    String
+  classId   String
+  status    StatusPendaftaran @default(PENDING)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id])
+  kelas      CourseClass @relation(fields: [classId], references: [id])
+  payment    Payment?
+  attendance Attendance?
+
+  @@unique([userId, classId])
+  @@index([classId, status])
+}
+
+model Payment {
+  id            String           @id @default(cuid())
+  enrollmentId  String           @unique
+  pakasirRef    String           @unique
+  nominal       Decimal          @db.Decimal(12, 2)
+  status        StatusPembayaran @default(PENDING)
+  metode        String?
+  dibayarPada   DateTime?
+  payloadMentah Json?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  invoice    Invoice?
+
+  @@index([status, dibayarPada])
+}
+
+model AttendanceSession {
+  id              String   @id @default(cuid())
+  classId         String
+  tokenHash       String   @unique
+  kedaluwarsaPada DateTime
+  aktif           Boolean  @default(true)
+  dibuatOlehId    String
+  createdAt       DateTime @default(now())
+
+  kelas       CourseClass  @relation(fields: [classId], references: [id])
+  dibuatOleh  User         @relation("SesiDibuatOleh", fields: [dibuatOlehId], references: [id])
+  attendances Attendance[]
+
+  @@index([classId, aktif])
+}
+
+model Attendance {
+  id           String   @id @default(cuid())
+  enrollmentId String   @unique
+  sessionId    String
+  waktuScan    DateTime @default(now())
+
+  enrollment  Enrollment        @relation(fields: [enrollmentId], references: [id])
+  sesi        AttendanceSession @relation(fields: [sessionId], references: [id])
+  certificate Certificate?
+
+  @@index([sessionId])
+}
+
+model Invoice {
+  id              String   @id @default(cuid())
+  paymentId       String   @unique
+  nomor           String   @unique
+  snapshotPeserta Json
+  snapshotKelas   Json
+  nominal         Decimal  @db.Decimal(12, 2)
+  dibayarPada     DateTime
+  createdAt       DateTime @default(now())
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+}
+
+model Certificate {
+  id               String    @id @default(cuid())
+  attendanceId     String    @unique
+  nomor            String    @unique
+  diterbitkanPada  DateTime  @default(now())
+  revokedAt        DateTime?
+  updatedAt        DateTime  @updatedAt
+
+  attendance Attendance @relation(fields: [attendanceId], references: [id])
+
+  @@index([revokedAt])
+}

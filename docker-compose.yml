@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rmp_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rmp
+      POSTGRES_PASSWORD: rmp_dev_password
+      POSTGRES_DB: rmp_lampung
+    ports:
+      - "5432:5432"
+    volumes:
+      - rmp_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rmp -d rmp_lampung"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  postgres_uji:
+    image: postgres:16-alpine
+    container_name: rmp_postgres_uji
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rmp
+      POSTGRES_PASSWORD: rmp_dev_password
+      POSTGRES_DB: rmp_lampung_uji
+    ports:
+      - "5433:5432"
+    volumes:
+      - rmp_postgres_uji_data:/var/lib/postgresql/data
+
+volumes:
+  rmp_postgres_data:
+  rmp_postgres_uji_data:
