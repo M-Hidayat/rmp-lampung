@@ -291,6 +291,7 @@ export async function daftarPembayaranOperasional(
 			nominal: true,
 			metode: true,
 			dibayarPada: true,
+			payloadMentah: true,
 			createdAt: true,
 			invoice: { select: { id: true, nomor: true } },
 			enrollment: {
