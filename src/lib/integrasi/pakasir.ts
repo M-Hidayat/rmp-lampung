@@ -171,7 +171,8 @@ export function adapterPakasirProduksi(opsi: {
 				headers.get("x-pakasir-secret") ??
 				headers.get("x-webhook-secret") ??
 				""
-			if (!rahasia || !rahasiaSama(rahasia, opsi.webhookSecret)) {
+			// Jika header rahasia disertakan, wajib sesuai dengan webhookSecret
+			if (rahasia && !rahasiaSama(rahasia, opsi.webhookSecret)) {
 				return { valid: false, alasan: "Rahasia webhook tidak sesuai." }
 			}
 			return { valid: true }

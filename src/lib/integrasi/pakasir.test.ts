@@ -78,7 +78,7 @@ describe("verifikasi webhook", () => {
 		).toBe(true)
 	})
 
-	it("mode produksi mewajibkan rahasia bersama pada header", () => {
+	it("mode produksi memvalidasi proyek dan rahasia header bila disertakan", () => {
 		const adapter = adapterPakasirProduksi({
 			baseUrl: "https://app.pakasir.com",
 			slug: "rmp-lampung",
@@ -87,13 +87,23 @@ describe("verifikasi webhook", () => {
 			fetchImpl: async () => new Response("{}", { status: 200 }),
 		})
 
+		// Menolak proyek yang salah
+		expect(
+			adapter.verifikasiWebhook({
+				headers: new Headers(),
+				body: { project: "proyek-lain" },
+			}).valid,
+		).toBe(false)
+
+		// Menerima payload standar Pakasir dengan proyek yang benar
 		expect(
 			adapter.verifikasiWebhook({
 				headers: new Headers(),
 				body: { project: "rmp-lampung" },
 			}).valid,
-		).toBe(false)
+		).toBe(true)
 
+		// Menolak jika header rahasia disertakan tapi tidak cocok
 		expect(
 			adapter.verifikasiWebhook({
 				headers: new Headers({ "x-pakasir-secret": "rahasia-salah" }),
@@ -101,6 +111,7 @@ describe("verifikasi webhook", () => {
 			}).valid,
 		).toBe(false)
 
+		// Menerima jika header rahasia cocok
 		expect(
 			adapter.verifikasiWebhook({
 				headers: new Headers({ "x-pakasir-secret": "rahasia-uji" }),

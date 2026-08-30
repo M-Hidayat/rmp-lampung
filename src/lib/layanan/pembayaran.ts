@@ -109,8 +109,9 @@ export async function prosesWebhookPakasir(
 		)
 	}
 
-	// Konfirmasi tambahan ke Pakasir pada mode produksi.
-	if (statusBaru === "PAID" && pakasir.mode === "produksi") {
+	// Konfirmasi tambahan ke Pakasir pada mode produksi (dilewati jika mode sandbox atau payload is_sandbox).
+	const isSandbox = Boolean((payload as Record<string, unknown>).is_sandbox)
+	if (statusBaru === "PAID" && pakasir.mode === "produksi" && !isSandbox) {
 		const konfirmasi = await pakasir.cekStatusTransaksi({
 			orderId: payload.order_id,
 			nominal: payment.nominal.toString(),
