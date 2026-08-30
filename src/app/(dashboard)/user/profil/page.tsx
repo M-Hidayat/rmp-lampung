@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 
 import { JudulHalaman } from "@/components/kerangka"
 import { sesiPengguna } from "@/lib/auth"
@@ -12,7 +13,7 @@ export const dynamic = "force-dynamic"
 export default async function HalamanProfilUser() {
 	const sesi = await sesiPengguna()
 	const pengguna = wajibSesi(sesi)
-	const data = await prisma.user.findUniqueOrThrow({
+	const data = await prisma.user.findUnique({
 		where: { id: pengguna.id },
 		select: {
 			nama: true,
@@ -22,6 +23,10 @@ export default async function HalamanProfilUser() {
 			createdAt: true,
 		},
 	})
+
+	if (!data) {
+		redirect("/masuk")
+	}
 
 	return (
 		<div className="mx-auto max-w-2xl space-y-6">
