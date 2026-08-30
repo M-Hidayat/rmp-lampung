@@ -38,14 +38,42 @@ function sesiDari(pengguna: {
 }
 
 async function bersihkan() {
-	await prisma.certificate.deleteMany()
-	await prisma.attendance.deleteMany()
-	await prisma.attendanceSession.deleteMany()
-	await prisma.invoice.deleteMany()
-	await prisma.payment.deleteMany()
-	await prisma.enrollment.deleteMany()
-	await prisma.courseClass.deleteMany()
-	await prisma.user.deleteMany()
+	await prisma.certificate.deleteMany({
+		where: {
+			attendance: {
+				enrollment: { user: { email: { endsWith: "@contoh.test" } } },
+			},
+		},
+	})
+	await prisma.attendance.deleteMany({
+		where: {
+			enrollment: { user: { email: { endsWith: "@contoh.test" } } },
+		},
+	})
+	await prisma.attendanceSession.deleteMany({
+		where: { kelas: { slug: { startsWith: "kelas-uji" } } },
+	})
+	await prisma.invoice.deleteMany({
+		where: {
+			payment: {
+				enrollment: { user: { email: { endsWith: "@contoh.test" } } },
+			},
+		},
+	})
+	await prisma.payment.deleteMany({
+		where: {
+			enrollment: { user: { email: { endsWith: "@contoh.test" } } },
+		},
+	})
+	await prisma.enrollment.deleteMany({
+		where: { user: { email: { endsWith: "@contoh.test" } } },
+	})
+	await prisma.courseClass.deleteMany({
+		where: { slug: { startsWith: "kelas-uji" } },
+	})
+	await prisma.user.deleteMany({
+		where: { email: { endsWith: "@contoh.test" } },
+	})
 }
 
 async function buatPengguna(
@@ -99,7 +127,7 @@ describe.skipIf(!adaDb)("alur inti (integrasi)", () => {
 	it("menolak pendaftaran ganda pada kelas yang sama", async () => {
 		const admin = await buatPengguna("admin-uji@contoh.test", "ADMIN")
 		const peserta = await buatPengguna("peserta-uji@contoh.test", "USER")
-		await buatKelasUji(admin, 10, "kelas-uji-ganda")
+		const kelas = await buatKelasUji(admin, 10, "kelas-uji-ganda")
 
 		await daftarKelas(peserta, { slugKelas: "kelas-uji-ganda" }, { db })
 
@@ -107,14 +135,14 @@ describe.skipIf(!adaDb)("alur inti (integrasi)", () => {
 			daftarKelas(peserta, { slugKelas: "kelas-uji-ganda" }, { db }),
 		).rejects.toBeInstanceOf(KesalahanDomain)
 
-		expect(await prisma.enrollment.count()).toBe(1)
+		expect(await prisma.enrollment.count({ where: { classId: kelas.id } })).toBe(1)
 	})
 
 	it("menolak pendaftaran saat kuota kelas penuh", async () => {
 		const admin = await buatPengguna("admin-kuota@contoh.test", "ADMIN")
 		const pesertaA = await buatPengguna("peserta-a@contoh.test", "USER")
 		const pesertaB = await buatPengguna("peserta-b@contoh.test", "USER")
-		await buatKelasUji(admin, 1, "kelas-uji-kuota")
+		const kelas = await buatKelasUji(admin, 1, "kelas-uji-kuota")
 
 		await daftarKelas(pesertaA, { slugKelas: "kelas-uji-kuota" }, { db })
 
@@ -122,7 +150,7 @@ describe.skipIf(!adaDb)("alur inti (integrasi)", () => {
 			daftarKelas(pesertaB, { slugKelas: "kelas-uji-kuota" }, { db }),
 		).rejects.toBeInstanceOf(KesalahanDomain)
 
-		expect(await prisma.enrollment.count()).toBe(1)
+		expect(await prisma.enrollment.count({ where: { classId: kelas.id } })).toBe(1)
 	})
 
 	it("menolak absensi bila pendaftaran belum lunas", async () => {
