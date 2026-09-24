@@ -3,9 +3,6 @@ import { describe, expect, it } from "vitest"
 import {
 	buatTokenAbsensi,
 	hashTokenAbsensi,
-	hitungKedaluwarsa,
-	tokenCocok,
-	tokenMasihBerlaku,
 	urlScanAbsensi,
 	urlVerifikasiSertifikat,
 } from "@/lib/layanan/token-absensi"
@@ -19,23 +16,14 @@ describe("token absensi", () => {
 		expect(a).toMatch(/^[A-Za-z0-9_-]+$/)
 	})
 
-	it("hanya menyimpan hash dan mencocokkan token asli", () => {
+	it("menghasilkan hash deterministik untuk token yang sama", () => {
 		const token = buatTokenAbsensi()
 		const hash = hashTokenAbsensi(token)
 		expect(hash).not.toBe(token)
 		expect(hash).toHaveLength(64)
-		expect(tokenCocok(token, hash)).toBe(true)
-		expect(tokenCocok(buatTokenAbsensi(), hash)).toBe(false)
-	})
-
-	it("menghitung dan mengevaluasi masa berlaku token", () => {
-		const sekarang = new Date("2026-01-01T00:00:00.000Z")
-		const kedaluwarsa = hitungKedaluwarsa(sekarang, 10)
-		expect(kedaluwarsa.toISOString()).toBe("2026-01-01T00:10:00.000Z")
-		expect(tokenMasihBerlaku(kedaluwarsa, sekarang)).toBe(true)
-		expect(
-			tokenMasihBerlaku(kedaluwarsa, new Date("2026-01-01T00:10:01.000Z")),
-		).toBe(false)
+		// Dasar validasi scan: pencarian `tokenHash` mengandalkan determinisme ini.
+		expect(hashTokenAbsensi(token)).toBe(hash)
+		expect(hashTokenAbsensi(buatTokenAbsensi())).not.toBe(hash)
 	})
 
 	it("membentuk URL scan dan verifikasi", () => {
