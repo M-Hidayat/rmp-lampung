@@ -24,16 +24,14 @@ Semua agen coding dan pengembang yang bekerja di repositori ini **WAJIB** mematu
 
 ## 2. Arsitektur Pemisahan Otoritas (RBAC Hierarchy)
 
-Sistem membagi akses secara ketat ke dalam 4 domain:
+Sistem membagi akses secara ketat ke dalam domain publik dan dua role terautentikasi:
 
 ```
 [ Domain Publik ] ──► Katalog (/kelas), Profil, Cara Daftar, Verifikasi Sertifikat (/verifikasi)
        │
 [ Domain Peserta ] ──► /user/* (Kelas saya, Pembayaran, Absensi QR, Invoice, Sertifikat)
        │
-[ Domain Admin ]   ──► /admin/* (Manajemen Kelas, Data Peserta, Sesi QR Live, Rekap Kehadiran)
-       │
-[ Domain Pemilik ] ──► /pemilik/* (Dashboard Finansial Eksekutif, Tata Kelola Admin, Audit Dokumen)
+[ Domain Admin ]   ──► /admin/* (Kelas, Peserta, QR, Kehadiran, Sertifikat, Laporan Bisnis)
 ```
 
 ### Aturan Otoritas:
@@ -45,15 +43,17 @@ Sistem membagi akses secara ketat ke dalam 4 domain:
 
 ---
 
-## 3. Protokol Modul Absensi (LMS Dynamic QR)
+## 3. Protokol Modul Absensi (Satu Sesi Permanen per Kelas)
 
-1. **Auto-Rotation Interval**:
-   - Layar admin merotasi token QR setiap **30 detik** secara dinamis.
-   - Dilengkapi visual *live progress bar countdown*.
-2. **Keamanan Token Absensi**:
-   - Token mentah berumur pendek (`randomBytes(32).toString("base64url")`).
+1. **Satu Sesi per Kelas**:
+   - Setiap kelas hanya boleh memiliki **satu** sesi absensi sepanjang umurnya.
+   - Pembuatan sesi memakai `pg_advisory_xact_lock` per ID kelas di dalam transaksi, lalu menolak bila riwayat sesi apa pun sudah ada. Ini mencegah sesi ganda walau dua permintaan datang bersamaan.
+   - Sesi tertutup bersifat **permanen** dan tidak dapat dibuka kembali.
+2. **QR Tanpa Kedaluwarsa**:
+   - Sesi aktif tidak memiliki batas waktu; token mentah (`randomBytes(32).toString("base64url")`) hanya ditampilkan sekali saat dibuat atau diganti.
    - Database hanya menyimpan hash **SHA-256** dari token (`hashTokenAbsensi(token)`).
-   - Dilindungi **Grace Period 15 detik** untuk mengatasi latensi jaringan klien.
+   - Mengganti QR hanya memperbarui `tokenHash` pada sesi aktif yang sama, sehingga QR lama langsung tidak berlaku.
+   - Validasi scan **tidak** lagi bergantung pada waktu (tidak ada rotasi 30 detik, countdown, maupun grace period).
 3. **Kompatibilitas Scanner**:
    - Gunakan `jsQR` di atas Canvas WebRTC (`getUserMedia`) untuk memastikan pemindai kamera berjalan 100% di semua browser Desktop & Mobile tanpa dependensi browser flags eksperimental.
 
@@ -66,8 +66,8 @@ Sistem membagi akses secara ketat ke dalam 4 domain:
 2. **Webhook Receiver (`/api/pakasir/webhook`)**:
    - Validasi signature webhook menggunakan `PAKASIR_WEBHOOK_SECRET`.
    - Transaksi database atomik: Update status payment $\rightarrow$ Update enrollment menjadi `PAID` $\rightarrow$ Terbitkan invoice secara otomatis.
-3. **Local Testing**:
-   - Tersedia simulator pembayaran lokal pada `/simulasi-pembayaran` untuk menguji alur tanpa kartu/QRIS sungguhan.
+3. **Lingkungan lokal**:
+   - Checkout tetap menggunakan endpoint Pakasir; tidak tersedia simulator pembayaran publik di aplikasi.
 
 ---
 
