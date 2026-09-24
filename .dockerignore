@@ -1,0 +1,22 @@
+# Konteks build harus lengkap (tsconfig meng-include **/*.ts) tetapi kecil.
+.git
+.gitignore
+.github
+.next
+node_modules
+test-results
+playwright-report
+coverage
+*.tsbuildinfo
+
+# Rahasia dan konfigurasi lokal tidak pernah masuk image.
+.env
+.env.*
+!.env.example
+.env.docker
+
+# Dokumentasi & aset yang tidak dipakai runtime.
+docs
+dokumentasi
+ui-ux-pro-max-skill
+*.md

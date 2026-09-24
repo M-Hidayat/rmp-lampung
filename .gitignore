@@ -14,6 +14,12 @@ next-env.d.ts
 .env
 .env.local
 .env.*.local
+# Konfigurasi deployment berisi rahasia produksi (password DB, AUTH_SECRET,
+# kunci Pakasir) - jangan pernah ikut ter-commit.
+.env.docker
+.env.docker.*
+# ...tetapi template-nya justru harus masuk repo.
+!.env.docker.example
 
 # Prisma
 prisma/*.db
