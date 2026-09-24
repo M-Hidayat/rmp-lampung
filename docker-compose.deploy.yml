@@ -1,16 +1,17 @@
-# Deployment produksi RMP Lampung — MANDIRI di VPS terpisah.
+# Deployment produksi RMP Lampung di VPS bersama serbamager.
 #
-# Tidak bergantung pada stack lain: stack ini membawa Postgres, aplikasi,
-# nginx, dan certbot sendiri. Nol persentuhan dengan serbamager.
+# Arsitektur: nginx serbamager (sudah memegang port 80/443) menjadi reverse
+# proxy untuk RMP. Karena itu stack ini TIDAK menjalankan nginx maupun certbot
+# sendiri - menghindari rebutan port dan menghemat RAM di VPS 1.7 GB.
 #
-#   cp .env.docker.example .env.docker && nano .env.docker
-#   sudo docker compose -f docker-compose.deploy.yml --env-file .env.docker up -d --build
+# Aplikasi hanya dipublikasikan ke 127.0.0.1:3200 supaya nginx host bisa
+# mem-proxy-nya, tetapi port itu tidak terbuka ke internet.
 #
-# TLS diterbitkan dalam DUA langkah karena nginx tidak mau start bila
-# ssl_certificate menunjuk berkas yang belum ada:
-#   1) salin nginx/http-only.conf ke ~/rmp-lampung/nginx/default.conf, start
-#   2) terbitkan sertifikat lewat profil `tls`, lalu ganti ke nginx/tls.conf
-#      dan `up -d --force-recreate nginx`.
+#   sudo docker compose -f docker-compose.deploy.yml --env-file .env.docker up -d
+#
+# Migrasi WAJIB dijalankan lebih dulu lewat profil `tools`:
+#   sudo docker compose -f docker-compose.deploy.yml --env-file .env.docker \
+#     run --rm --no-deps migrate
 
 services:
   postgres:
@@ -28,7 +29,36 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-    # Tidak dipublikasikan ke host: hanya app yang perlu menjangkaunya.
+    ports:
+      # Hanya localhost: dipakai untuk diagnosis dan migrasi lewat tunnel SSH.
+      - "127.0.0.1:${PG_HOST_PORT:-5439}:5432"
+    networks:
+      - internal
+
+  # Perkakas sekali-pakai: migrasi database dan provisioning admin.
+  # Dipisahkan karena image runtime `runner` memakai output standalone yang
+  # tidak membawa Prisma CLI. Dijalankan manual, bukan bagian dari `up -d`.
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrator
+    image: rmp-lampung-migrator:latest
+    profiles: ["tools"]
+    # Seluruh konfigurasi (termasuk DATABASE_URL) dibaca dari berkas env,
+    # bukan diinterpolasi di compose. Ini menghindari pola URL berkredensial
+    # yang rawan rusak saat diformat ulang.
+    env_file:
+      - .env.docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET wajib diisi}
+      APP_URL: ${APP_URL:?APP_URL wajib diisi}
+      INITIAL_ADMIN_EMAIL: ${INITIAL_ADMIN_EMAIL:-}
+      INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD:-}
+      INITIAL_ADMIN_NAME: ${INITIAL_ADMIN_NAME:-}
     networks:
       - internal
 
@@ -36,17 +66,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: runner
     image: rmp-lampung-app:latest
     container_name: rmp_app
     restart: unless-stopped
-    # Aplikasi hanya start setelah database benar-benar siap; tanpa ini
-    # Next.js bisa boot lalu gagal melayani server action.
     depends_on:
       postgres:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://${POSTGRES_USER}:***@postgres:5432/${POSTGRES_DB}?schema=public
+      DATABASE_URL: ${DATABASE_URL}
       AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET wajib diisi}
       APP_URL: ${APP_URL:?APP_URL wajib diisi}
       PAKASIR_MODE: ${PAKASIR_MODE:-produksi}
@@ -56,54 +85,25 @@ services:
       PAKASIR_WEBHOOK_SECRET: ${PAKASIR_WEBHOOK_SECRET:?PAKASIR_WEBHOOK_SECRET wajib diisi}
       SERTIFIKAT_PENANDATANGAN: ${SERTIFIKAT_PENANDATANGAN:?SERTIFIKAT_PENANDATANGAN wajib diisi}
       SERTIFIKAT_JABATAN_PENANDATANGAN: ${SERTIFIKAT_JABATAN_PENANDATANGAN:-Pemilik Rumah Mama Pintar}
-      # Hanya dipakai sekali oleh `npm run admin:provision`, tidak dibaca
-      # saat melayani permintaan.
       INITIAL_ADMIN_EMAIL: ${INITIAL_ADMIN_EMAIL:-}
       INITIAL_ADMIN_PASSWORD: ${INITIAL_ADMIN_PASSWORD:-}
       INITIAL_ADMIN_NAME: ${INITIAL_ADMIN_NAME:-}
-    networks:
-      - internal
-      - web
-
-  nginx:
-    image: nginx:1.27-alpine
-    container_name: rmp_nginx
-    restart: unless-stopped
-    depends_on:
-      app:
-        condition: service_healthy
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      # Berkas konfigurasi di-swap manual antara http-only.conf dan tls.conf.
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./nginx/certbot-www:/var/www/certbot:ro
-      - certbot-conf:/etc/letsencrypt:ro
-    healthcheck:
-      test: ["CMD-SHELL", "nginx -t || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
+      # Hanya loopback: dipakai untuk diagnosis dari dalam VPS.
+      - "127.0.0.1:${APP_HOST_PORT:-3200}:3000"
     networks:
-      - web
-
-  # Certbot hanya dijalankan manual lewat profil `tls`, bukan service tetap.
-  certbot:
-    image: certbot/certbot:latest
-    container_name: rmp_certbot
-    profiles: ["tls"]
-    volumes:
-      - certbot-conf:/etc/letsencrypt
-      - ./nginx/certbot-www:/var/www/certbot
-    # entrypoint image ini adalah /bin/sh -c, jadi perintah harus dikirim
-    # sebagai SATU argumen; argumen terpisah akan dibaca sebagai $0.
-    entrypoint: ["/bin/sh", "-c"]
+      internal:
+      # Jaringan milik stack serbamager; nginx-nya ada di sini sehingga bisa
+      # menjangkau app lewat nama alias tanpa perlu host-gateway.
+      web:
+        aliases:
+          - rmp-app
 
 networks:
   internal:
   web:
+    external: true
+    name: serbamager_default
 
 volumes:
   rmp_pgdata:
-  certbot-conf:
