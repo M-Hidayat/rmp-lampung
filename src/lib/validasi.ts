@@ -2,6 +2,19 @@ import { z } from "zod"
 
 /** Skema validasi batas server. Seluruh pesan memakai Bahasa Indonesia. */
 
+/** Mengubah nilai datetime-local WIB menjadi instant UTC tanpa bergantung zona host. */
+export function parseTanggalWib(nilai: string): Date {
+	const cocok = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/.exec(nilai)
+	if (!cocok) return new Date(Number.NaN)
+	const [, tahun, bulan, hari, jam, menit, detik = "0", pecahan = ""] = cocok
+	const bagian = [tahun, bulan, hari, jam, menit, detik].map(Number)
+	const milidetik = Number(pecahan.padEnd(3, "0"))
+	const instant = new Date(Date.UTC(bagian[0], bagian[1] - 1, bagian[2], bagian[3] - 7, bagian[4], bagian[5], milidetik))
+	const wib = new Date(instant.getTime() + 7 * 60 * 60 * 1000)
+	const valid = wib.getUTCFullYear() === bagian[0] && wib.getUTCMonth() + 1 === bagian[1] && wib.getUTCDate() === bagian[2] && wib.getUTCHours() === bagian[3] && wib.getUTCMinutes() === bagian[4] && wib.getUTCSeconds() === bagian[5] && wib.getUTCMilliseconds() === milidetik
+	return valid ? instant : new Date(Number.NaN)
+}
+
 export const skemaEmail = z
 	.string({ message: "Email wajib diisi" })
 	.trim()
@@ -101,12 +114,6 @@ export const skemaPendaftaranKelas = z.object({
 
 export const skemaBuatSesiAbsensi = z.object({
 	classId: z.string().trim().min(1, "Kelas wajib dipilih"),
-	masaBerlakuMenit: z
-		.number()
-		.int()
-		.min(1, "Masa berlaku minimal 1 menit")
-		.max(120, "Masa berlaku maksimal 120 menit")
-		.default(10),
 })
 
 export const skemaScanAbsensi = z.object({
@@ -115,6 +122,14 @@ export const skemaScanAbsensi = z.object({
 		.trim()
 		.min(20, "Token absensi tidak valid")
 		.max(200, "Token absensi tidak valid"),
+})
+
+/** Absensi manual oleh admin: cukup menunjuk satu pendaftaran peserta. */
+export const skemaAbsensiManual = z.object({
+	enrollmentId: z
+		.string({ message: "Peserta wajib dipilih" })
+		.trim()
+		.min(1, "Peserta wajib dipilih"),
 })
 
 export const skemaWebhookPakasir = z.object({
@@ -127,11 +142,6 @@ export const skemaWebhookPakasir = z.object({
 })
 export type PayloadWebhookPakasir = z.infer<typeof skemaWebhookPakasir>
 
-export const skemaBuatAdmin = z.object({
-	nama: skemaNama,
-	email: skemaEmail,
-	kataSandi: skemaKataSandi,
-})
 
 export const skemaPeriodeLaporan = z
 	.object({

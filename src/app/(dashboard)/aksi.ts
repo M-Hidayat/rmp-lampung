@@ -8,12 +8,13 @@ import { KesalahanDomain } from "@/lib/kesalahan"
 import {
 	buatSesiAbsensi,
 	catatKehadiran,
+	catatKehadiranManual,
 	perbaruiTokenSesi,
 	tutupSesiAbsensi,
 } from "@/lib/layanan/absensi"
-import { buatAdmin, ubahStatusAktifAdmin } from "@/lib/layanan/admin"
 import { buatKelas, perbaruiKelas, ubahStatusAktifKelas } from "@/lib/layanan/kelas"
 import { batalkanPendaftaranSaya } from "@/lib/layanan/pembayaran"
+import { gantiKataSandiSaya, perbaruiProfilSaya } from "@/lib/layanan/profil"
 import { lanjutkanPembayaran } from "@/lib/layanan/pendaftaran"
 import {
 	batalkanSertifikat,
@@ -21,6 +22,7 @@ import {
 	terbitkanSertifikat,
 } from "@/lib/layanan/sertifikat"
 import { redirect } from "next/navigation"
+import { parseTanggalWib } from "@/lib/validasi"
 
 export type StatusAksi =
 	| { sukses?: string; pesan?: string; detail?: Record<string, string> }
@@ -36,6 +38,47 @@ function keStatus(kesalahan: unknown, konteks: string): StatusAksi {
 
 export async function aksiKeluar(): Promise<void> {
 	await signOut({ redirectTo: "/" })
+}
+
+/* --------------------------- Profil akun sendiri --------------------------- */
+
+/**
+ * Menyimpan nama dan telepon pengguna yang sedang masuk.
+ * Dipakai baik oleh peserta maupun admin karena keduanya memakai halaman yang sama.
+ */
+export async function aksiPerbaruiProfil(
+	_status: StatusAksi,
+	formData: FormData,
+): Promise<StatusAksi> {
+	try {
+		const sesi = await sesiPengguna()
+		await perbaruiProfilSaya(sesi, {
+			nama: String(formData.get("nama") ?? ""),
+			telepon: String(formData.get("telepon") ?? ""),
+		})
+		revalidatePath("/user/profil")
+		revalidatePath("/admin/profil")
+		return { sukses: "Profil berhasil diperbarui." }
+	} catch (kesalahan) {
+		return keStatus(kesalahan, "aksi-perbarui-profil")
+	}
+}
+
+/** Mengganti kata sandi pengguna yang sedang masuk. */
+export async function aksiGantiKataSandi(
+	_status: StatusAksi,
+	formData: FormData,
+): Promise<StatusAksi> {
+	try {
+		const sesi = await sesiPengguna()
+		await gantiKataSandiSaya(sesi, {
+			kataSandiLama: String(formData.get("kataSandiLama") ?? ""),
+			kataSandiBaru: String(formData.get("kataSandiBaru") ?? ""),
+		})
+		return { sukses: "Kata sandi berhasil diganti." }
+	} catch (kesalahan) {
+		return keStatus(kesalahan, "aksi-ganti-kata-sandi")
+	}
 }
 
 /* ------------------------------ Peserta ------------------------------ */
@@ -56,6 +99,31 @@ export async function aksiScanAbsensi(
 		}
 	} catch (kesalahan) {
 		return keStatus(kesalahan, "aksi-scan-absensi")
+	}
+}
+
+/**
+ * Absensi manual oleh admin untuk peserta yang tidak dapat memindai QR.
+ * Aturan bisnis tetap dijaga di lapisan service (status PAID, satu kehadiran
+ * per pendaftaran, dan sesi absensi kelas harus aktif).
+ */
+export async function aksiAbsensiManual(
+	_status: StatusAksi,
+	formData: FormData,
+): Promise<StatusAksi> {
+	try {
+		const sesi = await sesiPengguna()
+		const hasil = await catatKehadiranManual(sesi, {
+			enrollmentId: String(formData.get("enrollmentId") ?? ""),
+		})
+		revalidatePath("/admin/kehadiran")
+		revalidatePath("/admin/absensi")
+		revalidatePath("/user/kelas-saya")
+		return {
+			sukses: `Kehadiran ${hasil.judulKelas} berhasil dicatat secara manual.`,
+		}
+	} catch (kesalahan) {
+		return keStatus(kesalahan, "aksi-absensi-manual")
 	}
 }
 
@@ -98,18 +166,15 @@ export async function aksiBatalkanPendaftaran(
 
 function bacaFormKelas(formData: FormData) {
 	const jadwalSelesai = String(formData.get("jadwalSelesai") ?? "")
-	const gambarUrl = String(formData.get("gambarUrl") ?? "")
 	return {
 		judul: String(formData.get("judul") ?? ""),
 		slug: String(formData.get("slug") ?? ""),
 		deskripsi: String(formData.get("deskripsi") ?? ""),
 		harga: Number(formData.get("harga") ?? Number.NaN),
 		kuota: Number(formData.get("kuota") ?? Number.NaN),
-		jadwalMulai: String(formData.get("jadwalMulai") ?? ""),
-		jadwalSelesai: jadwalSelesai === "" ? undefined : jadwalSelesai,
+		jadwalMulai: parseTanggalWib(String(formData.get("jadwalMulai") ?? "")),
+		jadwalSelesai: jadwalSelesai === "" ? undefined : parseTanggalWib(jadwalSelesai),
 		lokasi: String(formData.get("lokasi") ?? ""),
-		gambarUrl,
-		aktif: formData.get("aktif") === "on" || formData.get("aktif") === "true",
 	}
 }
 
@@ -119,13 +184,13 @@ export async function aksiBuatKelas(
 ): Promise<StatusAksi> {
 	try {
 		const sesi = await sesiPengguna()
-		const kelas = await buatKelas(sesi, bacaFormKelas(formData))
+		await buatKelas(sesi, bacaFormKelas(formData))
 		revalidatePath("/admin/kelas")
 		revalidatePath("/kelas")
-		return { sukses: `Kelas "${kelas.judul}" berhasil dibuat.` }
 	} catch (kesalahan) {
 		return keStatus(kesalahan, "aksi-buat-kelas")
 	}
+	redirect("/admin/kelas")
 }
 
 export async function aksiPerbaruiKelas(
@@ -141,10 +206,10 @@ export async function aksiPerbaruiKelas(
 		)
 		revalidatePath("/admin/kelas")
 		revalidatePath("/kelas")
-		return { sukses: "Perubahan kelas berhasil disimpan." }
 	} catch (kesalahan) {
 		return keStatus(kesalahan, "aksi-perbarui-kelas")
 	}
+	redirect("/admin/kelas")
 }
 
 export async function aksiUbahStatusKelas(
@@ -179,7 +244,6 @@ export async function aksiBuatSesiAbsensi(
 		const sesi = await sesiPengguna()
 		await buatSesiAbsensi(sesi, {
 			classId: String(formData.get("classId") ?? ""),
-			masaBerlakuMenit: Number(formData.get("masaBerlakuMenit") ?? 10),
 		})
 		revalidatePath("/admin/absensi")
 		return {
@@ -197,13 +261,9 @@ export async function aksiPerbaruiTokenSesi(
 ): Promise<StatusAksi> {
 	try {
 		const sesi = await sesiPengguna()
-		await perbaruiTokenSesi(
-			sesi,
-			String(formData.get("sessionId") ?? ""),
-			Number(formData.get("masaBerlakuMenit") ?? 10),
-		)
+		await perbaruiTokenSesi(sesi, String(formData.get("sessionId") ?? ""))
 		revalidatePath("/admin/absensi")
-		return { sukses: "Token QR diperbarui." }
+		return { sukses: "QR berhasil diganti. QR lama tidak dapat dipakai lagi." }
 	} catch (kesalahan) {
 		return keStatus(kesalahan, "aksi-perbarui-token-sesi")
 	}
@@ -248,7 +308,6 @@ export async function aksiBatalkanSertifikat(
 		const sesi = await sesiPengguna()
 		await batalkanSertifikat(sesi, String(formData.get("certificateId") ?? ""))
 		revalidatePath("/admin/sertifikat")
-		revalidatePath("/pemilik/audit-sertifikat")
 		return { sukses: "Sertifikat ditandai dibatalkan (data tetap tersimpan)." }
 	} catch (kesalahan) {
 		return keStatus(kesalahan, "aksi-batalkan-sertifikat")
@@ -263,52 +322,8 @@ export async function aksiPulihkanSertifikat(
 		const sesi = await sesiPengguna()
 		await pulihkanSertifikat(sesi, String(formData.get("certificateId") ?? ""))
 		revalidatePath("/admin/sertifikat")
-		revalidatePath("/pemilik/audit-sertifikat")
 		return { sukses: "Sertifikat diaktifkan kembali." }
 	} catch (kesalahan) {
 		return keStatus(kesalahan, "aksi-pulihkan-sertifikat")
-	}
-}
-
-/* ------------------------------- Pemilik ------------------------------ */
-
-export async function aksiBuatAdmin(
-	_status: StatusAksi,
-	formData: FormData,
-): Promise<StatusAksi> {
-	try {
-		const sesi = await sesiPengguna()
-		const admin = await buatAdmin(sesi, {
-			nama: String(formData.get("nama") ?? ""),
-			email: String(formData.get("email") ?? ""),
-			kataSandi: String(formData.get("kataSandi") ?? ""),
-		})
-		revalidatePath("/pemilik/admin")
-		return { sukses: `Akun admin ${admin.email} berhasil dibuat.` }
-	} catch (kesalahan) {
-		return keStatus(kesalahan, "aksi-buat-admin")
-	}
-}
-
-export async function aksiUbahStatusAdmin(
-	_status: StatusAksi,
-	formData: FormData,
-): Promise<StatusAksi> {
-	try {
-		const sesi = await sesiPengguna()
-		const aktif = String(formData.get("aktif") ?? "") === "true"
-		await ubahStatusAktifAdmin(
-			sesi,
-			String(formData.get("userId") ?? ""),
-			aktif,
-		)
-		revalidatePath("/pemilik/admin")
-		return {
-			sukses: aktif
-				? "Akun admin diaktifkan."
-				: "Akun admin dinonaktifkan (tidak dihapus).",
-		}
-	} catch (kesalahan) {
-		return keStatus(kesalahan, "aksi-ubah-status-admin")
 	}
 }

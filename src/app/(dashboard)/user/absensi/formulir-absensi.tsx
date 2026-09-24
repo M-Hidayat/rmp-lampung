@@ -9,9 +9,13 @@ import { aksiScanAbsensi } from "../../aksi"
 import type { HasilAksi } from "@/components/formulir-aksi"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 
+/**
+ * Absensi peserta berbasis pemindaian QR.
+ * Token tidak lagi dapat diketik manual: token hanya masuk lewat hasil pindai
+ * kamera atau tautan absensi, sehingga kehadiran selalu berasal dari QR resmi
+ * yang ditampilkan admin.
+ */
 export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 	const searchParams = useSearchParams()
 	const tokenUrl = searchParams.get("token") || tokenDariProps || ""
@@ -125,10 +129,10 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 			<canvas ref={canvasRef} className="hidden" />
 
 			{/* Panel Kamera / Scanner */}
-			<div className="rounded-lg border border-dashed border-[#E8DFC8] bg-[#F8FAFC] p-6 text-center">
+			<div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center">
 				{kameraAktif ? (
 					<div className="space-y-4">
-						<div className="relative mx-auto aspect-square max-w-[280px] overflow-hidden rounded-md border-2 border-primary bg-black shadow-sm">
+						<div className="relative mx-auto aspect-square w-full max-w-[280px] overflow-hidden rounded-lg border-2 border-primary bg-black shadow-sm">
 							<video
 								ref={videoRef}
 								playsInline
@@ -136,52 +140,54 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 								className="h-full w-full object-cover"
 							/>
 						</div>
-						<p className="text-xs text-zinc-600">
-							Arahkan kamera ke QR Code di layar admin atau proyektor...
+						<p className="text-xs text-muted-foreground">
+							Arahkan kamera ke QR Code di layar admin atau proyektor…
 						</p>
 						<Button
 							type="button"
 							variant="outline"
 							size="sm"
-							className="rounded-md border-[#E2E8F0] bg-white"
+							className="min-h-11"
 							onClick={() => setKameraAktif(false)}
 						>
-							<X className="size-3.5 mr-1" />
+							<X className="mr-1 size-3.5" aria-hidden="true" />
 							Tutup Kamera
 						</Button>
 					</div>
 				) : (
 					<div className="space-y-3 py-2">
-						<div className="mx-auto flex size-12 items-center justify-center rounded-full bg-[#FFF7ED] text-foreground font-semibold shadow-2xs">
-							<Camera className="size-6" />
+						<div className="mx-auto flex size-12 items-center justify-center rounded-full bg-accent text-accent-foreground">
+							<Camera className="size-6" aria-hidden="true" />
 						</div>
 						<div className="space-y-1">
-							<p className="text-sm font-bold text-zinc-950 font-heading">Pindai QR Absensi Kamera</p>
-							<p className="text-xs text-zinc-500 max-w-sm mx-auto">
-								Gunakan kamera perangkat Anda untuk memindai QR code absensi yang ditampilkan admin.
+							<p className="font-heading text-sm font-bold text-foreground">Pindai QR Absensi</p>
+							<p className="mx-auto max-w-sm text-xs text-muted-foreground">
+								Gunakan kamera perangkat Anda untuk memindai QR code absensi yang ditampilkan admin di kelas.
 							</p>
 						</div>
 						<Button
 							type="button"
 							size="sm"
 							variant="gold"
-							className="rounded-md font-semibold shadow-sm"
+							className="min-h-11 font-semibold"
 							onClick={() => {
 								setStatusKamera(null)
 								setKameraAktif(true)
 							}}
 						>
-							<ScanLine className="size-4 mr-1.5" />
+							<ScanLine className="mr-1.5 size-4" aria-hidden="true" />
 							Buka Kamera Pemindai
 						</Button>
 					</div>
 				)}
 				{statusKamera ? (
-					<p className="mt-3 text-xs text-zinc-800 bg-zinc-100 p-2 rounded-lg border border-zinc-200">{statusKamera}</p>
+					<p role="status" className="mt-3 rounded-lg border border-border bg-background p-2 text-xs text-foreground">
+						{statusKamera}
+					</p>
 				) : null}
 			</div>
 
-			{/* Formulir Konfirmasi / Input Manual */}
+			{/* Formulir konfirmasi: token hanya berasal dari hasil pindai / tautan. */}
 			<form ref={formRef} action={jalankan} className="space-y-4">
 				{status?.pesan ? (
 					<Alert variant="gagal" judul="Absensi gagal">
@@ -194,33 +200,20 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 					</Alert>
 				) : null}
 
-				<div className="space-y-1.5">
-					<Label htmlFor="token" className="text-xs font-medium text-zinc-700">
-						Token absensi
-					</Label>
-					<Input
-						id="token"
-						name="token"
-						value={token}
-						onChange={(e) => setToken(e.target.value)}
-						placeholder="Tempel token atau pindai QR di atas"
-						required
-						autoComplete="off"
-						aria-describedby="bantuan-token"
-						className="font-mono text-sm rounded-md border-[#CBD5E1] focus:border-primary"
-					/>
-					<p id="bantuan-token" className="text-xs text-zinc-500">
-						Token terisi otomatis saat Anda memindai QR atau membuka tautan absensi.
-					</p>
-				</div>
+				<input type="hidden" name="token" value={token} />
+
+				<p className="text-xs text-muted-foreground">
+					Token terisi otomatis dari hasil pemindaian QR. Bila kamera tidak tersedia, buka tautan
+					absensi yang dibagikan admin.
+				</p>
 
 				<Button
 					type="submit"
 					variant="gold"
-					className="w-full font-semibold rounded-md shadow-sm"
+					className="min-h-11 w-full font-semibold"
 					disabled={sedangProses || !token.trim()}
 				>
-					<CheckCircle2 className="size-4 mr-1.5" />
+					<CheckCircle2 className="mr-1.5 size-4" aria-hidden="true" />
 					{sedangProses ? "Memproses absensi…" : "Konfirmasi & Catat Kehadiran"}
 				</Button>
 			</form>

@@ -22,9 +22,11 @@ export default async function HalamanAbsensiUser({ searchParams }: Props) {
 				</p>
 			</div>
 
-			<Alert variant="info" judul="Instruksi Pemindaian QR">
+			<Alert variant="info" judul="Cara mencatat kehadiran">
 				<p>
-					Pindai QR code absensi yang ditampilkan instruktur di kelas fisik menggunakan kamera perangkat Anda, atau tempel token manual jika kamera tidak tersedia.
+					Pindai QR code absensi yang ditampilkan instruktur di kelas fisik menggunakan kamera
+					perangkat Anda. Bila kamera tidak tersedia, buka tautan absensi yang dibagikan admin.
+					Kehadiran yang terlewat dapat dicatatkan oleh admin secara manual.
 				</p>
 			</Alert>
 

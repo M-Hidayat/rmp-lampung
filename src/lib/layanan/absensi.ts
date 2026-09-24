@@ -5,17 +5,16 @@ import { prisma, type KlienDb } from "@/lib/prisma"
 import { wajibKemampuan, wajibSesi, type SesiPengguna } from "@/lib/rbac"
 import {
 	detailZod,
+	skemaAbsensiManual,
 	skemaBuatSesiAbsensi,
 	skemaScanAbsensi,
 } from "@/lib/validasi"
 import {
 	buatTokenAbsensi,
 	hashTokenAbsensi,
-	hitungKedaluwarsa,
-	hitungKedaluwarsaDetik,
-	tokenMasihBerlaku,
-	GRACE_PERIOD_DETIK,
 } from "@/lib/layanan/token-absensi"
+
+export const BATAS_WAKTU_SENTINEL_ABSENSI = new Date("9999-12-31T23:59:59.999Z")
 
 export type DependensiAbsensi = {
 	db?: KlienDb
@@ -33,7 +32,7 @@ export type SesiAbsensiAktif = {
 /**
  * Admin membuka sesi absensi untuk satu kelas.
  * Token acak kuat dibuat di server; hanya hash-nya disimpan.
- * Sesi lain pada kelas yang sama dinonaktifkan agar hanya ada satu QR aktif.
+ * Riwayat sesi apa pun mencegah kelas yang sama membuka sesi lagi.
  */
 export async function buatSesiAbsensi(
 	sesi: SesiPengguna | null,
@@ -42,7 +41,6 @@ export async function buatSesiAbsensi(
 ): Promise<SesiAbsensiAktif> {
 	const petugas = wajibKemampuan(sesi, "kelola_absensi")
 	const db = dependensi.db ?? prisma
-	const sekarang = dependensi.sekarang ?? (() => new Date())
 	const buatToken = dependensi.buatToken ?? buatTokenAbsensi
 
 	const hasil = skemaBuatSesiAbsensi.safeParse(masukan)
@@ -61,23 +59,30 @@ export async function buatSesiAbsensi(
 		throw new KesalahanDomain("TIDAK_DITEMUKAN", "Kelas tidak ditemukan.")
 	}
 
-	const waktu = sekarang()
 	const token = buatToken()
 
 	const dibuat = await db.$transaction(async (tx) => {
-		await tx.attendanceSession.updateMany({
-			where: { classId: kelas.id, aktif: true },
-			data: { aktif: false },
+		await tx.$queryRaw<Array<{ terkunci: number }>>`
+			SELECT 1 AS terkunci
+			FROM pg_advisory_xact_lock(hashtextextended(${kelas.id}, 0))
+		`
+
+		const sudahAda = await tx.attendanceSession.findFirst({
+			where: { classId: kelas.id },
+			select: { id: true },
 		})
+		if (sudahAda) {
+			throw new KesalahanDomain(
+				"KONFLIK",
+				"Sesi absensi untuk kelas ini sudah pernah dibuat dan tidak dapat dibuat ulang.",
+			)
+		}
 
 		return tx.attendanceSession.create({
 			data: {
 				classId: kelas.id,
 				tokenHash: hashTokenAbsensi(token),
-				kedaluwarsaPada: hitungKedaluwarsa(
-					waktu,
-					hasil.data.masaBerlakuMenit,
-				),
+				kedaluwarsaPada: BATAS_WAKTU_SENTINEL_ABSENSI,
 				aktif: true,
 				dibuatOlehId: petugas.id,
 			},
@@ -94,18 +99,16 @@ export async function buatSesiAbsensi(
 }
 
 /**
- * Memperbarui token sesi berkala. Aturan satu kehadiran per enrollment tidak
+ * Mengganti token sesi secara manual. Aturan satu kehadiran per enrollment tidak
  * berubah karena kehadiran terikat enrollment, bukan token.
  */
 export async function perbaruiTokenSesi(
 	sesi: SesiPengguna | null,
 	sessionId: string,
-	masaBerlakuMenit = 10,
 	dependensi: DependensiAbsensi = {},
 ): Promise<SesiAbsensiAktif> {
 	wajibKemampuan(sesi, "kelola_absensi")
 	const db = dependensi.db ?? prisma
-	const sekarang = dependensi.sekarang ?? (() => new Date())
 	const buatToken = dependensi.buatToken ?? buatTokenAbsensi
 
 	const sesiAbsensi = await db.attendanceSession.findUnique({
@@ -126,20 +129,33 @@ export async function perbaruiTokenSesi(
 	}
 
 	const token = buatToken()
-	const diperbarui = await db.attendanceSession.update({
-		where: { id: sessionId },
-		data: {
-			tokenHash: hashTokenAbsensi(token),
-			kedaluwarsaPada: hitungKedaluwarsa(sekarang(), masaBerlakuMenit),
-		},
-		select: { id: true, classId: true, kedaluwarsaPada: true },
-	})
+	try {
+		const diperbarui = await db.attendanceSession.update({
+			where: { id: sessionId, aktif: true },
+			data: {
+				tokenHash: hashTokenAbsensi(token),
+				kedaluwarsaPada: BATAS_WAKTU_SENTINEL_ABSENSI,
+			},
+			select: { id: true, classId: true, kedaluwarsaPada: true },
+		})
 
-	return {
-		sessionId: diperbarui.id,
-		classId: diperbarui.classId,
-		token,
-		kedaluwarsaPada: diperbarui.kedaluwarsaPada,
+		return {
+			sessionId: diperbarui.id,
+			classId: diperbarui.classId,
+			token,
+			kedaluwarsaPada: diperbarui.kedaluwarsaPada,
+		}
+	} catch (kesalahan) {
+		if (
+			kesalahan instanceof Prisma.PrismaClientKnownRequestError &&
+			kesalahan.code === "P2025"
+		) {
+			throw new KesalahanDomain(
+				"TRANSISI_TIDAK_SAH",
+				"Sesi absensi sudah ditutup.",
+			)
+		}
+		throw kesalahan
 	}
 }
 
@@ -166,7 +182,7 @@ export type HasilKehadiran = {
 
 /**
  * Mencatat kehadiran peserta dari hasil scan QR.
- * Pemeriksaan: sesi login, token dan kedaluwarsa, sesi aktif, kecocokan kelas,
+ * Pemeriksaan: sesi login, token, sesi aktif, kecocokan kelas,
  * kepemilikan enrollment, status PAID, serta ketiadaan attendance sebelumnya.
  * Constraint UNIQUE(enrollmentId) menjamin tidak ada absensi ganda.
  */
@@ -198,7 +214,6 @@ export async function catatKehadiran(
 					id: true,
 					classId: true,
 					aktif: true,
-					kedaluwarsaPada: true,
 					kelas: { select: { judul: true } },
 				},
 			})
@@ -214,13 +229,6 @@ export async function catatKehadiran(
 					"Sesi absensi sudah ditutup.",
 				)
 			}
-			if (!tokenMasihBerlaku(sesiAbsensi.kedaluwarsaPada, waktu, GRACE_PERIOD_DETIK)) {
-				throw new KesalahanDomain(
-					"TRANSISI_TIDAK_SAH",
-					"QR absensi sudah kedaluwarsa. Silakan pindai QR terbaru.",
-				)
-			}
-
 			const enrollment = await tx.enrollment.findUnique({
 				where: {
 					userId_classId: {
@@ -284,6 +292,157 @@ export async function catatKehadiran(
 	}
 }
 
+/**
+ * Mencatat kehadiran peserta secara MANUAL oleh admin/petugas.
+ *
+ * Dipakai ketika peserta tidak dapat memindai QR (kamera bermasalah, perangkat
+ * mati, atau QR terlewat). Aturan bisnis tetap dijaga sama seperti scan QR:
+ * - hanya peran dengan kemampuan `kelola_absensi` yang boleh memanggil;
+ * - kelas harus sudah memiliki sesi absensi yang AKTIF (Attendance.sessionId
+ *   bersifat wajib), sehingga absensi manual tidak bisa menembus aturan
+ *   satu sesi permanen per kelas;
+ * - pendaftaran harus berstatus PAID;
+ * - satu kehadiran per pendaftaran, dijaga oleh UNIQUE(enrollmentId) dan
+ *   pemeriksaan eksplisit di dalam transaksi.
+ */
+export async function catatKehadiranManual(
+	sesi: SesiPengguna | null,
+	masukan: unknown,
+	dependensi: DependensiAbsensi = {},
+): Promise<HasilKehadiran> {
+	wajibKemampuan(sesi, "kelola_absensi")
+	const db = dependensi.db ?? prisma
+	const sekarang = dependensi.sekarang ?? (() => new Date())
+
+	const hasil = skemaAbsensiManual.safeParse(masukan)
+	if (!hasil.success) {
+		throw kesalahanValidasi(
+			"Data absensi manual tidak valid.",
+			detailZod(hasil.error),
+		)
+	}
+
+	const waktu = sekarang()
+
+	try {
+		return await db.$transaction(async (tx) => {
+			const enrollment = await tx.enrollment.findUnique({
+				where: { id: hasil.data.enrollmentId },
+				select: {
+					id: true,
+					status: true,
+					classId: true,
+					attendance: { select: { id: true } },
+					kelas: { select: { judul: true } },
+				},
+			})
+			if (!enrollment) {
+				throw new KesalahanDomain(
+					"TIDAK_DITEMUKAN",
+					"Pendaftaran peserta tidak ditemukan.",
+				)
+			}
+			if (enrollment.status !== "PAID") {
+				throw new KesalahanDomain(
+					"TRANSISI_TIDAK_SAH",
+					"Absensi hanya dapat dicatat setelah pembayaran lunas.",
+				)
+			}
+			if (enrollment.attendance) {
+				throw new KesalahanDomain(
+					"KONFLIK",
+					"Peserta sudah tercatat hadir pada kelas ini.",
+				)
+			}
+
+			// Absensi wajib terikat pada sesi. Tanpa sesi aktif, admin harus
+			// membuka/mengganti QR pada sesi kelas tersebut lebih dulu.
+			const sesiAbsensi = await tx.attendanceSession.findFirst({
+				where: { classId: enrollment.classId, aktif: true },
+				orderBy: { createdAt: "desc" },
+				select: { id: true },
+			})
+			if (!sesiAbsensi) {
+				throw new KesalahanDomain(
+					"TRANSISI_TIDAK_SAH",
+					"Kelas ini belum memiliki sesi absensi aktif. Buka sesi absensi terlebih dahulu.",
+				)
+			}
+
+			const attendance = await tx.attendance.create({
+				data: {
+					enrollmentId: enrollment.id,
+					sessionId: sesiAbsensi.id,
+					waktuScan: waktu,
+				},
+				select: { id: true, waktuScan: true },
+			})
+
+			return {
+				attendanceId: attendance.id,
+				classId: enrollment.classId,
+				judulKelas: enrollment.kelas.judul,
+				waktuScan: attendance.waktuScan,
+			}
+		})
+	} catch (kesalahan) {
+		if (
+			kesalahan instanceof Prisma.PrismaClientKnownRequestError &&
+			kesalahan.code === "P2002"
+		) {
+			// Dua permintaan bersamaan: constraint UNIQUE(enrollmentId) menang.
+			throw new KesalahanDomain(
+				"KONFLIK",
+				"Peserta sudah tercatat hadir pada kelas ini.",
+			)
+		}
+		throw kesalahan
+	}
+}
+
+/**
+ * Daftar pendaftaran berstatus PAID yang belum tercatat hadir, untuk keperluan
+ * absensi manual admin. Dikelompokkan per kelas agar admin dapat memilih kelas
+ * lebih dahulu lalu mencentang peserta yang hadir.
+ */
+export async function pesertaBelumHadir(
+	sesi: SesiPengguna | null,
+	dependensi: DependensiAbsensi = {},
+) {
+	wajibKemampuan(sesi, "kelola_absensi")
+	const db = dependensi.db ?? prisma
+
+	const daftar = await db.enrollment.findMany({
+		where: { status: "PAID", attendance: { is: null } },
+		orderBy: [{ kelas: { judul: "asc" } }, { user: { nama: "asc" } }],
+		select: {
+			id: true,
+			classId: true,
+			user: { select: { nama: true, email: true } },
+			kelas: {
+				select: {
+					judul: true,
+					// Kelas hanya dapat diabsen manual bila punya sesi aktif.
+					sesiAbsensi: {
+						where: { aktif: true },
+						select: { id: true },
+						take: 1,
+					},
+				},
+			},
+		},
+	})
+
+	return daftar.map((item) => ({
+		enrollmentId: item.id,
+		classId: item.classId,
+		nama: item.user.nama,
+		email: item.user.email,
+		judulKelas: item.kelas.judul,
+		punyaSesiAktif: item.kelas.sesiAbsensi.length > 0,
+	}))
+}
+
 /** Sesi absensi aktif untuk kelas-kelas yang diikuti pengguna. */
 export async function sesiAbsensiUntukPengguna(
 	sesi: SesiPengguna | null,
@@ -291,12 +450,10 @@ export async function sesiAbsensiUntukPengguna(
 ) {
 	const pengguna = wajibSesi(sesi)
 	const db = dependensi.db ?? prisma
-	const sekarang = (dependensi.sekarang ?? (() => new Date()))()
 
 	return db.attendanceSession.findMany({
 		where: {
 			aktif: true,
-			kedaluwarsaPada: { gt: sekarang },
 			kelas: {
 				enrollments: {
 					some: {
@@ -309,7 +466,6 @@ export async function sesiAbsensiUntukPengguna(
 		},
 		select: {
 			id: true,
-			kedaluwarsaPada: true,
 			kelas: { select: { id: true, judul: true } },
 		},
 	})
@@ -352,8 +508,7 @@ export async function daftarSesiAbsensi(
 	const db = dependensi.db ?? prisma
 
 	return db.attendanceSession.findMany({
-		orderBy: { createdAt: "desc" },
-		take: 50,
+		orderBy: [{ createdAt: "desc" }, { id: "desc" }],
 		select: {
 			id: true,
 			aktif: true,

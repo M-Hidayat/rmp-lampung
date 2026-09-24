@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
-import { Search } from "lucide-react"
 
-import { JudulHalaman } from "@/components/kerangka"
+import { FormulirAbsensiManual } from "./formulir-absensi-manual"
 import {
 	Table,
 	TableBody,
@@ -12,7 +11,7 @@ import {
 	TableWrapper,
 } from "@/components/ui/table"
 import { sesiPengguna } from "@/lib/auth"
-import { rekapKehadiran } from "@/lib/layanan/absensi"
+import { pesertaBelumHadir, rekapKehadiran } from "@/lib/layanan/absensi"
 import { formatTanggalWaktu } from "@/lib/uang"
 
 export const metadata: Metadata = { title: "Rekap kehadiran" }
@@ -20,7 +19,10 @@ export const dynamic = "force-dynamic"
 
 export default async function HalamanKehadiranAdmin() {
 	const sesi = await sesiPengguna()
-	const daftar = await rekapKehadiran(sesi)
+	const [daftar, menunggu] = await Promise.all([
+		rekapKehadiran(sesi),
+		pesertaBelumHadir(sesi),
+	])
 
 	return (
 		<div className="space-y-6">
@@ -31,13 +33,28 @@ export default async function HalamanKehadiranAdmin() {
 						Rekap kehadiran
 					</h1>
 					<p className="text-xs text-zinc-500 mt-0.5">
-						Kehadiran peserta hanya tercatat melalui pemindaian QR absensi yang valid.
-					</p>
+					Kehadiran tercatat otomatis melalui pemindaian QR, atau dicatat manual oleh admin
+					ketika peserta tidak dapat memindai.
+				</p>
 				</div>
 			</div>
 
+			{/* Absensi manual oleh admin */}
+			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm space-y-4">
+				<div>
+					<h2 className="text-base font-bold text-zinc-950 font-heading">
+						Absensi manual
+					</h2>
+					<p className="text-xs text-zinc-500 mt-0.5">
+						Catat kehadiran peserta yang lunas namun tidak sempat memindai QR. Kehadiran tetap
+						satu kali per pendaftaran.
+					</p>
+				</div>
+				<FormulirAbsensiManual peserta={menunggu} />
+			</div>
+
 			{/* Main Data Table Card */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
+			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm space-y-4">
 				{/* Card Toolbar */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
 					<div>
@@ -47,20 +64,12 @@ export default async function HalamanKehadiranAdmin() {
 					</div>
 
 					<div className="flex items-center gap-2">
-						<div className="relative w-52">
-							<Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-							<input
-								type="text"
-								placeholder="Cari nama / kelas..."
-								className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#FAF8F5] border border-[#E5E0D8] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D49A28]"
-							/>
-						</div>
 					</div>
 				</div>
 
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#FAF8F5] rounded-lg">
+						<TableHeader className="bg-[#F8FAFC] rounded-lg">
 							<TableRow>
 								<TableHead>Peserta</TableHead>
 								<TableHead>Kelas</TableHead>
@@ -77,10 +86,10 @@ export default async function HalamanKehadiranAdmin() {
 								</TableRow>
 							) : (
 								daftar.map((item) => (
-									<TableRow key={item.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
+									<TableRow key={item.id} className="hover:bg-[#F8FAFC]/60 transition-colors">
 										<TableCell>
 											<span className="font-semibold text-zinc-900 block text-sm">{item.enrollment.user.nama}</span>
-											<span className="block text-zinc-400 font-mono text-[11px]">
+											<span className="block text-zinc-400 font-mono text-xs">
 												{item.enrollment.user.email}
 											</span>
 										</TableCell>
@@ -92,11 +101,11 @@ export default async function HalamanKehadiranAdmin() {
 										</TableCell>
 										<TableCell className="text-right font-mono text-xs">
 											{item.certificate ? (
-												<span className="text-emerald-700 font-semibold">
+												<span className="text-zinc-800 font-semibold">
 													{item.certificate.nomor}
 												</span>
 											) : (
-												<span className="text-zinc-400 text-[11px]">
+												<span className="text-zinc-400 text-xs">
 													Belum diterbitkan
 												</span>
 											)}

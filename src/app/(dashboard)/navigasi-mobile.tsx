@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Award, BookOpen, CreditCard, FileText, LayoutDashboard, LogOut, Menu, QrCode, User, Users, X } from "lucide-react"
+import { Award, BookOpen, CreditCard, FileText, LayoutDashboard, LogOut, Menu, QrCode, User, UserRound, Users, X } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import { aksiKeluar } from "./aksi"
@@ -52,9 +52,11 @@ export function TautanDashboard({ item, onClick }: { item: ItemMenuDashboard; on
 export function NavigasiMobile({
 	items,
 	labelPeran,
+	hrefProfil,
 }: {
 	items: ItemMenuDashboard[]
 	labelPeran: string
+	hrefProfil: string
 }) {
 	const [terbuka, setTerbuka] = useState(false)
 
@@ -118,6 +120,13 @@ export function NavigasiMobile({
 							))}
 						</nav>
 						<div className="shrink-0 border-t border-border p-3">
+							<Link
+								href={hrefProfil}
+								onClick={() => setTerbuka(false)}
+								className="flex min-h-11 w-full items-center gap-2 rounded-lg px-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							>
+								<UserRound className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" /> Profil Akun
+							</Link>
 							<form action={aksiKeluar}>
 								<button
 									type="submit"
