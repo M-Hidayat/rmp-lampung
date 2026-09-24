@@ -1,0 +1,4 @@
+# Silakan commit file ini ke dalam version control.
+# File ini menandakan provider database yang dipakai. Tanpa file ini,
+# `prisma migrate deploy` tidak dapat menentukan cara menerapkan migrasi.
+provider = "postgresql"
