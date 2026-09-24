@@ -17,6 +17,25 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
+# Stage khusus untuk menjalankan migrasi/seed. Image runtime `runner` memakai
+# output standalone yang TIDAK membawa Prisma CLI, sehingga `npx prisma` di sana
+# akan mencoba mengunduh Prisma versi lain dan gagal. Stage ini menyediakan
+# node_modules lengkap + schema, dan hanya dipakai oleh `docker compose run`.
+FROM node:22-alpine AS migrator
+WORKDIR /app
+ENV NODE_ENV=development NEXT_TELEMETRY_DISABLED=1
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json package-lock.json ./
+COPY prisma ./prisma
+COPY tsconfig.json ./
+COPY scripts ./scripts
+COPY src ./src
+# Prisma Client harus di-generate di stage ini. Tanpa langkah ini, node_modules
+# hasil `npm ci` belum memuat client dan skrip provisioning gagal dengan
+# "@prisma/client did not initialize yet".
+RUN npx prisma generate
+CMD ["npx", "prisma", "migrate", "deploy"]
+
 FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
