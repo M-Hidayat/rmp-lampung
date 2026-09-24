@@ -11,9 +11,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
+import { BuktiPublik } from "@/components/bukti-publik"
+import { buktiPublik, catatanRiset } from "@/lib/bukti-publik"
 import { daftarPlaceholder, identitasRmp } from "@/lib/identitas-rmp"
 
-export const metadata: Metadata = { title: "Profil RMP" }
+export const metadata: Metadata = { title: "Profil Rumah Mama Pintar" }
 
 type BarisFakta = {
 	label: string
@@ -97,7 +99,7 @@ export default function HalamanProfil() {
 	return (
 		<div className="space-y-8">
 			<JudulHalaman
-				judul="Profil RMP dan sumber data"
+				judul="Profil Rumah Mama Pintar dan sumber data"
 				keterangan="Setiap fakta identitas disertai sumber publik. Data yang belum ditemukan tetap ditandai sebagai placeholder."
 			/>
 
@@ -108,6 +110,29 @@ export default function HalamanProfil() {
 					menunggu konfirmasi resmi pemilik.
 				</p>
 			</Alert>
+
+			{/* Bukti pihak ketiga yang dapat diperiksa sendiri oleh pengunjung. */}
+			<div className="space-y-4">
+				<BuktiPublik jumlahAwal={buktiPublik.length} />
+
+				<Alert variant="peringatan" judul="Catatan riset yang perlu dikonfirmasi pemilik">
+					<p className="mb-2">
+						Riset menemukan ketidakcocokan antar sumber. Hal ini ditampilkan apa adanya
+						agar tidak menjadi masalah di kemudian hari.
+					</p>
+					<ul className="space-y-2 text-sm">
+						<li>
+							<span className="font-semibold">Alamat:</span> {catatanRiset.alamat.catatan}
+						</li>
+						<li>
+							<span className="font-semibold">Telepon:</span> {catatanRiset.telepon.catatan}
+						</li>
+						<li>
+							<span className="font-semibold">Foto kegiatan:</span> {catatanRiset.fotoKegiatan.catatan}
+						</li>
+					</ul>
+				</Alert>
+			</div>
 
 			<div className="grid gap-4 sm:grid-cols-2">
 				{fakta.map((item) => (
