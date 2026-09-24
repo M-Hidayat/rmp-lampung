@@ -1,13 +1,12 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { FileText, Award, BookOpen, Clock, MapPin, QrCode, Search, Filter, Download, ArrowRight } from "lucide-react"
+import { FileText, Award, Clock, MapPin, QrCode, ArrowRight } from "lucide-react"
 
 import {
 	aksiBatalkanPendaftaran,
 	aksiLanjutkanPembayaran,
 } from "../../aksi"
 import { FormulirAksi } from "@/components/formulir-aksi"
-import { JudulHalaman } from "@/components/kerangka"
 import {
 	LencanaStatusPembayaran,
 	LencanaStatusPendaftaran,
@@ -47,12 +46,12 @@ export default async function HalamanKelasSaya() {
 				</div>
 
 				<div className="flex items-center gap-3">
-					<Button asChild variant="outline" size="sm" className="bg-white border-[#EFECE6] text-xs h-9 font-medium text-zinc-700 hover:bg-[#FAF8F5] rounded-xl shadow-xs">
+					<Button asChild variant="outline" size="sm" className="bg-white border-[#E2E8F0] text-xs h-9 font-medium text-zinc-700 hover:bg-[#F8FAFC] rounded-md shadow-sm">
 						<Link href="/user/pembayaran">
 							Riwayat Tagihan
 						</Link>
 					</Button>
-					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-xl shadow-xs">
+					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-md shadow-sm">
 						<Link href="/kelas">
 							Daftar Kelas Baru <ArrowRight className="size-3.5 ml-1" />
 						</Link>
@@ -61,7 +60,7 @@ export default async function HalamanKelasSaya() {
 			</div>
 
 			{/* Main Table Card */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
+			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm space-y-4">
 				{/* Card Toolbar */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
 					<div className="flex items-center gap-2">
@@ -71,21 +70,13 @@ export default async function HalamanKelasSaya() {
 					</div>
 
 					<div className="flex flex-wrap items-center gap-2">
-						<div className="relative w-52">
-							<Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-							<input
-								type="text"
-								placeholder="Cari pendaftaran..."
-								className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#FAF8F5] border border-[#E5E0D8] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D49A28]"
-							/>
-						</div>
 					</div>
 				</div>
 
 				{/* Table Container */}
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#FAF8F5] rounded-lg">
+						<TableHeader className="bg-[#F8FAFC] rounded-lg">
 							<TableRow>
 								<TableHead>Kelas</TableHead>
 								<TableHead>Status</TableHead>
@@ -104,18 +95,18 @@ export default async function HalamanKelasSaya() {
 								</TableRow>
 							) : (
 								pendaftaran.map((item) => (
-									<TableRow key={item.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
+									<TableRow key={item.id} className="hover:bg-[#F8FAFC]/60 transition-colors">
 										<TableCell>
 											<span className="font-semibold text-zinc-900 block text-sm">
 												{item.kelas.judul}
 											</span>
 											<div className="space-y-0.5 text-xs text-zinc-500 mt-1">
 												<span className="flex items-center gap-1">
-													<Clock className="size-3 text-[#D49A28]" />
+													<Clock className="size-3 text-foreground font-semibold" />
 													{formatTanggalWaktu(item.kelas.jadwalMulai)} WIB
 												</span>
 												<span className="flex items-center gap-1 truncate max-w-xs">
-													<MapPin className="size-3 text-[#D49A28]" />
+													<MapPin className="size-3 text-foreground font-semibold" />
 													{item.kelas.lokasi}
 												</span>
 											</div>
@@ -127,10 +118,10 @@ export default async function HalamanKelasSaya() {
 											{item.payment ? (
 												<div className="space-y-1">
 													<LencanaStatusPembayaran status={item.payment.status} />
-													<span className="block text-xs font-mono font-medium text-[#854D0E]">
+													<span className="block text-xs font-mono font-medium text-foreground font-semibold">
 														{formatRupiah(item.payment.nominal.toString())}
 													</span>
-													<span className="block text-[11px] font-mono text-zinc-400">
+													<span className="block text-xs font-mono text-zinc-400">
 														{item.payment.pakasirRef}
 													</span>
 												</div>
@@ -142,7 +133,7 @@ export default async function HalamanKelasSaya() {
 										</TableCell>
 										<TableCell className="text-xs font-medium">
 											{item.attendance ? (
-												<span className="text-emerald-700 font-semibold flex items-center gap-1">
+												<span className="text-zinc-800 font-semibold flex items-center gap-1">
 													<span className="size-1.5 rounded-full bg-emerald-600" />
 													Hadir ({formatTanggalWaktu(item.attendance.waktuScan)} WIB)
 												</span>
@@ -153,21 +144,21 @@ export default async function HalamanKelasSaya() {
 										<TableCell className="space-y-1.5 text-xs">
 											{item.payment?.invoice ? (
 												<a
-													className="inline-flex items-center gap-1 font-medium text-zinc-900 hover:text-[#B47517] hover:underline"
+													className="inline-flex items-center gap-1 font-medium text-zinc-900 hover:text-foreground font-semibold hover:underline"
 													href={`/api/invoice/${item.payment.invoice.id}/pdf`}
 												>
-													<FileText className="size-3.5 text-[#D49A28]" />
+													<FileText className="size-3.5 text-foreground font-semibold" />
 													Invoice {item.payment.invoice.nomor}
 												</a>
 											) : (
-												<span className="block text-zinc-400 text-[11px]">
+												<span className="block text-zinc-400 text-xs">
 													Invoice belum terbit
 												</span>
 											)}
 											{item.attendance?.certificate &&
 											!item.attendance.certificate.revokedAt ? (
 												<a
-													className="inline-flex items-center gap-1 font-medium text-emerald-700 hover:underline block"
+													className="inline-flex items-center gap-1 font-medium text-zinc-800 hover:underline block"
 													href={`/api/sertifikat/${item.attendance.certificate.id}/pdf`}
 												>
 													<Award className="size-3.5 text-emerald-600" />
@@ -175,7 +166,7 @@ export default async function HalamanKelasSaya() {
 												</a>
 											) : null}
 											{item.attendance?.certificate?.revokedAt ? (
-												<span className="block text-red-500 text-[11px]">
+												<span className="block text-red-500 text-xs">
 													Sertifikat dibatalkan
 												</span>
 											) : null}
@@ -198,9 +189,9 @@ export default async function HalamanKelasSaya() {
 													/>
 												</div>
 											) : item.status === "PAID" && !item.attendance ? (
-												<Button asChild size="sm" variant="outline" className="h-8 text-xs bg-white border-[#EFECE6] rounded-lg">
+												<Button asChild size="sm" variant="outline" className="h-8 text-xs bg-white border-[#E2E8F0] rounded-lg">
 													<Link href="/user/absensi">
-														<QrCode className="size-3.5 mr-1 text-[#D49A28]" />
+														<QrCode className="size-3.5 mr-1 text-foreground font-semibold" />
 														Absensi QR
 													</Link>
 												</Button>

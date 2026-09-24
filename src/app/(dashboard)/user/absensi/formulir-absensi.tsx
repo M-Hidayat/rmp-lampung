@@ -125,10 +125,10 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 			<canvas ref={canvasRef} className="hidden" />
 
 			{/* Panel Kamera / Scanner */}
-			<div className="rounded-2xl border border-dashed border-[#E8DFC8] bg-[#FAF8F5] p-6 text-center">
+			<div className="rounded-lg border border-dashed border-[#E8DFC8] bg-[#F8FAFC] p-6 text-center">
 				{kameraAktif ? (
 					<div className="space-y-4">
-						<div className="relative mx-auto aspect-square max-w-[280px] overflow-hidden rounded-xl border-2 border-[#D49A28] bg-black shadow-md">
+						<div className="relative mx-auto aspect-square max-w-[280px] overflow-hidden rounded-md border-2 border-primary bg-black shadow-sm">
 							<video
 								ref={videoRef}
 								playsInline
@@ -143,7 +143,7 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 							type="button"
 							variant="outline"
 							size="sm"
-							className="rounded-xl border-[#EFECE6] bg-white"
+							className="rounded-md border-[#E2E8F0] bg-white"
 							onClick={() => setKameraAktif(false)}
 						>
 							<X className="size-3.5 mr-1" />
@@ -152,7 +152,7 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 					</div>
 				) : (
 					<div className="space-y-3 py-2">
-						<div className="mx-auto flex size-12 items-center justify-center rounded-full bg-[#FDF8ED] text-[#D49A28] shadow-2xs">
+						<div className="mx-auto flex size-12 items-center justify-center rounded-full bg-[#FFF7ED] text-foreground font-semibold shadow-2xs">
 							<Camera className="size-6" />
 						</div>
 						<div className="space-y-1">
@@ -165,7 +165,7 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 							type="button"
 							size="sm"
 							variant="gold"
-							className="rounded-xl font-semibold shadow-xs"
+							className="rounded-md font-semibold shadow-sm"
 							onClick={() => {
 								setStatusKamera(null)
 								setKameraAktif(true)
@@ -177,7 +177,7 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 					</div>
 				)}
 				{statusKamera ? (
-					<p className="mt-3 text-xs text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200">{statusKamera}</p>
+					<p className="mt-3 text-xs text-zinc-800 bg-zinc-100 p-2 rounded-lg border border-zinc-200">{statusKamera}</p>
 				) : null}
 			</div>
 
@@ -207,7 +207,7 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 						required
 						autoComplete="off"
 						aria-describedby="bantuan-token"
-						className="font-mono text-sm rounded-xl border-[#E5E0D8] focus:border-[#D49A28]"
+						className="font-mono text-sm rounded-md border-[#CBD5E1] focus:border-primary"
 					/>
 					<p id="bantuan-token" className="text-xs text-zinc-500">
 						Token terisi otomatis saat Anda memindai QR atau membuka tautan absensi.
@@ -217,7 +217,7 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 				<Button
 					type="submit"
 					variant="gold"
-					className="w-full font-semibold rounded-xl shadow-xs"
+					className="w-full font-semibold rounded-md shadow-sm"
 					disabled={sedangProses || !token.trim()}
 				>
 					<CheckCircle2 className="size-4 mr-1.5" />

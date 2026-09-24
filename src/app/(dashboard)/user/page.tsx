@@ -6,14 +6,9 @@ import {
 	CheckCircle2,
 	Clock,
 	QrCode,
-	HelpCircle,
 	ArrowRight,
-	Search,
-	Filter,
-	Download,
-} from "lucide-react"
+	} from "lucide-react"
 
-import { JudulHalaman } from "@/components/kerangka"
 import { LencanaStatusPendaftaran } from "@/components/status-lencana"
 import { Button } from "@/components/ui/button"
 import {
@@ -61,12 +56,12 @@ export default async function HalamanRingkasanUser() {
 				</div>
 
 				<div className="flex items-center gap-3">
-					<Button asChild variant="outline" size="sm" className="bg-white border-[#EFECE6] text-xs h-9 font-medium text-zinc-700 hover:bg-[#FAF8F5] rounded-xl shadow-xs">
+					<Button asChild variant="outline" size="sm" className="bg-white border-[#E2E8F0] text-xs h-9 font-medium text-zinc-700 hover:bg-[#F8FAFC] rounded-md shadow-sm">
 						<Link href="/user/pembayaran">
 							Riwayat Transaksi
 						</Link>
 					</Button>
-					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-xl shadow-xs">
+					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-md shadow-sm">
 						<Link href="/kelas">
 							Jelajahi Kelas Baru <ArrowRight className="size-3.5 ml-1" />
 						</Link>
@@ -76,12 +71,12 @@ export default async function HalamanRingkasanUser() {
 
 			{/* KPI Summary Cards */}
 			<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-				<div className="bg-white rounded-2xl border border-[#EFECE6] p-5 shadow-xs transition-all hover:border-[#D49A28]/40">
+				<div className="bg-white rounded-lg border border-[#E2E8F0] p-5 shadow-sm transition-all hover:border-primary/40">
 					<div className="flex items-center justify-between">
 						<span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
 							Kelas Terdaftar
 						</span>
-						<div className="flex size-8 items-center justify-center rounded-lg bg-[#FDF8ED] text-[#D49A28]">
+						<div className="flex size-8 items-center justify-center rounded-lg bg-[#FFF7ED] text-foreground font-semibold">
 							<BookOpen className="size-4" />
 						</div>
 					</div>
@@ -93,7 +88,7 @@ export default async function HalamanRingkasanUser() {
 					</p>
 				</div>
 
-				<div className="bg-white rounded-2xl border border-[#EFECE6] p-5 shadow-xs transition-all hover:border-[#D49A28]/40">
+				<div className="bg-white rounded-lg border border-[#E2E8F0] p-5 shadow-sm transition-all hover:border-primary/40">
 					<div className="flex items-center justify-between">
 						<span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
 							Menunggu Bayar
@@ -110,12 +105,12 @@ export default async function HalamanRingkasanUser() {
 					</p>
 				</div>
 
-				<div className="bg-white rounded-2xl border border-[#EFECE6] p-5 shadow-xs transition-all hover:border-[#D49A28]/40">
+				<div className="bg-white rounded-lg border border-[#E2E8F0] p-5 shadow-sm transition-all hover:border-primary/40">
 					<div className="flex items-center justify-between">
 						<span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
 							Kehadiran Fisik
 						</span>
-						<div className="flex size-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+						<div className="flex size-8 items-center justify-center rounded-lg bg-zinc-100 text-zinc-800">
 							<CheckCircle2 className="size-4" />
 						</div>
 					</div>
@@ -127,12 +122,12 @@ export default async function HalamanRingkasanUser() {
 					</p>
 				</div>
 
-				<div className="bg-white rounded-2xl border border-[#EFECE6] p-5 shadow-xs transition-all hover:border-[#D49A28]/40">
+				<div className="bg-white rounded-lg border border-[#E2E8F0] p-5 shadow-sm transition-all hover:border-primary/40">
 					<div className="flex items-center justify-between">
 						<span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
 							Sertifikat Terbit
 						</span>
-						<div className="flex size-8 items-center justify-center rounded-lg bg-[#FDF8ED] text-[#D49A28]">
+						<div className="flex size-8 items-center justify-center rounded-lg bg-[#FFF7ED] text-foreground font-semibold">
 							<Award className="size-4" />
 						</div>
 					</div>
@@ -147,11 +142,11 @@ export default async function HalamanRingkasanUser() {
 
 			{/* Sesi Absensi Live Banner */}
 			{sesiAbsensi.length > 0 ? (
-				<div className="bg-linear-to-r from-[#FDF8ED] to-[#FFFDF9] rounded-2xl border border-[#F3DC9B] p-5 shadow-xs">
+				<div className="bg-linear-to-r from-[#FFF7ED] to-[#FFFFFF] rounded-lg border border-[#F3DC9B] p-5 shadow-sm">
 					<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 						<div className="space-y-1">
-							<div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#854D0E]">
-								<span className="size-2 rounded-full bg-[#D49A28] animate-ping" />
+							<div className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground font-semibold">
+								<span className="size-2 rounded-full bg-primary animate-ping" />
 								<span>SESI ABSENSI KELAS DIBUKA</span>
 							</div>
 							<h3 className="text-sm font-bold text-zinc-950 font-heading">
@@ -160,12 +155,12 @@ export default async function HalamanRingkasanUser() {
 							<ul className="space-y-0.5 text-xs text-zinc-600">
 								{sesiAbsensi.map((item) => (
 									<li key={item.id}>
-										<span className="font-semibold text-zinc-950">{item.kelas.judul}</span> · Kedaluwarsa {formatTanggalWaktu(item.kedaluwarsaPada)} WIB
+										<span className="font-semibold text-zinc-950">{item.kelas.judul}</span> · Aktif tanpa batas waktu
 									</li>
 								))}
 							</ul>
 						</div>
-						<Button asChild size="sm" variant="gold" className="shrink-0 text-xs font-semibold rounded-xl shadow-xs">
+						<Button asChild size="sm" variant="gold" className="shrink-0 text-xs font-semibold rounded-md shadow-sm">
 							<Link href="/user/absensi">
 								<QrCode className="size-3.5 mr-1.5" />
 								Buka Kamera Absensi
@@ -176,7 +171,7 @@ export default async function HalamanRingkasanUser() {
 			) : null}
 
 			{/* Main Data Card with Toolbar */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
+			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm space-y-4">
 				{/* Card Toolbar */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
 					<div className="flex items-center gap-2">
@@ -186,15 +181,7 @@ export default async function HalamanRingkasanUser() {
 					</div>
 
 					<div className="flex items-center gap-2">
-						<div className="relative w-48 hidden sm:block">
-							<Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-							<input
-								type="text"
-								placeholder="Cari kelas..."
-								className="w-full pl-8 pr-3 py-1 text-xs bg-[#FAF8F5] border border-[#E5E0D8] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#D49A28]"
-							/>
-						</div>
-						<Button asChild variant="outline" size="sm" className="h-8 text-xs bg-white border-[#EFECE6] rounded-lg">
+						<Button asChild variant="outline" size="sm" className="h-8 text-xs bg-white border-[#E2E8F0] rounded-lg">
 							<Link href="/user/kelas-saya">
 								Lihat Semua
 							</Link>
@@ -205,7 +192,7 @@ export default async function HalamanRingkasanUser() {
 				{/* Table */}
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#FAF8F5] rounded-lg">
+						<TableHeader className="bg-[#F8FAFC] rounded-lg">
 							<TableRow>
 								<TableHead>Kelas</TableHead>
 								<TableHead>Biaya</TableHead>
@@ -224,11 +211,11 @@ export default async function HalamanRingkasanUser() {
 								</TableRow>
 							) : (
 								pendaftaran.slice(0, 5).map((item) => (
-									<TableRow key={item.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
+									<TableRow key={item.id} className="hover:bg-[#F8FAFC]/60 transition-colors">
 										<TableCell className="font-semibold text-zinc-900 text-sm">
 											{item.kelas.judul}
 										</TableCell>
-										<TableCell className="font-mono font-medium text-xs text-[#854D0E]">
+										<TableCell className="font-mono font-medium text-xs text-foreground font-semibold">
 											{formatRupiah(item.kelas.harga.toString())}
 										</TableCell>
 										<TableCell className="text-xs text-zinc-500">
@@ -239,7 +226,7 @@ export default async function HalamanRingkasanUser() {
 										</TableCell>
 										<TableCell className="text-xs font-medium">
 											{item.attendance ? (
-												<span className="text-emerald-700 font-semibold">
+												<span className="text-zinc-800 font-semibold">
 													Hadir
 												</span>
 											) : (
@@ -248,17 +235,17 @@ export default async function HalamanRingkasanUser() {
 										</TableCell>
 										<TableCell className="text-right">
 											{item.status === "PENDING" ? (
-												<Button asChild size="sm" variant="gold" className="h-7 text-xs font-semibold rounded-lg shadow-xs">
+												<Button asChild size="sm" variant="gold" className="h-7 text-xs font-semibold rounded-lg shadow-sm">
 													<Link href={`/user/pembayaran?order_id=${item.payment?.pakasirRef || ''}`}>
 														Bayar
 													</Link>
 												</Button>
 											) : item.status === "PAID" && !item.attendance ? (
-												<Button asChild size="sm" variant="outline" className="h-7 text-xs border-[#EFECE6] rounded-lg">
+												<Button asChild size="sm" variant="outline" className="h-7 text-xs border-[#E2E8F0] rounded-lg">
 													<Link href="/user/absensi">Absen QR</Link>
 												</Button>
 											) : item.attendance?.certificate ? (
-												<Button asChild size="sm" variant="outline" className="h-7 text-xs border-[#D49A28] text-[#854D0E] hover:bg-[#FDF8ED] rounded-lg">
+												<Button asChild size="sm" variant="outline" className="h-7 text-xs border-primary text-foreground font-semibold hover:bg-[#FFF7ED] rounded-lg">
 													<Link href="/user/sertifikat">Sertifikat</Link>
 												</Button>
 											) : (

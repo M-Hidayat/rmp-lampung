@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
-import { FileText, Search, Filter, Download, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
+import { FileText, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 
-import { JudulHalaman } from "@/components/kerangka"
 import { LencanaStatusPembayaran } from "@/components/status-lencana"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -50,12 +49,7 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 				</div>
 
 				<div className="flex items-center gap-3">
-					<Button asChild variant="outline" size="sm" className="bg-white border-[#EFECE6] text-xs h-9 font-medium text-zinc-700 hover:bg-[#FAF8F5] rounded-xl shadow-xs">
-						<Link href="/user/invoice">
-							Daftar Invoice PDF
-						</Link>
-					</Button>
-					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-xl shadow-xs">
+					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-md shadow-sm">
 						<Link href="/kelas">
 							Pilih Kursus Baru <ArrowRight className="size-3.5 ml-1" />
 						</Link>
@@ -66,7 +60,7 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 			{/* Sorotan Transaksi dari Redirect Pakasir */}
 			{orderId ? (
 				pembayaranSorotan ? (
-					<div className="bg-white rounded-2xl border border-zinc-200/80 p-6 shadow-xs space-y-3">
+					<div className="bg-white rounded-lg border border-zinc-200/80 p-6 shadow-sm space-y-3">
 						<div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 pb-3">
 							<div>
 								<h3 className="text-base font-bold text-zinc-950">
@@ -79,7 +73,7 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 							<LencanaStatusPembayaran status={pembayaranSorotan.status} />
 						</div>
 
-						<div className="grid gap-3 sm:grid-cols-2 rounded-xl border border-zinc-100 bg-zinc-50/50 p-4 text-xs">
+						<div className="grid gap-3 sm:grid-cols-2 rounded-md border border-zinc-100 bg-zinc-50/50 p-4 text-xs">
 							<div>
 								<span className="text-zinc-500 block">Kelas Kuliner</span>
 								<span className="font-semibold text-zinc-900 text-sm">
@@ -129,7 +123,7 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 			) : null}
 
 			{/* Main Data Card */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
+			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm space-y-4">
 				{/* Card Toolbar */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
 					<div className="flex items-center gap-2">
@@ -139,21 +133,13 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 					</div>
 
 					<div className="flex flex-wrap items-center gap-2">
-						<div className="relative w-52">
-							<Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-							<input
-								type="text"
-								placeholder="Cari referensi..."
-								className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#FAF8F5] border border-[#E5E0D8] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D49A28]"
-							/>
-						</div>
 					</div>
 				</div>
 
 				{/* Table Container */}
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#FAF8F5] rounded-lg">
+						<TableHeader className="bg-[#F8FAFC] rounded-lg">
 							<TableRow>
 								<TableHead>Referensi</TableHead>
 								<TableHead>Kelas</TableHead>
@@ -173,14 +159,14 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 							) : (
 								daftarPembayaran.map((item) =>
 									item.payment ? (
-										<TableRow key={item.payment.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
+										<TableRow key={item.payment.id} className="hover:bg-[#F8FAFC]/60 transition-colors">
 											<TableCell className="font-mono text-xs font-semibold text-zinc-900">
 												{item.payment.pakasirRef}
 											</TableCell>
 											<TableCell className="font-medium text-zinc-900 text-sm">
 												{item.kelas.judul}
 											</TableCell>
-											<TableCell className="font-mono font-semibold text-[#854D0E]">
+											<TableCell className="font-mono font-semibold text-foreground font-semibold">
 												{formatRupiah(item.payment.nominal.toString())}
 											</TableCell>
 											<TableCell>
@@ -194,14 +180,14 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 											<TableCell className="text-right text-xs">
 												{item.payment.invoice ? (
 													<a
-														className="inline-flex items-center gap-1 font-medium text-zinc-900 hover:text-[#B47517] hover:underline"
+														className="inline-flex items-center gap-1 font-medium text-zinc-900 hover:text-foreground font-semibold hover:underline"
 														href={`/api/invoice/${item.payment.invoice.id}/pdf`}
 													>
-														<FileText className="size-3.5 text-[#D49A28]" />
+														<FileText className="size-3.5 text-foreground font-semibold" />
 														{item.payment.invoice.nomor}
 													</a>
 												) : (
-													<span className="text-zinc-400 text-[11px]">Belum tersedia</span>
+													<span className="text-zinc-400 text-xs">Belum tersedia</span>
 												)}
 											</TableCell>
 										</TableRow>

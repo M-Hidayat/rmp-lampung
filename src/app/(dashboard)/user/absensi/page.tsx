@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 
 import { FormulirAbsensi } from "./formulir-absensi"
-import { JudulHalaman } from "@/components/kerangka"
 import { Alert } from "@/components/ui/alert"
 
 export const metadata: Metadata = { title: "Absensi" }
@@ -29,7 +28,7 @@ export default async function HalamanAbsensiUser({ searchParams }: Props) {
 				</p>
 			</Alert>
 
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs">
+			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm">
 				<FormulirAbsensi token={token} />
 			</div>
 		</div>

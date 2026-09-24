@@ -2,7 +2,6 @@ import { KesalahanDomain } from "@/lib/kesalahan"
 import { prisma, type KlienDb } from "@/lib/prisma"
 import {
 	wajibPemilikDokumenAtauOperasional,
-	wajibSesi,
 	type SesiPengguna,
 } from "@/lib/rbac"
 
@@ -22,27 +21,6 @@ export type SnapshotKelas = {
 	harga: string
 	lokasi: string
 	jadwalMulai: string
-}
-
-/** Invoice milik pengguna yang sedang masuk. */
-export async function invoiceSaya(
-	sesi: SesiPengguna | null,
-	dependensi: DependensiInvoice = {},
-) {
-	const pengguna = wajibSesi(sesi)
-	const db = dependensi.db ?? prisma
-
-	return db.invoice.findMany({
-		where: { payment: { enrollment: { userId: pengguna.id } } },
-		orderBy: { dibayarPada: "desc" },
-		select: {
-			id: true,
-			nomor: true,
-			nominal: true,
-			dibayarPada: true,
-			snapshotKelas: true,
-		},
-	})
 }
 
 /**

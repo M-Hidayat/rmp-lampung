@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
-import { ExternalLink, FileDown, Search } from "lucide-react"
+import { ExternalLink, FileDown } from "lucide-react"
 import Link from "next/link"
 
-import { JudulHalaman } from "@/components/kerangka"
 import { LencanaStatusSertifikat } from "@/components/status-lencana"
 import { Button } from "@/components/ui/button"
 import {
@@ -39,7 +38,7 @@ export default async function HalamanSertifikatUser() {
 				</div>
 
 				<div className="flex items-center gap-3">
-					<Button asChild variant="outline" size="sm" className="bg-white border-[#EFECE6] text-xs h-9 font-medium text-zinc-700 hover:bg-[#FAF8F5] rounded-xl shadow-xs">
+					<Button asChild variant="outline" size="sm" className="bg-white border-[#E2E8F0] text-xs h-9 font-medium text-zinc-700 hover:bg-[#F8FAFC] rounded-md shadow-sm">
 						<Link href="/verifikasi">
 							Verifikasi Publik
 						</Link>
@@ -48,7 +47,7 @@ export default async function HalamanSertifikatUser() {
 			</div>
 
 			{/* Main Table Card */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
+			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm space-y-4">
 				{/* Card Toolbar */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
 					<div className="flex items-center gap-2">
@@ -58,20 +57,12 @@ export default async function HalamanSertifikatUser() {
 					</div>
 
 					<div className="flex flex-wrap items-center gap-2">
-						<div className="relative w-52">
-							<Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-							<input
-								type="text"
-								placeholder="Cari nomor sertifikat..."
-								className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#FAF8F5] border border-[#E5E0D8] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D49A28]"
-							/>
-						</div>
 					</div>
 				</div>
 
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#FAF8F5] rounded-lg">
+						<TableHeader className="bg-[#F8FAFC] rounded-lg">
 							<TableRow>
 								<TableHead>Nomor sertifikat</TableHead>
 								<TableHead>Kelas</TableHead>
@@ -89,7 +80,7 @@ export default async function HalamanSertifikatUser() {
 								</TableRow>
 							) : (
 								daftar.map((item) => (
-									<TableRow key={item.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
+									<TableRow key={item.id} className="hover:bg-[#F8FAFC]/60 transition-colors">
 										<TableCell className="font-mono text-xs font-semibold text-zinc-900">
 											{item.nomor}
 										</TableCell>
@@ -108,10 +99,10 @@ export default async function HalamanSertifikatUser() {
 											{!item.revokedAt ? (
 												<>
 													<a
-														className="inline-flex items-center gap-1 font-semibold text-[#854D0E] hover:text-[#713F12] hover:underline"
+														className="inline-flex items-center gap-1 font-semibold text-foreground font-semibold hover:text-muted-foreground hover:underline"
 														href={`/api/sertifikat/${item.id}/pdf`}
 													>
-														<FileDown className="size-3.5 text-[#D49A28]" />
+														<FileDown className="size-3.5 text-foreground font-semibold" />
 														Unduh PDF
 													</a>
 													<Link
