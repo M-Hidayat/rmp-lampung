@@ -3,6 +3,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { FormulirMasuk } from "./formulir-masuk"
+import { Alert } from "@/components/ui/alert"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { sesiPengguna } from "@/lib/auth"
@@ -10,13 +11,13 @@ import { berandaDashboard } from "@/lib/rbac"
 
 export const metadata: Metadata = { title: "Masuk" }
 
-type Props = { searchParams: Promise<{ lanjut?: string }> }
+type Props = { searchParams: Promise<{ lanjut?: string; "atur-ulang"?: string }> }
 
 export default async function HalamanMasuk({ searchParams }: Props) {
 	const sesi = await sesiPengguna()
 	if (sesi) redirect(berandaDashboard(sesi.peran))
 
-	const { lanjut } = await searchParams
+	const { lanjut, "atur-ulang": aturUlang } = await searchParams
 	const tujuan = lanjut?.startsWith("/") ? lanjut : undefined
 
 	return (
@@ -28,6 +29,11 @@ export default async function HalamanMasuk({ searchParams }: Props) {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
+				{aturUlang === "berhasil" ? (
+					<Alert variant="sukses" judul="Kata sandi diperbarui" className="mb-4">
+						<p>Kata sandi baru Anda sudah aktif. Silakan masuk kembali.</p>
+					</Alert>
+				) : null}
 				<FormulirMasuk lanjut={tujuan} />
 			</CardContent>
 			<CardFooter className="flex-col items-stretch gap-4">

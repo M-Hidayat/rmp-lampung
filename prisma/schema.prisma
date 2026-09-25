@@ -42,8 +42,27 @@ model User {
 
   enrollments      Enrollment[]
   sesiYangDibuat   AttendanceSession[] @relation("SesiDibuatOleh")
+  tokenAturUlang   TokenAturUlangSandi[]
 
   @@index([peran])
+}
+
+/**
+ * Token atur ulang kata sandi. Mengikuti pola token absensi:
+ * yang disimpan hanya hash SHA-256, token mentah tidak pernah masuk basis data.
+ * Sekali pakai (`dipakaiPada`) dan berbatas waktu (`kedaluwarsaPada`).
+ */
+model TokenAturUlangSandi {
+  id              String    @id @default(cuid())
+  userId          String
+  tokenHash       String    @unique
+  kedaluwarsaPada DateTime
+  dipakaiPada     DateTime?
+  createdAt       DateTime  @default(now())
+
+  pengguna User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model CourseClass {

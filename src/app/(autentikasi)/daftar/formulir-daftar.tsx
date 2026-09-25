@@ -3,6 +3,7 @@
 import { useActionState } from "react"
 
 import { aksiDaftar, type StatusFormulir } from "../aksi"
+import { BidangKataSandi } from "@/components/bidang-kata-sandi"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -88,15 +89,13 @@ export function FormulirDaftar() {
 
 				<Field data-invalid={detail.kataSandi ? true : undefined}>
 					<FieldLabel htmlFor="kataSandi">Kata sandi</FieldLabel>
-					<Input
+					<BidangKataSandi
 						id="kataSandi"
 						name="kataSandi"
-						type="password"
-						required
 						autoComplete="new-password"
 						placeholder="Minimal 8 karakter"
-						aria-invalid={detail.kataSandi ? true : undefined}
-						aria-describedby={
+						ariaInvalid={detail.kataSandi ? true : undefined}
+						ariaDescribedBy={
 							detail.kataSandi
 								? "bantuan-kata-sandi galat-kata-sandi"
 								: "bantuan-kata-sandi"

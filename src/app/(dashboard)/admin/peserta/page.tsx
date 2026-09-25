@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 
+import { TombolTautanAturUlang } from "./tombol-tautan-atur-ulang"
 import {
 	Table,
 	TableBody,
@@ -58,12 +59,13 @@ export default async function HalamanPesertaAdmin() {
 								<TableHead>Pendaftaran</TableHead>
 								<TableHead>Kehadiran</TableHead>
 								<TableHead className="text-right">Terdaftar</TableHead>
+								<TableHead className="text-right">Tindakan</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
 							{peserta.length === 0 ? (
 								<TableRow>
-									<TableCell colSpan={6} className="text-muted-foreground py-10 text-center text-xs">
+									<TableCell colSpan={7} className="text-muted-foreground py-10 text-center text-xs">
 										Belum ada peserta terdaftar.
 									</TableCell>
 								</TableRow>
@@ -81,6 +83,15 @@ export default async function HalamanPesertaAdmin() {
 										</TableCell>
 										<TableCell className="text-right text-xs text-muted-foreground">
 											{formatTanggal(orang.createdAt)}
+										</TableCell>
+										<TableCell className="text-right">
+											<div className="flex justify-end">
+												<TombolTautanAturUlang
+													idPengguna={orang.id}
+													nama={orang.nama}
+													telepon={orang.telepon}
+												/>
+											</div>
 										</TableCell>
 									</TableRow>
 								))

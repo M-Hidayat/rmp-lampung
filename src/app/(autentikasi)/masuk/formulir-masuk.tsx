@@ -1,8 +1,10 @@
 "use client"
 
 import { useActionState } from "react"
+import Link from "next/link"
 
 import { aksiMasuk, type StatusFormulir } from "../aksi"
+import { BidangKataSandi } from "@/components/bidang-kata-sandi"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
@@ -39,14 +41,20 @@ export function FormulirMasuk({ lanjut }: { lanjut?: string }) {
 				</Field>
 
 				<Field>
-					<FieldLabel htmlFor="kataSandi">Kata sandi</FieldLabel>
-					<Input
+					<div className="flex items-center justify-between gap-3">
+						<FieldLabel htmlFor="kataSandi">Kata sandi</FieldLabel>
+						<Link
+							href="/lupa-sandi"
+							className="text-sm font-semibold text-accent-foreground underline underline-offset-4 hover:text-foreground"
+						>
+							Lupa kata sandi?
+						</Link>
+					</div>
+					<BidangKataSandi
 						id="kataSandi"
 						name="kataSandi"
-						type="password"
-						required
-						placeholder="••••••••"
 						autoComplete="current-password"
+						placeholder="••••••••"
 					/>
 				</Field>
 
