@@ -5,19 +5,29 @@ import { useActionState } from "react"
 import { aksiDaftar, type StatusFormulir } from "../aksi"
 import { Alert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import {
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldGroup,
+	FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Spinner } from "@/components/ui/spinner"
 
-/** Pesan galat per bidang. Satu gaya, satu warna (token destructive). */
-function PesanGalat({ pesan, id }: { pesan?: string; id: string }) {
-	if (!pesan) return null
-	return (
-		<p id={id} className="text-xs font-medium text-destructive" role="alert">
-			{pesan}
-		</p>
-	)
-}
-
+/**
+ * Formulir pendaftaran peserta.
+ *
+ * Disusun dengan primitif `Field` shadcn/ui (pola blok `signup-01`) agar setiap
+ * bidang punya label, keterangan, dan pesan galat dengan struktur serta status
+ * yang seragam: `data-invalid` pada `Field` mengatur gaya label dan keterangan,
+ * `aria-invalid` pada kontrol mengatur gaya kontrolnya.
+ *
+ * Struktur dan urutan bidang tetap sesuai kebutuhan domain RMP (nama, email,
+ * telepon opsional, kata sandi) — bukan formulir contoh registry, yang memakai
+ * bidang "konfirmasi kata sandi" dan tombol masuk dengan Google yang tidak
+ * dipakai aplikasi ini.
+ */
 export function FormulirDaftar() {
 	const [status, aksi, sedangProses] = useActionState<StatusFormulir, FormData>(
 		aksiDaftar,
@@ -26,78 +36,90 @@ export function FormulirDaftar() {
 	const detail = status?.detail ?? {}
 
 	return (
-		<form action={aksi} className="flex flex-col gap-4" noValidate>
-			{status?.pesan ? (
-				<Alert variant="gagal" judul="Pendaftaran akun gagal">
-					<p>{status.pesan}</p>
-				</Alert>
-			) : null}
+		<form action={aksi} noValidate>
+			<FieldGroup>
+				{status?.pesan ? (
+					<Alert variant="gagal" judul="Pendaftaran akun gagal">
+						<p>{status.pesan}</p>
+					</Alert>
+				) : null}
 
-			<div className="flex flex-col gap-2">
-				<Label htmlFor="nama">Nama lengkap</Label>
-				<Input
-					id="nama"
-					name="nama"
-					required
-					autoComplete="name"
-					placeholder="Nama lengkap Anda"
-					aria-invalid={detail.nama ? true : undefined}
-					aria-describedby={detail.nama ? "galat-nama" : undefined}
-				/>
-				<PesanGalat pesan={detail.nama} id="galat-nama" />
-			</div>
+				<Field data-invalid={detail.nama ? true : undefined}>
+					<FieldLabel htmlFor="nama">Nama lengkap</FieldLabel>
+					<Input
+						id="nama"
+						name="nama"
+						required
+						autoComplete="name"
+						placeholder="Nama lengkap Anda"
+						aria-invalid={detail.nama ? true : undefined}
+						aria-describedby={detail.nama ? "galat-nama" : undefined}
+					/>
+					<FieldError id="galat-nama">{detail.nama}</FieldError>
+				</Field>
 
-			<div className="flex flex-col gap-2">
-				<Label htmlFor="email">Email</Label>
-				<Input
-					id="email"
-					name="email"
-					type="email"
-					required
-					autoComplete="email"
-					placeholder="nama@email.com"
-					aria-invalid={detail.email ? true : undefined}
-					aria-describedby={detail.email ? "galat-email" : undefined}
-				/>
-				<PesanGalat pesan={detail.email} id="galat-email" />
-			</div>
+				<Field data-invalid={detail.email ? true : undefined}>
+					<FieldLabel htmlFor="email">Email</FieldLabel>
+					<Input
+						id="email"
+						name="email"
+						type="email"
+						required
+						autoComplete="email"
+						placeholder="nama@email.com"
+						aria-invalid={detail.email ? true : undefined}
+						aria-describedby={detail.email ? "galat-email" : undefined}
+					/>
+					<FieldError id="galat-email">{detail.email}</FieldError>
+				</Field>
 
-			<div className="flex flex-col gap-2">
-				<Label htmlFor="telepon">Nomor telepon (opsional)</Label>
-				<Input
-					id="telepon"
-					name="telepon"
-					autoComplete="tel"
-					placeholder="08xxxxxxxxxx"
-					aria-invalid={detail.telepon ? true : undefined}
-					aria-describedby={detail.telepon ? "galat-telepon" : undefined}
-				/>
-				<PesanGalat pesan={detail.telepon} id="galat-telepon" />
-			</div>
+				<Field data-invalid={detail.telepon ? true : undefined}>
+					<FieldLabel htmlFor="telepon">Nomor telepon (opsional)</FieldLabel>
+					<Input
+						id="telepon"
+						name="telepon"
+						autoComplete="tel"
+						placeholder="08xxxxxxxxxx"
+						aria-invalid={detail.telepon ? true : undefined}
+						aria-describedby={detail.telepon ? "galat-telepon" : undefined}
+					/>
+					<FieldError id="galat-telepon">{detail.telepon}</FieldError>
+				</Field>
 
-			<div className="flex flex-col gap-2">
-				<Label htmlFor="kataSandi">Kata sandi</Label>
-				<Input
-					id="kataSandi"
-					name="kataSandi"
-					type="password"
-					required
-					autoComplete="new-password"
-					placeholder="Minimal 8 karakter"
-					aria-invalid={detail.kataSandi ? true : undefined}
-					aria-describedby={
-						detail.kataSandi ? "bantuan-kata-sandi galat-kata-sandi" : "bantuan-kata-sandi"
-					}
-				/>
-				<p id="bantuan-kata-sandi" className="text-xs text-muted-foreground">
-					Minimal 8 karakter, memuat minimal satu huruf dan satu angka.
-				</p>
-				<PesanGalat pesan={detail.kataSandi} id="galat-kata-sandi" />
-			</div>
+				<Field data-invalid={detail.kataSandi ? true : undefined}>
+					<FieldLabel htmlFor="kataSandi">Kata sandi</FieldLabel>
+					<Input
+						id="kataSandi"
+						name="kataSandi"
+						type="password"
+						required
+						autoComplete="new-password"
+						placeholder="Minimal 8 karakter"
+						aria-invalid={detail.kataSandi ? true : undefined}
+						aria-describedby={
+							detail.kataSandi
+								? "bantuan-kata-sandi galat-kata-sandi"
+								: "bantuan-kata-sandi"
+						}
+					/>
+					<FieldDescription id="bantuan-kata-sandi">
+						Minimal 8 karakter, memuat minimal satu huruf dan satu angka.
+					</FieldDescription>
+					<FieldError id="galat-kata-sandi">{detail.kataSandi}</FieldError>
+				</Field>
 
-			<Button type="submit" variant="gold" className="w-full" disabled={sedangProses}>
-				{sedangProses ? "Memproses…" : "Daftar akun"}
-			</Button>
+				<Field>
+					<Button type="submit" variant="gold" className="w-full" disabled={sedangProses}>
+						{sedangProses ? (
+							<>
+								<Spinner data-icon="inline-start" /> Memproses…
+							</>
+						) : (
+							"Daftar akun"
+						)}
+					</Button>
+				</Field>
+			</FieldGroup>
 		</form>
 	)
 }
