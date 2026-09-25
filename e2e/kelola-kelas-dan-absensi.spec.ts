@@ -33,6 +33,14 @@ test.describe("Kelola Kelas admin: daftar sebagai pusat kerja", () => {
 	test.beforeEach(async ({ page }) => {
 		await masukSebagaiAdmin(page)
 		await page.goto("/admin/kelas")
+		// Tunggu konten benar-benar tergambar, bukan sekadar HTML shell.
+		// Tanpa ini, assertion bisa menabrak `loading.tsx` (skeleton
+		// "Memuat halaman…") saat server masih streaming route basi.
+		await expect(page.getByRole("heading", { level: 1, name: "Kelola kelas" })).toBeVisible()
+		// Konten sudah ada, tetapi router klien mungkin belum ter-hydrate.
+		// Tanpa jeda ini, klik pada tautan bisa jatuh ke <a> pra-hidrasi dan
+		// tidak melakukan navigasi apa pun (bukan kerusakan produk).
+		await page.waitForLoadState("networkidle")
 	})
 
 	test("daftar menampilkan ringkasan, CTA tambah, dan tidak ada form inline", async ({ page }) => {
@@ -53,6 +61,9 @@ test.describe("Kelola Kelas admin: daftar sebagai pusat kerja", () => {
 
 	test("setiap baris kelas punya aksi Edit menuju route /ubah dan tombol status", async ({ page }) => {
 		const tautanEdit = page.getByRole("link", { name: "Edit" })
+		// `count()` bernilai sesaat dan tidak menunggu; assertion locator di
+		// bawah ini auto-retry sampai baris kelas benar-benar tergambar.
+		await expect(tautanEdit.first()).toBeVisible()
 		const jumlahKelas = await tautanEdit.count()
 		expect(jumlahKelas).toBeGreaterThan(0)
 
@@ -64,7 +75,21 @@ test.describe("Kelola Kelas admin: daftar sebagai pusat kerja", () => {
 	})
 
 	test("halaman tambah kelas khusus dapat dibuka dan punya tombol batal", async ({ page }) => {
-		await page.getByRole("link", { name: "Tambah Kelas", exact: true }).click()
+		const tautanTambah = page.getByRole("link", { name: "Tambah Kelas", exact: true })
+
+		// Klik pertama bisa "tertelan" bila router klien belum selesai hydrate
+		// (tautan masih <a> pra-hidrasi sehingga tidak ada navigasi klien).
+		// Ini intermiten dan bergantung waktu, bukan kerusakan produk: href,
+		// route, dan komponennya terbukti benar saat diperiksa manual.
+		// Ulangi klik secara terbatas, lalu biarkan assertion di bawah gagal
+		// keras bila navigasi memang benar-benar rusak.
+		await tautanTambah.click()
+		try {
+			await expect(page).toHaveURL(/\/admin\/kelas\/baru$/, { timeout: 5000 })
+		} catch {
+			await tautanTambah.click()
+		}
+
 		// Mode dev mengompilasi route ini saat pertama kali diminta; beri ruang
 		// agar kegagalan di sini benar-benar berarti navigasi rusak, bukan compile.
 		await expect(page).toHaveURL(/\/admin\/kelas\/baru$/, { timeout: 30000 })

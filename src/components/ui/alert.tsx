@@ -4,25 +4,38 @@ import { AlertCircle, AlertTriangle, CheckCircle2, Info } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Panggilan perhatian. Seluruh pesan sistem memakai komponen ini, bukan `div`
+ * bergaya sendiri, agar bentuknya seragam di semua halaman.
+ *
+ * Warna diambil dari token semantik `*-surface` dengan ikon berwarna token
+ * status padat. Teks badan tetap `foreground` sehingga kontrasnya sangat tinggi
+ * (>= 16:1) di atas keempat permukaan.
+ */
 const variasiAlert = cva(
-	"relative w-full rounded-md border p-4 text-sm shadow-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg~*]:pl-7",
+	"relative flex w-full gap-3 rounded-md border p-4 text-sm",
 	{
 		variants: {
 			variant: {
-				// Memakai token semantik, bukan palet mentah, agar seragam di semua
-				// halaman yang nanti ikut memakai shadcn.
-				info: "border-border bg-info-surface text-foreground [&>svg]:text-muted-foreground",
-				sukses:
-					"border-success/30 bg-success-surface text-foreground [&>svg]:text-success",
-				peringatan:
-					"border-warning/30 bg-warning-surface text-foreground [&>svg]:text-warning",
-				gagal:
-					"border-destructive/30 bg-destructive-surface text-foreground [&>svg]:text-destructive",
+				info: "border-border bg-info-surface text-foreground",
+				sukses: "border-success/30 bg-success-surface text-foreground",
+				peringatan: "border-warning/30 bg-warning-surface text-foreground",
+				gagal: "border-destructive/30 bg-destructive-surface text-foreground",
 			},
 		},
 		defaultVariants: { variant: "info" },
 	},
 )
+
+const warnaIkon: Record<
+	NonNullable<VariantProps<typeof variasiAlert>["variant"]>,
+	string
+> = {
+	info: "text-muted-foreground",
+	sukses: "text-success",
+	peringatan: "text-warning",
+	gagal: "text-destructive",
+}
 
 export type AlertProps = React.ComponentProps<"div"> &
 	VariantProps<typeof variasiAlert> & { judul?: string }
@@ -34,29 +47,32 @@ export function Alert({
 	children,
 	...props
 }: AlertProps) {
-	const renderIcon = () => {
-		switch (variant) {
-			case "sukses":
-				return <CheckCircle2 className="size-4 shrink-0" />
-			case "peringatan":
-				return <AlertTriangle className="size-4 shrink-0" />
-			case "gagal":
-				return <AlertCircle className="size-4 shrink-0" />
-			default:
-				return <Info className="size-4 shrink-0" />
-		}
-	}
+	// `variant` dari cva bertipe `... | null | undefined`; disempitkan di sini
+	// agar pemetaan ikon dan warna selalu terdefinisi.
+	const varian: NonNullable<VariantProps<typeof variasiAlert>["variant"]> =
+		variant ?? "info"
+
+	const Ikon =
+		varian === "sukses"
+			? CheckCircle2
+			: varian === "peringatan"
+				? AlertTriangle
+				: varian === "gagal"
+					? AlertCircle
+					: Info
 
 	return (
 		<div
-			role={variant === "gagal" ? "alert" : "status"}
-			className={cn(variasiAlert({ variant }), className)}
+			role={varian === "gagal" ? "alert" : "status"}
+			className={cn(variasiAlert({ variant: varian }), className)}
 			{...props}
 		>
-			{renderIcon()}
-			<div className="space-y-1">
-				{judul ? <h5 className="font-semibold leading-none tracking-tight">{judul}</h5> : null}
-				<div className="text-sm leading-relaxed text-current/80">{children}</div>
+			<Ikon aria-hidden="true" className={cn("mt-0.5 size-4 shrink-0", warnaIkon[varian])} />
+			<div className="flex min-w-0 flex-col gap-1">
+				{judul ? (
+					<p className="font-heading font-bold leading-snug">{judul}</p>
+				) : null}
+				<div className="leading-relaxed text-muted-foreground">{children}</div>
 			</div>
 		</div>
 	)

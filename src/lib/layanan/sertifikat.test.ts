@@ -91,7 +91,7 @@ describe("penerbitan sertifikat", () => {
 		} as unknown as KlienDb
 
 		await expect(
-			terbitkanSertifikat(sesi("PEMILIK"), "kehadiran-1", { db }),
+			terbitkanSertifikat(sesi("ADMIN"), "kehadiran-1", { db }),
 		).resolves.toEqual({ id: "sertifikat-1", nomor: "SRT/RMP/2026/ABC123" })
 	})
 

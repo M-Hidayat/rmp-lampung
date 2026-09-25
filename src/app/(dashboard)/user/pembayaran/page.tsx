@@ -36,20 +36,20 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 	const daftarPembayaran = pendaftaran.filter((item) => item.payment)
 
 	return (
-		<div className="space-y-6">
+		<div className="flex flex-col gap-6">
 			{/* Page Header */}
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-bold tracking-tight text-zinc-950 font-heading">
+					<h1 className="text-2xl font-bold tracking-tight text-foreground font-heading">
 						Pembayaran
 					</h1>
-					<p className="text-xs text-zinc-500 mt-0.5">
+					<p className="text-xs text-muted-foreground mt-0.5">
 						Status pembayaran terverifikasi otomatis via gateway Pakasir. Invoice resmi terbit saat pembayaran lunas.
 					</p>
 				</div>
 
 				<div className="flex items-center gap-3">
-					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-md shadow-sm">
+					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-md ">
 						<Link href="/kelas">
 							Pilih Kursus Baru <ArrowRight className="size-3.5 ml-1" />
 						</Link>
@@ -60,29 +60,29 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 			{/* Sorotan Transaksi dari Redirect Pakasir */}
 			{orderId ? (
 				pembayaranSorotan ? (
-					<div className="bg-white rounded-lg border border-zinc-200/80 p-6 shadow-sm space-y-3">
-						<div className="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 pb-3">
+					<div className="bg-card rounded-lg border border-border p-6 flex flex-col gap-3">
+						<div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
 							<div>
-								<h3 className="text-base font-bold text-zinc-950">
+								<h3 className="text-base font-bold text-foreground">
 									Status Transaksi #{pembayaranSorotan.pakasirRef}
 								</h3>
-								<p className="text-xs text-zinc-500">
+								<p className="text-xs text-muted-foreground">
 									Informasi status pembayaran terkini yang tercatat pada server.
 								</p>
 							</div>
 							<LencanaStatusPembayaran status={pembayaranSorotan.status} />
 						</div>
 
-						<div className="grid gap-3 sm:grid-cols-2 rounded-md border border-zinc-100 bg-zinc-50/50 p-4 text-xs">
+						<div className="grid gap-3 sm:grid-cols-2 rounded-md border border-border bg-muted/50 p-4 text-xs">
 							<div>
-								<span className="text-zinc-500 block">Kelas Kuliner</span>
-								<span className="font-semibold text-zinc-900 text-sm">
+								<span className="text-muted-foreground block">Kelas Kuliner</span>
+								<span className="font-semibold text-foreground text-sm">
 									{pembayaranSorotan.enrollment.kelas.judul}
 								</span>
 							</div>
 							<div>
-								<span className="text-zinc-500 block">Total Nominal</span>
-								<span className="font-mono font-bold text-zinc-950 text-sm">
+								<span className="text-muted-foreground block">Total Nominal</span>
+								<span className="font-mono font-bold text-foreground text-sm">
 									{formatRupiah(pembayaranSorotan.nominal.toString())}
 								</span>
 							</div>
@@ -98,15 +98,15 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 
 						{pembayaranSorotan.invoice ? (
 							<div className="flex items-center justify-between pt-2">
-								<span className="text-xs text-zinc-600">
+								<span className="text-xs text-muted-foreground">
 									Invoice resmi telah diterbitkan otomatis:
 								</span>
-								<Button asChild size="sm" variant="outline" className="text-xs bg-white">
+								<Button asChild size="sm" variant="outline" className="text-xs bg-card">
 									<a
 										href={`/api/invoice/${pembayaranSorotan.invoice.id}/pdf`}
 										className="inline-flex items-center gap-1.5"
 									>
-										<FileText className="size-3.5 text-zinc-600" />
+										<FileText className="size-3.5 text-muted-foreground" />
 										Unduh {pembayaranSorotan.invoice.nomor}
 									</a>
 								</Button>
@@ -123,11 +123,11 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 			) : null}
 
 			{/* Main Data Card */}
-			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm space-y-4">
+			<div className="bg-card rounded-lg border border-border p-6 flex flex-col gap-4">
 				{/* Card Toolbar */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
 					<div className="flex items-center gap-2">
-						<h2 className="text-base font-bold text-zinc-950 font-heading">
+						<h2 className="text-base font-bold text-foreground font-heading">
 							Riwayat Pembayaran ({daftarPembayaran.length})
 						</h2>
 					</div>
@@ -139,7 +139,7 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 				{/* Table Container */}
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#F8FAFC] rounded-lg">
+						<TableHeader className="bg-background rounded-lg">
 							<TableRow>
 								<TableHead>Referensi</TableHead>
 								<TableHead>Kelas</TableHead>
@@ -159,11 +159,11 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 							) : (
 								daftarPembayaran.map((item) =>
 									item.payment ? (
-										<TableRow key={item.payment.id} className="hover:bg-[#F8FAFC]/60 transition-colors">
-											<TableCell className="font-mono text-xs font-semibold text-zinc-900">
+										<TableRow key={item.payment.id} className="hover:bg-background/60 transition-colors">
+											<TableCell className="font-mono text-xs font-semibold text-foreground">
 												{item.payment.pakasirRef}
 											</TableCell>
-											<TableCell className="font-medium text-zinc-900 text-sm">
+											<TableCell className="font-medium text-foreground text-sm">
 												{item.kelas.judul}
 											</TableCell>
 											<TableCell className="font-mono font-semibold text-foreground font-semibold">
@@ -172,7 +172,7 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 											<TableCell>
 												<LencanaStatusPembayaran status={item.payment.status} />
 											</TableCell>
-											<TableCell className="text-xs text-zinc-500">
+											<TableCell className="text-xs text-muted-foreground">
 												{item.payment.dibayarPada
 													? `${formatTanggalWaktu(item.payment.dibayarPada)} WIB`
 													: "Belum dibayar"}
@@ -180,14 +180,14 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 											<TableCell className="text-right text-xs">
 												{item.payment.invoice ? (
 													<a
-														className="inline-flex items-center gap-1 font-medium text-zinc-900 hover:text-foreground font-semibold hover:underline"
+														className="inline-flex items-center gap-1 font-medium text-foreground hover:text-foreground font-semibold hover:underline"
 														href={`/api/invoice/${item.payment.invoice.id}/pdf`}
 													>
 														<FileText className="size-3.5 text-foreground font-semibold" />
 														{item.payment.invoice.nomor}
 													</a>
 												) : (
-													<span className="text-zinc-400 text-xs">Belum tersedia</span>
+													<span className="text-muted-foreground text-xs">Belum tersedia</span>
 												)}
 											</TableCell>
 										</TableRow>
@@ -199,19 +199,19 @@ export default async function HalamanPembayaranUser({ searchParams }: Props) {
 				</TableWrapper>
 
 				{/* Card Pagination Footer — Bodyshop Reference */}
-				<div className="flex items-center justify-between pt-3 border-t border-zinc-100 text-xs text-zinc-500">
+				<div className="flex items-center justify-between pt-3 border-t border-border text-xs text-muted-foreground">
 					<span>Menampilkan {daftarPembayaran.length} data transaksi</span>
 					<div className="flex items-center gap-2">
 						<button
 							type="button"
-							className="size-7 rounded-md border border-zinc-200 bg-white flex items-center justify-center text-zinc-400 disabled:opacity-50"
+							className="size-7 rounded-md border border-border bg-card flex items-center justify-center text-muted-foreground disabled:opacity-50"
 							disabled
 						>
 							<ChevronLeft className="size-3.5" />
 						</button>
 						<button
 							type="button"
-							className="size-7 rounded-md border border-zinc-200 bg-white flex items-center justify-center text-zinc-400 disabled:opacity-50"
+							className="size-7 rounded-md border border-border bg-card flex items-center justify-center text-muted-foreground disabled:opacity-50"
 							disabled
 						>
 							<ChevronRight className="size-3.5" />

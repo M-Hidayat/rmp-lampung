@@ -1,6 +1,7 @@
 "use client"
 
 import { useActionState, useState, useEffect } from "react"
+import Link from "next/link"
 
 import { aksiBuatKelas, aksiPerbaruiKelas } from "../../aksi"
 import type { HasilAksi } from "@/components/formulir-aksi"
@@ -26,7 +27,7 @@ export type NilaiAwalKelas = {
 function PesanGalat({ pesan }: { pesan?: string }) {
 	if (!pesan) return null
 	return (
-		<p className="text-xs text-red-600 font-medium" role="alert">
+		<p className="text-xs text-destructive font-medium" role="alert">
 			{pesan}
 		</p>
 	)
@@ -45,9 +46,11 @@ function buatSlugOtomatis(judul: string): string {
 export function FormulirKelas({
 	mode,
 	nilaiAwal = {},
+	hrefBatal = "/admin/kelas",
 }: {
 	mode: "buat" | "ubah"
 	nilaiAwal?: NilaiAwalKelas
+	hrefBatal?: string
 }) {
 	const aksiServer = mode === "buat" ? aksiBuatKelas : aksiPerbaruiKelas
 	const [status, jalankan, sedangProses] = useActionState<HasilAksi, FormData>(
@@ -68,7 +71,7 @@ export function FormulirKelas({
 	const detail = status?.detail ?? {}
 
 	return (
-		<form action={jalankan} className="space-y-4" noValidate>
+		<form action={jalankan} className="flex flex-col gap-4" noValidate>
 			{mode === "ubah" && nilaiAwal.classId ? (
 				<input type="hidden" name="classId" value={nilaiAwal.classId} />
 			) : null}
@@ -84,9 +87,11 @@ export function FormulirKelas({
 				</Alert>
 			) : null}
 
+			<fieldset className="flex flex-col gap-4">
+				<legend className="text-sm font-semibold text-foreground">Informasi kelas</legend>
 			<div className="grid gap-4 sm:grid-cols-2">
-				<div className="space-y-1.5">
-					<Label htmlFor={`judul-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-zinc-700">
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor={`judul-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-muted-foreground">
 						Judul kelas
 					</Label>
 					<Input
@@ -96,13 +101,13 @@ export function FormulirKelas({
 						onChange={(e) => setJudul(e.target.value)}
 						required
 						placeholder="Contoh: Pelatihan Usaha Ayam Geprek"
-						className="rounded-xl border-[#E5E0D8] focus:border-[#D49A28]"
+						className="rounded-md border-input focus:border-primary"
 					/>
 					<PesanGalat pesan={detail.judul} />
 				</div>
 
-				<div className="space-y-1.5">
-					<Label htmlFor={`slug-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-zinc-700">
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor={`slug-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-muted-foreground">
 						Slug URL
 					</Label>
 					<Input
@@ -115,14 +120,14 @@ export function FormulirKelas({
 						}}
 						required
 						placeholder="pelatihan-usaha-ayam-geprek"
-						className="font-mono text-xs rounded-xl border-[#E5E0D8] focus:border-[#D49A28]"
+						className="font-mono text-xs rounded-md border-input focus:border-primary"
 					/>
 					<PesanGalat pesan={detail.slug} />
 				</div>
 			</div>
 
-			<div className="space-y-1.5">
-				<Label htmlFor={`deskripsi-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-zinc-700">
+			<div className="flex flex-col gap-1.5">
+				<Label htmlFor={`deskripsi-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-muted-foreground">
 					Deskripsi & silabus
 				</Label>
 				<Textarea
@@ -131,14 +136,17 @@ export function FormulirKelas({
 					defaultValue={nilaiAwal.deskripsi ?? ""}
 					rows={3}
 					placeholder="Rincian materi, teknik memasak, fasilitas bahan baku, dan target pelatihan..."
-					className="rounded-xl border-[#E5E0D8] focus:border-[#D49A28]"
+					className="rounded-md border-input focus:border-primary"
 				/>
 				<PesanGalat pesan={detail.deskripsi} />
 			</div>
+			</fieldset>
 
+			<fieldset className="flex flex-col gap-4 border-t border-border pt-5">
+				<legend className="text-sm font-semibold text-foreground">Harga dan kapasitas</legend>
 			<div className="grid gap-4 sm:grid-cols-2">
-				<div className="space-y-1.5">
-					<Label htmlFor={`harga-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-zinc-700">
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor={`harga-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-muted-foreground">
 						Biaya investasi (Rupiah)
 					</Label>
 					<Input
@@ -150,13 +158,13 @@ export function FormulirKelas({
 						defaultValue={nilaiAwal.harga ?? "350000"}
 						required
 						placeholder="350000"
-						className="font-mono rounded-xl border-[#E5E0D8] focus:border-[#D49A28]"
+						className="font-mono rounded-md border-input focus:border-primary"
 					/>
 					<PesanGalat pesan={detail.harga} />
 				</div>
 
-				<div className="space-y-1.5">
-					<Label htmlFor={`kuota-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-zinc-700">
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor={`kuota-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-muted-foreground">
 						Kuota maksimal peserta
 					</Label>
 					<Input
@@ -167,15 +175,18 @@ export function FormulirKelas({
 						defaultValue={nilaiAwal.kuota ?? 15}
 						required
 						placeholder="15"
-						className="rounded-xl border-[#E5E0D8] focus:border-[#D49A28]"
+						className="rounded-md border-input focus:border-primary"
 					/>
 					<PesanGalat pesan={detail.kuota} />
 				</div>
 			</div>
+			</fieldset>
 
+			<fieldset className="flex flex-col gap-4 border-t border-border pt-5">
+				<legend className="text-sm font-semibold text-foreground">Jadwal dan lokasi</legend>
 			<div className="grid gap-4 sm:grid-cols-2">
-				<div className="space-y-1.5">
-					<Label htmlFor={`jadwalMulai-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-zinc-700">
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor={`jadwalMulai-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-muted-foreground">
 						Jadwal mulai (WIB)
 					</Label>
 					<Input
@@ -184,13 +195,13 @@ export function FormulirKelas({
 						type="datetime-local"
 						defaultValue={nilaiAwal.jadwalMulai ?? ""}
 						required
-						className="rounded-xl border-[#E5E0D8] focus:border-[#D49A28]"
+						className="rounded-md border-input focus:border-primary"
 					/>
 					<PesanGalat pesan={detail.jadwalMulai} />
 				</div>
 
-				<div className="space-y-1.5">
-					<Label htmlFor={`jadwalSelesai-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-zinc-700">
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor={`jadwalSelesai-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-muted-foreground">
 						Jadwal selesai (opsional)
 					</Label>
 					<Input
@@ -198,14 +209,14 @@ export function FormulirKelas({
 						name="jadwalSelesai"
 						type="datetime-local"
 						defaultValue={nilaiAwal.jadwalSelesai ?? ""}
-						className="rounded-xl border-[#E5E0D8] focus:border-[#D49A28]"
+						className="rounded-md border-input focus:border-primary"
 					/>
 					<PesanGalat pesan={detail.jadwalSelesai} />
 				</div>
 			</div>
 
-			<div className="space-y-1.5">
-				<Label htmlFor={`lokasi-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-zinc-700">
+			<div className="flex flex-col gap-1.5">
+				<Label htmlFor={`lokasi-${mode}-${nilaiAwal.classId ?? "baru"}`} className="text-xs font-medium text-muted-foreground">
 					Lokasi pelatihan
 				</Label>
 				<Input
@@ -217,18 +228,24 @@ export function FormulirKelas({
 					}
 					required
 					placeholder="Alamat dapur/workshop pelatihan"
-					className="rounded-xl border-[#E5E0D8] focus:border-[#D49A28]"
+					className="rounded-md border-input focus:border-primary"
 				/>
 				<PesanGalat pesan={detail.lokasi} />
 			</div>
+			</fieldset>
 
-			<Button type="submit" variant="gold" className="rounded-xl font-semibold shadow-xs" disabled={sedangProses}>
-				{sedangProses
-					? "Menyimpan…"
-					: mode === "buat"
-						? "Buat kelas baru"
-						: "Simpan perubahan kelas"}
-			</Button>
+			<div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:justify-end">
+				<Button asChild variant="outline" className="min-h-11">
+					<Link href={hrefBatal}>Batal</Link>
+				</Button>
+				<Button type="submit" variant="gold" className="min-h-11 rounded-md font-semibold " disabled={sedangProses}>
+					{sedangProses
+						? "Menyimpan…"
+						: mode === "buat"
+							? "Buat kelas baru"
+							: "Simpan perubahan kelas"}
+				</Button>
+			</div>
 		</form>
 	)
 }

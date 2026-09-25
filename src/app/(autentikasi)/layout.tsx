@@ -9,13 +9,13 @@ export default function TataLetakAutentikasi({
 	children: React.ReactNode
 }) {
 	return (
-		<div className="flex min-h-dvh flex-col bg-[#FAF8F5]">
-			<header className="border-b border-[#EFECE6] bg-white/95 backdrop-blur-xs">
-				<div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-					<Link href="/" className="transition-opacity hover:opacity-90">
+		<div className="flex min-h-dvh flex-col bg-background">
+			<header className="border-b border-border bg-card">
+				<div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+					<Link href="/" className="inline-flex min-h-11 items-center transition-opacity hover:opacity-90">
 						<LogoRmp />
 					</Link>
-					<Button asChild variant="ghost" size="sm" className="text-zinc-600 hover:text-zinc-950 font-medium">
+					<Button asChild variant="ghost" size="sm">
 						<Link href="/kelas">Katalog Kelas</Link>
 					</Button>
 				</div>

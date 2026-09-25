@@ -256,38 +256,6 @@ export async function verifikasiSertifikatPublik(
 	}
 }
 
-/** Audit sertifikat untuk pemilik. */
-export async function auditSertifikat(
-	sesi: SesiPengguna | null,
-	dependensi: DependensiSertifikat = {},
-) {
-	wajibKemampuan(sesi, "audit_sertifikat")
-	const db = dependensi.db ?? prisma
-
-	return db.certificate.findMany({
-		orderBy: { diterbitkanPada: "desc" },
-		take: 200,
-		select: {
-			id: true,
-			nomor: true,
-			diterbitkanPada: true,
-			revokedAt: true,
-			updatedAt: true,
-			attendance: {
-				select: {
-					waktuScan: true,
-					enrollment: {
-						select: {
-							user: { select: { nama: true, email: true } },
-							kelas: { select: { judul: true } },
-						},
-					},
-				},
-			},
-		},
-	})
-}
-
 /** Daftar sertifikat untuk operasi admin. */
 export async function daftarSertifikatOperasional(
 	sesi: SesiPengguna | null,

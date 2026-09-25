@@ -21,7 +21,7 @@ export function FormulirPendaftaran({
 	)
 
 	return (
-		<form action={aksi} className="space-y-3">
+		<form action={aksi} className="flex flex-col gap-3">
 			<input type="hidden" name="slugKelas" value={slugKelas} />
 			{status?.pesan ? (
 				<Alert variant="gagal" judul="Pendaftaran tidak dapat dilanjutkan">
@@ -37,12 +37,12 @@ export function FormulirPendaftaran({
 				type="submit"
 				size="lg"
 				variant="gold"
-				className="w-full font-bold rounded-xl shadow-xs"
+				className="w-full"
 				disabled={nonaktif || sedangProses}
 			>
 				{sedangProses ? "Memproses pendaftaran…" : "Daftar dan bayar"}
 			</Button>
-			<p className="text-xs text-zinc-500 leading-relaxed">
+			<p className="text-xs leading-relaxed text-muted-foreground">
 				Anda akan diarahkan ke halaman pembayaran Pakasir. Status pembayaran
 				hanya berubah setelah konfirmasi resmi dari penyedia pembayaran.
 			</p>

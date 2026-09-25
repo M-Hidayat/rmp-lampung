@@ -18,7 +18,7 @@ export default async function HalamanProfilAkun() {
 	const labelPeran = profil.peran === "ADMIN" ? "Admin" : "Peserta"
 
 	return (
-		<div className="mx-auto max-w-2xl space-y-6">
+		<div className="mx-auto max-w-2xl flex flex-col gap-6">
 			<div>
 				<h1 className="font-heading text-2xl font-bold tracking-tight text-foreground">
 					Profil akun
@@ -29,7 +29,7 @@ export default async function HalamanProfilAkun() {
 			</div>
 
 			{/* Ringkasan akun yang tidak dapat diubah sendiri */}
-			<div className="space-y-4 rounded-lg border border-border bg-card p-5 shadow-sm sm:p-6">
+			<div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5 sm:p-6">
 				<h2 className="border-b border-border pb-3 font-heading text-base font-bold text-foreground">
 					Data akun
 				</h2>
@@ -57,7 +57,7 @@ export default async function HalamanProfilAkun() {
 			</div>
 
 			{/* Ubah identitas */}
-			<div className="space-y-4 rounded-lg border border-border bg-card p-5 shadow-sm sm:p-6">
+			<div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5 sm:p-6">
 				<div>
 					<h2 className="font-heading text-base font-bold text-foreground">Identitas</h2>
 					<p className="mt-0.5 text-xs text-muted-foreground">
@@ -68,7 +68,7 @@ export default async function HalamanProfilAkun() {
 			</div>
 
 			{/* Ganti kata sandi */}
-			<div className="space-y-4 rounded-lg border border-border bg-card p-5 shadow-sm sm:p-6">
+			<div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5 sm:p-6">
 				<div>
 					<h2 className="font-heading text-base font-bold text-foreground">Keamanan</h2>
 					<p className="mt-0.5 text-xs text-muted-foreground">

@@ -1,8 +1,5 @@
 import type { Metadata } from "next"
-import { Users, Search, Download } from "lucide-react"
 
-import { JudulHalaman } from "@/components/kerangka"
-import { Button } from "@/components/ui/button"
 import {
 	Table,
 	TableBody,
@@ -24,44 +21,36 @@ export default async function HalamanPesertaAdmin() {
 	const peserta = await daftarPeserta(sesi)
 
 	return (
-		<div className="space-y-6">
+		<div className="flex flex-col gap-6">
 			{/* Page Header */}
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-bold tracking-tight text-zinc-950 font-heading">
+					<h1 className="text-2xl font-bold tracking-tight text-foreground font-heading">
 						Daftar peserta
 					</h1>
-					<p className="text-xs text-zinc-500 mt-0.5">
-						Pengguna terdaftar dengan peran peserta kursus kuliner RMP Lampung.
+					<p className="text-xs text-muted-foreground mt-0.5">
+						Pengguna terdaftar dengan peran peserta kursus kuliner Rumah Mama Pintar.
 					</p>
 				</div>
 			</div>
 
 			{/* Main Data Table Card */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
+			<div className="bg-card rounded-lg border border-border p-6 flex flex-col gap-4">
 				{/* Card Toolbar */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
 					<div>
-						<h2 className="text-base font-bold text-zinc-950 font-heading">
+						<h2 className="text-base font-bold text-foreground font-heading">
 							Peserta ({peserta.length})
 						</h2>
 					</div>
 
 					<div className="flex items-center gap-2">
-						<div className="relative w-52">
-							<Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-							<input
-								type="text"
-								placeholder="Cari nama / email..."
-								className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#FAF8F5] border border-[#E5E0D8] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D49A28]"
-							/>
-						</div>
 					</div>
 				</div>
 
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#FAF8F5] rounded-lg">
+						<TableHeader className="bg-background rounded-lg">
 							<TableRow>
 								<TableHead>Nama</TableHead>
 								<TableHead>Email</TableHead>
@@ -80,17 +69,17 @@ export default async function HalamanPesertaAdmin() {
 								</TableRow>
 							) : (
 								peserta.map((orang) => (
-									<TableRow key={orang.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
-										<TableCell className="font-semibold text-zinc-900 text-sm">{orang.nama}</TableCell>
-										<TableCell className="font-mono text-xs text-zinc-600">{orang.email}</TableCell>
-										<TableCell className="font-mono text-xs text-zinc-600">{orang.telepon ?? "-"}</TableCell>
-										<TableCell className="text-xs text-zinc-700 font-medium">
+									<TableRow key={orang.id} className="hover:bg-background/60 transition-colors">
+										<TableCell className="font-semibold text-foreground text-sm">{orang.nama}</TableCell>
+										<TableCell className="font-mono text-xs text-muted-foreground">{orang.email}</TableCell>
+										<TableCell className="font-mono text-xs text-muted-foreground">{orang.telepon ?? "-"}</TableCell>
+										<TableCell className="text-xs text-muted-foreground font-medium">
 											{orang.enrollments.length} kelas
 										</TableCell>
-										<TableCell className="text-xs text-zinc-700 font-medium">
+										<TableCell className="text-xs text-muted-foreground font-medium">
 											{orang.enrollments.filter((e) => e.attendance).length} sesi
 										</TableCell>
-										<TableCell className="text-right text-xs text-zinc-500">
+										<TableCell className="text-right text-xs text-muted-foreground">
 											{formatTanggal(orang.createdAt)}
 										</TableCell>
 									</TableRow>

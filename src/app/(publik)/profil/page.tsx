@@ -1,16 +1,10 @@
 import type { Metadata } from "next"
 import { ExternalLink } from "lucide-react"
 
-import { JudulHalaman } from "@/components/kerangka"
+import { JudulHalaman, LabelBagian } from "@/components/kerangka"
 import { Alert } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BuktiPublik, UlasanPeserta } from "@/components/bukti-publik"
 import { buktiPublik, catatanRiset } from "@/lib/bukti-publik"
 import { daftarPlaceholder, identitasRmp } from "@/lib/identitas-rmp"
@@ -97,8 +91,9 @@ export default function HalamanProfil() {
 	const placeholder = daftarPlaceholder()
 
 	return (
-		<div className="space-y-8">
+		<div className="flex flex-col gap-12">
 			<JudulHalaman
+				labels={<LabelBagian>Transparansi data</LabelBagian>}
 				judul="Profil Rumah Mama Pintar dan sumber data"
 				keterangan="Setiap fakta identitas disertai sumber publik. Data yang belum ditemukan tetap ditandai sebagai placeholder."
 			/>
@@ -114,95 +109,111 @@ export default function HalamanProfil() {
 			{/* Ulasan asli peserta + liputan pihak ketiga, semuanya bertaut sumber. */}
 			<UlasanPeserta batas={5} />
 
-			<div className="space-y-4">
-				<BuktiPublik jumlahAwal={buktiPublik.length} />
+			<BuktiPublik jumlahAwal={buktiPublik.length} />
 
-				<Alert variant="peringatan" judul="Catatan riset yang perlu dikonfirmasi pemilik">
-					<p className="mb-2">
-						Riset menemukan ketidakcocokan antar sumber. Hal ini ditampilkan apa adanya
-						agar tidak menjadi masalah di kemudian hari.
-					</p>
-					<ul className="space-y-2 text-sm">
-						<li>
-							<span className="font-semibold">Alamat:</span>{" "}
-							{catatanRiset.alamatTerkonfirmasi.catatan}
-						</li>
-						<li>
-							<span className="font-semibold">Telepon:</span> {catatanRiset.telepon.catatan}
-						</li>
-						<li>
-							<span className="font-semibold">Foto kegiatan:</span>{" "}
-							{catatanRiset.fotoKegiatan.catatan}
-						</li>
-						<li>
-							<span className="font-semibold">Nama instruktur:</span>{" "}
-							{catatanRiset.sertifikat.catatan}
-						</li>
-					</ul>
-				</Alert>
-			</div>
+			<Alert variant="peringatan" judul="Catatan riset yang perlu dikonfirmasi pemilik">
+				<p className="mb-2">
+					Riset menemukan ketidakcocokan antar sumber. Hal ini ditampilkan apa adanya
+					agar tidak menjadi masalah di kemudian hari.
+				</p>
+				<ul className="flex flex-col gap-2">
+					<li>
+						<span className="font-semibold text-foreground">Alamat:</span>{" "}
+						{catatanRiset.alamatTerkonfirmasi.catatan}
+					</li>
+					<li>
+						<span className="font-semibold text-foreground">Telepon:</span>{" "}
+						{catatanRiset.telepon.catatan}
+					</li>
+					<li>
+						<span className="font-semibold text-foreground">Foto kegiatan:</span>{" "}
+						{catatanRiset.fotoKegiatan.catatan}
+					</li>
+					<li>
+						<span className="font-semibold text-foreground">Nama instruktur:</span>{" "}
+						{catatanRiset.sertifikat.catatan}
+					</li>
+				</ul>
+			</Alert>
 
-			<div className="grid gap-4 sm:grid-cols-2">
-				{fakta.map((item) => (
-					<Card key={item.label} className="flex h-full flex-col justify-between">
-						<CardHeader className="pb-2">
-							<div className="flex items-center justify-between gap-2">
-								<CardTitle className="text-sm font-semibold text-zinc-950">{item.label}</CardTitle>
-								<Badge variant={item.terverifikasi ? "sukses" : "menunggu"}>
-									{item.terverifikasi ? "Terverifikasi" : "Placeholder"}
-								</Badge>
-							</div>
-							<CardDescription className="text-xs">
-								{item.terverifikasi
-									? "Status: terverifikasi dari sumber publik"
-									: "Status: belum terverifikasi (placeholder)"}
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="space-y-3 pt-2 text-xs sm:text-sm">
-							<p className="font-medium text-zinc-900 leading-relaxed">{item.nilai}</p>
-							{item.catatan ? (
-								<p className="text-xs text-zinc-500">{item.catatan}</p>
-							) : null}
-							{item.sumber?.length ? (
-								<div className="rounded-md bg-zinc-50 p-2.5 border border-zinc-200 space-y-1 text-xs">
-									<p className="font-semibold text-zinc-700">Sumber Publik:</p>
-									<ul className="space-y-1 break-words">
-										{item.sumber.map((sumber) => (
-											<li key={sumber}>
-												<a
-													className="inline-flex items-center gap-1 text-zinc-700 hover:underline hover:text-zinc-950"
-													href={sumber}
-													rel="noreferrer noopener nofollow"
-													target="_blank"
-												>
-													<span className="truncate max-w-[240px] sm:max-w-[320px]">{sumber}</span>
-													<ExternalLink className="size-3 shrink-0 opacity-60" />
-												</a>
-											</li>
-										))}
-									</ul>
+			<section aria-labelledby="judul-fakta" className="flex flex-col gap-6">
+				<div className="flex flex-col gap-3">
+					<LabelBagian>Daftar fakta</LabelBagian>
+					<h2 id="judul-fakta" className="text-2xl font-bold text-foreground sm:text-3xl">
+						Fakta identitas dan sumbernya
+					</h2>
+				</div>
+
+				<div className="grid gap-4 sm:grid-cols-2">
+					{fakta.map((item) => (
+						<Card key={item.label} className="h-full">
+							<CardHeader>
+								<div className="flex items-start justify-between gap-3">
+									<CardTitle className="text-sm">{item.label}</CardTitle>
+									<Badge variant={item.terverifikasi ? "sukses" : "menunggu"}>
+										{item.terverifikasi ? "Terverifikasi" : "Placeholder"}
+									</Badge>
 								</div>
-							) : null}
-						</CardContent>
-					</Card>
-				))}
-			</div>
+								<CardDescription>
+									{item.terverifikasi
+										? "Status: terverifikasi dari sumber publik"
+										: "Status: belum terverifikasi (placeholder)"}
+								</CardDescription>
+							</CardHeader>
+							<CardContent className="flex flex-col gap-3">
+								<p className="text-sm font-medium leading-relaxed text-card-foreground">
+									{item.nilai}
+								</p>
+								{item.catatan ? (
+									<p className="text-xs leading-relaxed text-muted-foreground">
+										{item.catatan}
+									</p>
+								) : null}
+								{item.sumber?.length ? (
+									<div className="flex flex-col gap-1.5 rounded-md border border-border bg-muted p-3">
+										<p className="text-xs font-semibold text-foreground">Sumber publik</p>
+										<ul className="flex flex-col gap-1.5">
+											{item.sumber.map((sumber) => (
+												<li key={sumber}>
+													<a
+														className="inline-flex items-center gap-1 text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+														href={sumber}
+														rel="noreferrer noopener nofollow"
+														target="_blank"
+													>
+														<span className="max-w-[240px] truncate sm:max-w-[320px]">
+															{sumber}
+														</span>
+														<ExternalLink aria-hidden="true" className="size-3 shrink-0 opacity-60" />
+													</a>
+												</li>
+											))}
+										</ul>
+									</div>
+								) : null}
+							</CardContent>
+						</Card>
+					))}
+				</div>
+			</section>
 
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-base font-semibold text-zinc-950">
+					<CardTitle id="judul-placeholder">
 						Ringkasan data yang masih placeholder
 					</CardTitle>
-					<CardDescription className="text-xs">
+					<CardDescription>
 						Data berikut wajib dikonfirmasi pemilik sebelum publikasi produksi.
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<ul className="grid gap-2 sm:grid-cols-2 text-xs sm:text-sm text-zinc-600">
+					<ul className="grid gap-3 sm:grid-cols-2">
 						{placeholder.map((item) => (
-							<li key={item.kunci} className="rounded-md border border-zinc-200 bg-zinc-50/50 p-3">
-								<span className="font-semibold text-zinc-900 block">{item.kunci}</span>
-								<span className="text-zinc-500">{item.catatan}</span>
+							<li key={item.kunci} className="flex flex-col gap-1 rounded-md border border-border bg-muted p-3">
+								<span className="text-sm font-semibold text-foreground">{item.kunci}</span>
+								<span className="text-xs leading-relaxed text-muted-foreground">
+									{item.catatan}
+								</span>
 							</li>
 						))}
 					</ul>

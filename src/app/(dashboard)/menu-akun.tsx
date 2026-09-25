@@ -90,7 +90,7 @@ export function MenuAkun({
 				<div
 					role="menu"
 					aria-label="Menu akun"
-					className="absolute right-0 top-[calc(100%+0.5rem)] z-50 w-64 overflow-hidden rounded-xl border border-border bg-card shadow-lg"
+					className="absolute right-0 top-[calc(100%+0.5rem)] z-50 w-64 overflow-hidden rounded-xl border border-border bg-card shadow-md"
 				>
 					<div className="border-b border-border px-4 py-3">
 						<p className="truncate text-sm font-semibold text-foreground">{nama}</p>

@@ -2,12 +2,24 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Kartu mengikuti komposisi penuh (Header → Content → Footer) dan satu bentuk
+ * untuk seluruh aplikasi: radius `lg` (8px) dan border 1px.
+ *
+ * Permukaan **datar** — tanpa bayangan. Kedalaman dipakai hanya untuk elemen
+ * yang benar-benar mengambang (lihat DESIGN.md bagian Elevation). Media di dalam
+ * kartu tidak memakai radius sendiri.
+ *
+ * `min-w-0` wajib: saat kartu menjadi item grid/flex, lebar minimumnya default
+ * `auto` sehingga satu kata panjang tanpa spasi (mis. deskripsi kelas) dapat
+ * melebarkan kolom dan menimbulkan overflow horizontal di layar kecil.
+ */
 function Card({ className, ...props }: React.ComponentProps<"div">) {
 	return (
 		<div
 			data-slot="card"
 			className={cn(
-				"flex flex-col rounded-xl border border-zinc-200 bg-white text-zinc-950 shadow-xs",
+				"flex min-w-0 flex-col rounded-lg border border-border bg-card text-card-foreground",
 				className,
 			)}
 			{...props}
@@ -29,20 +41,20 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
 	return (
 		<div
 			data-slot="card-title"
-			className={cn("text-base font-semibold leading-none tracking-tight text-zinc-950", className)}
+			className={cn(
+				"min-w-0 break-words font-heading text-base font-bold leading-snug tracking-tight text-card-foreground",
+				className,
+			)}
 			{...props}
 		/>
 	)
 }
 
-function CardDescription({
-	className,
-	...props
-}: React.ComponentProps<"div">) {
+function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
 	return (
 		<div
 			data-slot="card-description"
-			className={cn("text-xs sm:text-sm text-zinc-500", className)}
+			className={cn("min-w-0 break-words text-sm leading-relaxed text-muted-foreground", className)}
 			{...props}
 		/>
 	)

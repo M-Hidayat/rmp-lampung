@@ -24,7 +24,7 @@ export function FormulirProfil({
 	)
 
 	return (
-		<form action={jalankan} className="space-y-4">
+		<form action={jalankan} className="flex flex-col gap-4">
 			{status?.pesan ? (
 				<Alert variant="gagal" judul="Profil gagal disimpan">
 					<p>{status.pesan}</p>
@@ -37,14 +37,14 @@ export function FormulirProfil({
 			) : null}
 
 			<div className="grid gap-4 sm:grid-cols-2">
-				<div className="space-y-1.5">
+				<div className="flex flex-col gap-1.5">
 					<Label htmlFor="nama" className="text-xs font-medium text-foreground">
 						Nama lengkap
 					</Label>
 					<Input id="nama" name="nama" defaultValue={namaAwal} required minLength={3} maxLength={100} autoComplete="name" />
 					<p className="text-xs text-muted-foreground">Nama ini tampil pada sertifikat dan absensi.</p>
 				</div>
-				<div className="space-y-1.5">
+				<div className="flex flex-col gap-1.5">
 					<Label htmlFor="telepon" className="text-xs font-medium text-foreground">
 						Telepon <span className="font-normal text-muted-foreground">(opsional)</span>
 					</Label>
@@ -68,7 +68,7 @@ export function FormulirKataSandi() {
 	)
 
 	return (
-		<form action={jalankan} className="space-y-4">
+		<form action={jalankan} className="flex flex-col gap-4">
 			{status?.pesan ? (
 				<Alert variant="gagal" judul="Kata sandi gagal diganti">
 					<p>{status.pesan}</p>
@@ -81,13 +81,13 @@ export function FormulirKataSandi() {
 			) : null}
 
 			<div className="grid gap-4 sm:grid-cols-2">
-				<div className="space-y-1.5">
+				<div className="flex flex-col gap-1.5">
 					<Label htmlFor="kataSandiLama" className="text-xs font-medium text-foreground">
 						Kata sandi saat ini
 					</Label>
 					<Input id="kataSandiLama" name="kataSandiLama" type="password" required autoComplete="current-password" />
 				</div>
-				<div className="space-y-1.5">
+				<div className="flex flex-col gap-1.5">
 					<Label htmlFor="kataSandiBaru" className="text-xs font-medium text-foreground">
 						Kata sandi baru
 					</Label>

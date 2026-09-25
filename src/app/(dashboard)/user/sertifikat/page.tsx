@@ -25,20 +25,20 @@ export default async function HalamanSertifikatUser() {
 	const daftar = await sertifikatSaya(sesi)
 
 	return (
-		<div className="space-y-6">
+		<div className="flex flex-col gap-6">
 			{/* Page Header */}
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-bold tracking-tight text-zinc-950 font-heading">
+					<h1 className="text-2xl font-bold tracking-tight text-foreground font-heading">
 						Sertifikat
 					</h1>
-					<p className="text-xs text-zinc-500 mt-0.5">
+					<p className="text-xs text-muted-foreground mt-0.5">
 						Sertifikat pelatihan kuliner resmi yang diterbitkan setelah Anda hadir fisik dan menyelesaikan kelas.
 					</p>
 				</div>
 
 				<div className="flex items-center gap-3">
-					<Button asChild variant="outline" size="sm" className="bg-white border-[#E2E8F0] text-xs h-9 font-medium text-zinc-700 hover:bg-[#F8FAFC] rounded-md shadow-sm">
+					<Button asChild variant="outline" size="sm" className="bg-card border-border text-xs h-9 font-medium text-muted-foreground hover:bg-background rounded-md ">
 						<Link href="/verifikasi">
 							Verifikasi Publik
 						</Link>
@@ -47,11 +47,11 @@ export default async function HalamanSertifikatUser() {
 			</div>
 
 			{/* Main Table Card */}
-			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm space-y-4">
+			<div className="bg-card rounded-lg border border-border p-6 flex flex-col gap-4">
 				{/* Card Toolbar */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
 					<div className="flex items-center gap-2">
-						<h2 className="text-base font-bold text-zinc-950 font-heading">
+						<h2 className="text-base font-bold text-foreground font-heading">
 							Sertifikat Resmi ({daftar.length})
 						</h2>
 					</div>
@@ -62,7 +62,7 @@ export default async function HalamanSertifikatUser() {
 
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#F8FAFC] rounded-lg">
+						<TableHeader className="bg-background rounded-lg">
 							<TableRow>
 								<TableHead>Nomor sertifikat</TableHead>
 								<TableHead>Kelas</TableHead>
@@ -80,14 +80,14 @@ export default async function HalamanSertifikatUser() {
 								</TableRow>
 							) : (
 								daftar.map((item) => (
-									<TableRow key={item.id} className="hover:bg-[#F8FAFC]/60 transition-colors">
-										<TableCell className="font-mono text-xs font-semibold text-zinc-900">
+									<TableRow key={item.id} className="hover:bg-background/60 transition-colors">
+										<TableCell className="font-mono text-xs font-semibold text-foreground">
 											{item.nomor}
 										</TableCell>
-										<TableCell className="font-medium text-zinc-900 text-sm">
+										<TableCell className="font-medium text-foreground text-sm">
 											{item.attendance.enrollment.kelas.judul}
 										</TableCell>
-										<TableCell className="text-xs text-zinc-500">
+										<TableCell className="text-xs text-muted-foreground">
 											{formatTanggal(item.diterbitkanPada)}
 										</TableCell>
 										<TableCell>
@@ -95,7 +95,8 @@ export default async function HalamanSertifikatUser() {
 												dibatalkan={Boolean(item.revokedAt)}
 											/>
 										</TableCell>
-										<TableCell className="text-right space-x-3 text-xs">
+										<TableCell className="text-right text-xs">
+											<div className="flex items-center justify-end gap-3">
 											{!item.revokedAt ? (
 												<>
 													<a
@@ -106,7 +107,7 @@ export default async function HalamanSertifikatUser() {
 														Unduh PDF
 													</a>
 													<Link
-														className="inline-flex items-center gap-1 font-medium text-zinc-600 hover:underline hover:text-zinc-950"
+														className="inline-flex items-center gap-1 font-medium text-muted-foreground hover:underline hover:text-foreground"
 														href={`/verifikasi/${encodeURIComponent(item.nomor)}`}
 													>
 														<ExternalLink className="size-3.5" />
@@ -114,9 +115,10 @@ export default async function HalamanSertifikatUser() {
 													</Link>
 												</>
 											) : (
-												<span className="text-red-600 font-medium">Dibatalkan</span>
+												<span className="font-medium text-destructive">Dibatalkan</span>
 											)}
-										</TableCell>
+											</div>
+											</TableCell>
 									</TableRow>
 								))
 							)}

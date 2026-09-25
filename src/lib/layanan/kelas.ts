@@ -90,6 +90,29 @@ export async function daftarKelasOperasional(
 	})
 }
 
+export async function ambilKelasOperasional(
+	sesi: SesiPengguna | null,
+	classId: string,
+	dependensi: DependensiKelas = {},
+) {
+	wajibKemampuan(sesi, "kelola_kelas")
+	const db = dependensi.db ?? prisma
+	const kelas = await db.courseClass.findUnique({
+		where: { id: classId },
+		include: {
+			_count: {
+				select: {
+					enrollments: {
+						where: { status: { in: statusPendaftaranMemakaiKuota } },
+					},
+				},
+			},
+		},
+	})
+	if (!kelas) throw new KesalahanDomain("TIDAK_DITEMUKAN", "Kelas tidak ditemukan.")
+	return kelas
+}
+
 export async function buatKelas(
 	sesi: SesiPengguna | null,
 	masukan: unknown,
@@ -181,8 +204,9 @@ export async function perbaruiKelas(
 				jadwalMulai: hasil.data.jadwalMulai,
 				jadwalSelesai: hasil.data.jadwalSelesai ?? null,
 				lokasi: hasil.data.lokasi,
-				gambarUrl: hasil.data.gambarUrl ?? null,
-				aktif: hasil.data.aktif,
+				...(hasil.data.gambarUrl === undefined
+					? {}
+					: { gambarUrl: hasil.data.gambarUrl }),
 			},
 		})
 	} catch (kesalahan) {

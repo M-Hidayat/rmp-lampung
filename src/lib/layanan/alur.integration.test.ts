@@ -172,7 +172,7 @@ describe.skipIf(!adaDb)("alur inti (integrasi)", () => {
 		expect(await prisma.attendance.count()).toBe(0)
 	})
 
-	it("menolak token absensi yang sudah kedaluwarsa dan absensi kedua", async () => {
+	it("mengabaikan tanggal kedaluwarsa legacy dan menolak absensi kedua", async () => {
 		const admin = await buatPengguna("admin-token@contoh.test", "ADMIN")
 		const peserta = await buatPengguna("peserta-token@contoh.test", "USER")
 		const kelas = await buatKelasUji(admin, 10, "kelas-uji-token")
@@ -192,33 +192,21 @@ describe.skipIf(!adaDb)("alur inti (integrasi)", () => {
 			data: { status: "PAID" },
 		})
 
-		const sesiKedaluwarsa = await buatSesiAbsensi(
+		const sesiAbsensi = await buatSesiAbsensi(
 			admin,
 			{ classId: kelas.id, masaBerlakuMenit: 10 },
 			{ db },
 		)
 		await prisma.attendanceSession.update({
-			where: { id: sesiKedaluwarsa.sessionId },
+			where: { id: sesiAbsensi.sessionId },
 			data: { kedaluwarsaPada: new Date(Date.now() - 60_000) },
 		})
 
-		await expect(
-			catatKehadiran(peserta, { token: sesiKedaluwarsa.token }, { db }),
-		).rejects.toBeInstanceOf(KesalahanDomain)
-		expect(await prisma.attendance.count()).toBe(0)
-
-		// Sesi baru yang masih berlaku: absensi pertama berhasil, kedua ditolak.
-		const sesiBerlaku = await buatSesiAbsensi(
-			admin,
-			{ classId: kelas.id, masaBerlakuMenit: 10 },
-			{ db },
-		)
-
-		await catatKehadiran(peserta, { token: sesiBerlaku.token }, { db })
+		await catatKehadiran(peserta, { token: sesiAbsensi.token }, { db })
 		expect(await prisma.attendance.count()).toBe(1)
 
 		await expect(
-			catatKehadiran(peserta, { token: sesiBerlaku.token }, { db }),
+			catatKehadiran(peserta, { token: sesiAbsensi.token }, { db }),
 		).rejects.toBeInstanceOf(KesalahanDomain)
 		expect(await prisma.attendance.count()).toBe(1)
 	})

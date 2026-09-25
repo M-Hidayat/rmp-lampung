@@ -59,7 +59,7 @@ export default async function TataLetakDashboard({ children }: { children: React
 				</div>
 				{/* Navigasi memuat menu peran saja. Profil dan Keluar dipindahkan ke
 				    menu akun di header agar tidak terduplikasi. */}
-				<nav aria-label="Navigasi dashboard" className="min-h-0 flex-1 space-y-1 overflow-y-auto p-3">
+				<nav aria-label="Navigasi dashboard" className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-3">
 					{daftarMenu.map((item) => {
 						return <TautanDashboard key={item.href} item={item} />
 					})}
@@ -85,7 +85,7 @@ export default async function TataLetakDashboard({ children }: { children: React
 						hrefProfil={hrefProfil}
 					/>
 				</header>
-				<main id="konten-utama" className="w-full flex-1 space-y-6 p-4 sm:p-6 lg:min-h-0 lg:overflow-y-auto">{children}</main>
+				<main id="konten-utama" className="flex w-full flex-1 flex-col gap-6 p-4 sm:p-6 lg:min-h-0 lg:overflow-y-auto">{children}</main>
 			</div>
 		</div>
 	)

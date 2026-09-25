@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Calendar, MapPin } from "lucide-react"
+import { Calendar, ChevronRight, MapPin, Utensils } from "lucide-react"
 
-import { JudulHalaman } from "@/components/kerangka"
+import { JudulHalaman, LabelBagian } from "@/components/kerangka"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
@@ -12,7 +13,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
+import { Separator } from "@/components/ui/separator"
+import { identitasRmp } from "@/lib/identitas-rmp"
 import { daftarKelasPublik, sisaKuota } from "@/lib/layanan/kelas"
 import { formatRupiah, formatTanggalWaktu } from "@/lib/uang"
 
@@ -21,57 +24,76 @@ export const dynamic = "force-dynamic"
 
 export default async function HalamanKatalog() {
 	const kelas = await daftarKelasPublik()
+	const whatsapp = identitasRmp.whatsapp.nilai
 
 	return (
-		<div className="space-y-8">
+		<div className="flex flex-col gap-8">
 			<JudulHalaman
+				labels={<LabelBagian>Program pelatihan</LabelBagian>}
 				judul="Katalog kelas"
 				keterangan="Kelas aktif yang dapat didaftarkan. Kuota dihitung dari pendaftaran yang masih berlaku."
 			/>
 
 			{kelas.length === 0 ? (
-				<div className="rounded-lg border border-dashed border-zinc-300 p-12 text-center text-sm text-zinc-500">
-					Belum ada kelas aktif saat ini. Silakan periksa kembali nanti.
-				</div>
+				<Empty className="border border-dashed">
+					<EmptyHeader>
+						<EmptyMedia variant="icon">
+							<Utensils aria-hidden="true" />
+						</EmptyMedia>
+						<EmptyTitle>Belum ada kelas aktif</EmptyTitle>
+						<EmptyDescription>
+							Jadwal kelas sedang disusun. Hubungi Rumah Mama Pintar untuk menanyakan
+							program terbaru.
+						</EmptyDescription>
+					</EmptyHeader>
+					<EmptyContent>
+						<Button asChild variant="gold">
+							<a href={whatsapp} target="_blank" rel="noreferrer noopener">
+								Hubungi via WhatsApp
+							</a>
+						</Button>
+					</EmptyContent>
+				</Empty>
 			) : (
 				<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 					{kelas.map((item) => {
 						const sisa = sisaKuota(item.kuota, item._count.enrollments)
 						return (
-							<Card
-								key={item.id}
-								className="flex h-full flex-col justify-between rounded-2xl border border-[#EFECE6] bg-white shadow-xs transition-all hover:border-[#D49A28]/50 hover:shadow-md"
-							>
-								<CardHeader className="space-y-2 pb-3">
-									<div className="flex items-center justify-between gap-2">
-										<Badge variant={sisa > 0 ? "menunggu" : "destructive"}>
-											{sisa > 0 ? `Sisa ${sisa} Kursi` : "Penuh"}
+							<Card key={item.id} className="h-full">
+								<CardHeader>
+									<div className="flex items-start justify-between gap-3">
+										<CardTitle className="text-lg">{item.judul}</CardTitle>
+										<Badge variant={sisa > 0 ? "sukses" : "destructive"}>
+											{sisa > 0 ? `Sisa ${sisa} kursi` : "Penuh"}
 										</Badge>
-										<span className="font-mono text-sm font-bold text-[#854D0E]">
-											{formatRupiah(item.harga.toString())}
-										</span>
 									</div>
-									<CardTitle className="text-base font-bold text-zinc-950 font-heading">
-										{item.judul}
-									</CardTitle>
-									<CardDescription className="line-clamp-3 text-xs text-zinc-500 leading-relaxed">
-										{item.deskripsi || "Pelatihan intensif praktik langsung dengan instruktur ahli di dapur komersial."}
-									</CardDescription>
+									<p className="font-heading text-xl font-bold text-foreground">
+										{formatRupiah(item.harga.toString())}
+									</p>
 								</CardHeader>
-								<CardContent className="space-y-2 border-t border-[#F5F3EF] pt-3 text-xs text-zinc-600">
-									<div className="flex items-center gap-2">
-										<Calendar className="size-3.5 text-[#D49A28] shrink-0" />
-										<span>{formatTanggalWaktu(item.jadwalMulai)} WIB</span>
-									</div>
-									<div className="flex items-center gap-2">
-										<MapPin className="size-3.5 text-[#D49A28] shrink-0" />
-										<span className="truncate">{item.lokasi}</span>
+
+								<CardContent className="flex flex-1 flex-col gap-4">
+									<CardDescription className="line-clamp-3">
+										{item.deskripsi ||
+											"Pelatihan intensif praktik langsung dengan instruktur ahli di dapur komersial."}
+									</CardDescription>
+									<Separator />
+									<div className="flex flex-col gap-2">
+										<p className="flex items-center gap-2 text-sm text-muted-foreground">
+											<Calendar aria-hidden="true" className="size-4 shrink-0 text-brand" />
+											<span>{formatTanggalWaktu(item.jadwalMulai)} WIB</span>
+										</p>
+										<p className="flex items-center gap-2 text-sm text-muted-foreground">
+											<MapPin aria-hidden="true" className="size-4 shrink-0 text-brand" />
+											<span className="truncate">{item.lokasi}</span>
+										</p>
 									</div>
 								</CardContent>
-								<CardFooter className="pt-2">
-									<Button asChild variant="gold" className="w-full font-semibold rounded-xl shadow-xs">
+
+								<CardFooter className="mt-auto">
+									<Button asChild variant="gold" className="w-full">
 										<Link href={`/kelas/${item.slug}`}>
-											Detail dan Pendaftaran
+											Detail dan Pendaftaran <ChevronRight aria-hidden="true" />
 										</Link>
 									</Button>
 								</CardFooter>

@@ -12,12 +12,12 @@ export default async function HalamanAbsensiUser({ searchParams }: Props) {
 	const { token } = await searchParams
 
 	return (
-		<div className="mx-auto max-w-xl space-y-6">
+		<div className="mx-auto max-w-xl flex flex-col gap-6">
 			<div>
-				<h1 className="text-2xl font-bold tracking-tight text-zinc-950 font-heading">
+				<h1 className="text-2xl font-bold tracking-tight text-foreground font-heading">
 					Absensi
 				</h1>
-				<p className="text-xs text-zinc-500 mt-0.5">
+				<p className="text-xs text-muted-foreground mt-0.5">
 					Kehadiran tercatat satu kali per pendaftaran yang sudah berstatus lunas.
 				</p>
 			</div>
@@ -30,7 +30,7 @@ export default async function HalamanAbsensiUser({ searchParams }: Props) {
 				</p>
 			</Alert>
 
-			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm">
+			<div className="bg-card rounded-lg border border-border p-6 ">
 				<FormulirAbsensi token={token} />
 			</div>
 		</div>

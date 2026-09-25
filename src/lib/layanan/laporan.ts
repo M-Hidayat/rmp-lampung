@@ -67,7 +67,7 @@ export type LaporanBisnis = {
 }
 
 /**
- * Laporan bisnis pemilik.
+ * Laporan bisnis admin.
  * Pendapatan dihitung hanya dari pembayaran PAID dalam periode.
  */
 export async function laporanBisnis(
@@ -75,7 +75,7 @@ export async function laporanBisnis(
 	masukan: unknown,
 	dependensi: DependensiLaporan = {},
 ): Promise<LaporanBisnis> {
-	wajibKemampuan(sesi, "lihat_laporan_pemilik")
+	wajibKemampuan(sesi, "lihat_laporan_bisnis")
 	const db = dependensi.db ?? prisma
 
 	const hasil = skemaPeriodeLaporan.safeParse(masukan)
@@ -169,13 +169,13 @@ export async function laporanBisnis(
 	}
 }
 
-/** Transaksi berhasil dalam periode (untuk tabel laporan pemilik). */
+/** Transaksi berhasil dalam periode (untuk tabel laporan admin). */
 export async function transaksiBerhasil(
 	sesi: SesiPengguna | null,
 	masukan: unknown,
 	dependensi: DependensiLaporan = {},
 ) {
-	wajibKemampuan(sesi, "lihat_laporan_pemilik")
+	wajibKemampuan(sesi, "lihat_laporan_bisnis")
 	const db = dependensi.db ?? prisma
 
 	const hasil = skemaPeriodeLaporan.safeParse(masukan)

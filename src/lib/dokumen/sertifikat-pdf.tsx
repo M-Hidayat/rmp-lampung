@@ -10,6 +10,7 @@ import {
 import QRCode from "qrcode"
 
 import { identitasTampilan } from "@/lib/identitas-rmp"
+import { warnaCetak } from "@/lib/dokumen/token-cetak"
 import { formatTanggal } from "@/lib/uang"
 
 export type DataSertifikat = {
@@ -27,20 +28,20 @@ export type DataSertifikat = {
 const gaya = StyleSheet.create({
 	halaman: {
 		padding: 24,
-		backgroundColor: "#FAF8F5",
+		backgroundColor: warnaCetak.ivory,
 		fontFamily: "Helvetica",
-		color: "#1C1917",
+		color: warnaCetak.ink,
 	},
 	bingkaiLuar: {
 		borderWidth: 2,
-		borderColor: "#1C1917",
+		borderColor: warnaCetak.ink,
 		padding: 4,
 		height: "100%",
-		backgroundColor: "#FFFFFF",
+		backgroundColor: warnaCetak.paper,
 	},
 	bingkaiDalam: {
 		borderWidth: 1.5,
-		borderColor: "#D49A28",
+		borderColor: warnaCetak.gold,
 		padding: 16,
 		height: "100%",
 		position: "relative",
@@ -55,7 +56,7 @@ const gaya = StyleSheet.create({
 		height: 14,
 		borderTopWidth: 2,
 		borderLeftWidth: 2,
-		borderColor: "#D49A28",
+		borderColor: warnaCetak.gold,
 	},
 	sudutKananAtas: {
 		position: "absolute",
@@ -65,7 +66,7 @@ const gaya = StyleSheet.create({
 		height: 14,
 		borderTopWidth: 2,
 		borderRightWidth: 2,
-		borderColor: "#D49A28",
+		borderColor: warnaCetak.gold,
 	},
 	sudutKiriBawah: {
 		position: "absolute",
@@ -75,7 +76,7 @@ const gaya = StyleSheet.create({
 		height: 14,
 		borderBottomWidth: 2,
 		borderLeftWidth: 2,
-		borderColor: "#D49A28",
+		borderColor: warnaCetak.gold,
 	},
 	sudutKananBawah: {
 		position: "absolute",
@@ -85,14 +86,14 @@ const gaya = StyleSheet.create({
 		height: 14,
 		borderBottomWidth: 2,
 		borderRightWidth: 2,
-		borderColor: "#D49A28",
+		borderColor: warnaCetak.gold,
 	},
 
 	// Header Institusi
 	kepala: {
 		alignItems: "center",
 		borderBottomWidth: 1,
-		borderBottomColor: "#F3DC9B",
+		borderBottomColor: warnaCetak.goldSoft,
 		paddingBottom: 8,
 		marginBottom: 4,
 	},
@@ -105,19 +106,19 @@ const gaya = StyleSheet.create({
 	},
 	bintang: {
 		fontSize: 9,
-		color: "#D49A28",
+		color: warnaCetak.gold,
 		marginHorizontal: 3,
 	},
 	namaInstitusi: {
 		fontSize: 13,
 		fontWeight: 700,
-		color: "#854D0E",
+		color: warnaCetak.brown,
 		letterSpacing: 2,
 		textTransform: "uppercase",
 	},
 	subInstitusi: {
 		fontSize: 8,
-		color: "#57534E",
+		color: warnaCetak.gray,
 		letterSpacing: 1,
 		textTransform: "uppercase",
 		marginTop: 1,
@@ -131,7 +132,7 @@ const gaya = StyleSheet.create({
 	judulSertifikat: {
 		fontSize: 21,
 		fontWeight: 700,
-		color: "#1C1917",
+		color: warnaCetak.ink,
 		letterSpacing: 3,
 		textTransform: "uppercase",
 		textAlign: "center",
@@ -139,7 +140,7 @@ const gaya = StyleSheet.create({
 	subjudulInggris: {
 		fontSize: 8.5,
 		fontFamily: "Helvetica-Oblique",
-		color: "#854D0E",
+		color: warnaCetak.brown,
 		letterSpacing: 1.5,
 		textTransform: "uppercase",
 		marginTop: 2,
@@ -148,15 +149,15 @@ const gaya = StyleSheet.create({
 		marginTop: 5,
 		paddingVertical: 2.5,
 		paddingHorizontal: 12,
-		backgroundColor: "#FDF8ED",
+		backgroundColor: warnaCetak.ivoryWarm,
 		borderWidth: 1,
-		borderColor: "#F3DC9B",
+		borderColor: warnaCetak.goldSoft,
 		borderRadius: 10,
 	},
 	teksNomor: {
 		fontSize: 8,
 		fontWeight: 700,
-		color: "#854D0E",
+		color: warnaCetak.brown,
 		fontFamily: "Courier",
 	},
 
@@ -167,13 +168,13 @@ const gaya = StyleSheet.create({
 	},
 	diberikanKepada: {
 		fontSize: 8.5,
-		color: "#78716C",
+		color: warnaCetak.grayMid,
 		fontFamily: "Helvetica-Oblique",
 	},
 	namaPeserta: {
 		fontSize: 22,
 		fontWeight: 700,
-		color: "#1C1917",
+		color: warnaCetak.ink,
 		letterSpacing: 1,
 		textAlign: "center",
 		marginTop: 4,
@@ -188,11 +189,11 @@ const gaya = StyleSheet.create({
 	garisEmas: {
 		flex: 1,
 		height: 1,
-		backgroundColor: "#D49A28",
+		backgroundColor: warnaCetak.gold,
 	},
 	ornamenPusat: {
 		fontSize: 8,
-		color: "#D49A28",
+		color: warnaCetak.gold,
 		marginHorizontal: 8,
 	},
 
@@ -204,16 +205,16 @@ const gaya = StyleSheet.create({
 	},
 	teksNarasi: {
 		fontSize: 8.5,
-		color: "#44403C",
+		color: warnaCetak.inkSoft,
 		textAlign: "center",
 		lineHeight: 1.4,
 	},
 	kotakKelas: {
 		marginTop: 4,
 		marginBottom: 4,
-		backgroundColor: "#FDF8ED",
+		backgroundColor: warnaCetak.ivoryWarm,
 		borderWidth: 1,
-		borderColor: "#E8DFC8",
+		borderColor: warnaCetak.ivoryBorder,
 		borderRadius: 5,
 		paddingVertical: 4,
 		paddingHorizontal: 18,
@@ -221,13 +222,13 @@ const gaya = StyleSheet.create({
 	namaKelas: {
 		fontSize: 13,
 		fontWeight: 700,
-		color: "#854D0E",
+		color: warnaCetak.brown,
 		textAlign: "center",
 		letterSpacing: 0.5,
 	},
 	teksWaktuTempat: {
 		fontSize: 8,
-		color: "#78716C",
+		color: warnaCetak.grayMid,
 		textAlign: "center",
 	},
 
@@ -239,7 +240,7 @@ const gaya = StyleSheet.create({
 		marginTop: 8,
 		paddingHorizontal: 16,
 		borderTopWidth: 1,
-		borderTopColor: "#F5F3EF",
+		borderTopColor: warnaCetak.ivoryRule,
 		paddingTop: 8,
 	},
 	blokQr: {
@@ -248,9 +249,9 @@ const gaya = StyleSheet.create({
 	},
 	bingkaiQr: {
 		padding: 2,
-		backgroundColor: "#FFFFFF",
+		backgroundColor: warnaCetak.paper,
 		borderWidth: 1,
-		borderColor: "#E8DFC8",
+		borderColor: warnaCetak.ivoryBorder,
 		borderRadius: 4,
 		marginBottom: 3,
 	},
@@ -261,12 +262,12 @@ const gaya = StyleSheet.create({
 	teksQrPetunjuk: {
 		fontSize: 6.5,
 		fontWeight: 700,
-		color: "#854D0E",
+		color: warnaCetak.brown,
 		textAlign: "center",
 	},
 	teksQrUrl: {
 		fontSize: 5.5,
-		color: "#A8A29E",
+		color: warnaCetak.grayLight,
 		textAlign: "center",
 		marginTop: 1,
 	},
@@ -282,30 +283,30 @@ const gaya = StyleSheet.create({
 		height: 54,
 		borderRadius: 27,
 		borderWidth: 1.5,
-		borderColor: "#D49A28",
+		borderColor: warnaCetak.gold,
 		padding: 2,
 		alignItems: "center",
 		justifyContent: "center",
-		backgroundColor: "#FDF8ED",
+		backgroundColor: warnaCetak.ivoryWarm,
 	},
 	lingkaranSegelDalam: {
 		width: 46,
 		height: 46,
 		borderRadius: 23,
 		borderWidth: 1,
-		borderColor: "#D49A28",
+		borderColor: warnaCetak.gold,
 		borderStyle: "dashed",
 		alignItems: "center",
 		justifyContent: "center",
 	},
 	teksSegelBintang: {
 		fontSize: 7,
-		color: "#854D0E",
+		color: warnaCetak.brown,
 	},
 	teksSegelPusat: {
 		fontSize: 5.5,
 		fontWeight: 700,
-		color: "#854D0E",
+		color: warnaCetak.brown,
 		textAlign: "center",
 		letterSpacing: 0.5,
 	},
@@ -317,24 +318,24 @@ const gaya = StyleSheet.create({
 	},
 	teksTanggalTerbit: {
 		fontSize: 8,
-		color: "#57534E",
+		color: warnaCetak.gray,
 		marginBottom: 26,
 	},
 	garisTtd: {
 		borderBottomWidth: 1,
-		borderBottomColor: "#1C1917",
+		borderBottomColor: warnaCetak.ink,
 		width: "100%",
 		marginBottom: 3,
 	},
 	namaPenandatangan: {
 		fontSize: 9.5,
 		fontWeight: 700,
-		color: "#1C1917",
+		color: warnaCetak.ink,
 		textAlign: "center",
 	},
 	jabatanPenandatangan: {
 		fontSize: 7.5,
-		color: "#78716C",
+		color: warnaCetak.grayMid,
 		textAlign: "center",
 		marginTop: 1,
 	},
@@ -342,7 +343,7 @@ const gaya = StyleSheet.create({
 	// Catatan Kaki Keamanan
 	catatanKeamanan: {
 		fontSize: 6,
-		color: "#A8A29E",
+		color: warnaCetak.grayLight,
 		textAlign: "center",
 		marginTop: 4,
 	},
@@ -434,7 +435,7 @@ export function DokumenSertifikat({
 									<View style={gaya.lingkaranSegelDalam}>
 										<Text style={gaya.teksSegelBintang}>★ ★ ★</Text>
 										<Text style={gaya.teksSegelPusat}>RESMI &amp; TERDAFTAR</Text>
-										<Text style={gaya.teksSegelBintang}>RMP</Text>
+										<Text style={gaya.teksSegelBintang}>RUMAH MAMA PINTAR</Text>
 									</View>
 								</View>
 							</View>
@@ -452,7 +453,7 @@ export function DokumenSertifikat({
 
 						{/* Catatan Keamanan Bawah */}
 						<Text style={gaya.catatanKeamanan}>
-							Dokumen resmi terverifikasi secara kriptografis oleh sistem LMS RMP Lampung. Keabsahan dapat dicek langsung melalui portal verifikasi publik.
+							Dokumen resmi terverifikasi secara kriptografis oleh sistem Rumah Mama Pintar. Keabsahan dapat dicek langsung melalui portal verifikasi publik.
 						</Text>
 					</View>
 				</View>
@@ -467,8 +468,8 @@ export async function buatPdfSertifikat(data: DataSertifikat): Promise<Buffer> {
 		width: 320,
 		margin: 1,
 		color: {
-			dark: "#1C1917",
-			light: "#FFFFFF",
+			dark: warnaCetak.ink,
+			light: warnaCetak.paper,
 		},
 	})
 	return renderToBuffer(<DokumenSertifikat data={data} qrDataUrl={qrDataUrl} />)

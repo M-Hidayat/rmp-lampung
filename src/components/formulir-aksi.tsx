@@ -41,7 +41,7 @@ export function FormulirAksi({
 	)
 
 	return (
-		<form action={jalankan} className={kelas ?? "space-y-2"}>
+		<form action={jalankan} className={kelas ?? "flex flex-col gap-2"}>
 			{Object.entries(nilai).map(([kunci, isi]) => (
 				<input key={kunci} type="hidden" name={kunci} value={isi} />
 			))}

@@ -3,7 +3,7 @@
 Aplikasi web untuk mengotomatiskan operasional kursus makanan **RMP - Pelatihan
 Bisnis Kuliner** di Bandar Lampung: akun peserta, katalog kelas, pendaftaran,
 pembayaran melalui Pakasir, invoice, absensi satu kali berbasis QR, sertifikat,
-operasi admin, dan laporan pemilik.
+operasi admin, dan laporan bisnis.
 
 Seluruh teks antarmuka, pesan validasi, dokumen PDF, data contoh, dan
 dokumentasi memakai Bahasa Indonesia. Nama teknis framework tetap mengikuti
@@ -28,8 +28,7 @@ konvensi ekosistemnya.
 | Peran | Kemampuan |
 | --- | --- |
 | `USER` | Mendaftar kelas, membayar, absen satu kali, mengakses invoice & sertifikat miliknya |
-| `ADMIN` | Mengelola kelas, peserta, pembayaran, sesi absensi, kehadiran, dan sertifikat |
-| `PEMILIK` | Mewarisi seluruh kemampuan admin + laporan bisnis + kelola akun admin + audit sertifikat |
+| `ADMIN` | Mengelola kelas, peserta, pembayaran, sesi absensi, kehadiran, sertifikat, dan laporan bisnis |
 
 Otorisasi diberlakukan berlapis: middleware/layout, route handler & server
 action, filter kueri basis data, dan validasi di layanan domain. Menyembunyikan
@@ -38,12 +37,11 @@ tombol di UI **bukan** kontrol keamanan.
 ## 3. Struktur proyek
 
 ```
-prisma/                     skema basis data + seed
+prisma/                     skema dan migrasi basis data
 src/app/(publik)/           beranda, profil, katalog kelas, cara pendaftaran, kontak, verifikasi sertifikat
 src/app/(autentikasi)/      masuk & daftar
 src/app/(dashboard)/user/   dashboard peserta
 src/app/(dashboard)/admin/  dashboard admin
-src/app/(dashboard)/pemilik/ dashboard pemilik
 src/app/api/                webhook Pakasir, scan absensi, registrasi, PDF invoice & sertifikat
 src/lib/layanan/            aturan bisnis (dapat diuji tanpa rendering)
 src/lib/integrasi/pakasir.ts adapter pembayaran (sandbox & produksi)
@@ -70,11 +68,8 @@ npm run db:up
 npx prisma generate
 npm run db:migrate
 
-# 5. Data awal
-npm run db:seed
-
-# 6. Pengembangan
-npm run dev               # http://localhost:3000
+# 5. Pengembangan
+npm run dev               # http://localhost:3001
 ```
 
 > Catatan: `npx prisma generate` perlu dijalankan sekali sebelum `npm test`
@@ -113,26 +108,18 @@ npm run test:integrasi
 | `PAKASIR_API_KEY` | ya | Kunci API Pakasir |
 | `PAKASIR_BASE_URL` | ya | Basis URL Pakasir |
 | `PAKASIR_WEBHOOK_SECRET` | mode produksi | Rahasia bersama untuk header webhook |
-| `APP_URL` | ya | `http://localhost:3000` saat pengembangan |
-| `SEED_OWNER_EMAIL` / `SEED_OWNER_PASSWORD` | ya | Akun pemilik awal |
-| `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | tidak | Akun admin contoh |
-| `SEED_USER_EMAIL` / `SEED_USER_PASSWORD` | tidak | Akun peserta contoh |
+| `APP_URL` | ya | `http://localhost:3001` saat pengembangan |
 | `SERTIFIKAT_PENANDATANGAN` | tidak | Nama penandatangan sertifikat (default placeholder) |
 | `SERTIFIKAT_JABATAN_PENANDATANGAN` | tidak | Jabatan penandatangan |
 
 Seluruh rahasia hanya dibaca di sisi server. Kata sandi tidak pernah dicatat ke
 log dan hanya disimpan sebagai hash bcrypt (cost 12).
 
-## 6. Kredensial data awal (khusus pengembangan)
+## 6. Provisioning awal
 
-| Peran | Email | Kata sandi |
-| --- | --- | --- |
-| `PEMILIK` | `pemilik@contoh.rmp-lampung.test` | `PemilikContoh123!` |
-| `ADMIN` | `admin@contoh.rmp-lampung.test` | `AdminContoh123!` |
-| `USER` | `peserta@contoh.rmp-lampung.test` | `PesertaContoh123!` |
-
-**Wajib diganti sebelum produksi.** Seed juga membuat beberapa kelas contoh yang
-seluruh judulnya diawali `CONTOH -` agar tidak tertukar dengan penawaran resmi.
+Database baru tidak membuat akun atau kelas otomatis. Isi variabel
+`INITIAL_ADMIN_*` pada environment privat, jalankan `npm run admin:provision`,
+kemudian kelas nyata dibuat dari dashboard admin. Password tidak boleh masuk Git.
 
 ## 7. Alur inti
 

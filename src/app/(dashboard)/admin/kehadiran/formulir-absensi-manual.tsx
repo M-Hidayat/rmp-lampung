@@ -72,7 +72,7 @@ export function FormulirAbsensiManual({ peserta }: { peserta: PesertaBelumHadir[
 	}
 
 	return (
-		<div className="space-y-4">
+		<div className="flex flex-col gap-4">
 			{status?.pesan ? (
 				<Alert variant="gagal" judul="Absensi manual gagal">
 					<p>{status.pesan}</p>
@@ -85,7 +85,7 @@ export function FormulirAbsensiManual({ peserta }: { peserta: PesertaBelumHadir[
 			) : null}
 
 			<div className="grid gap-3 sm:grid-cols-2">
-				<div className="space-y-1.5">
+				<div className="flex flex-col gap-1.5">
 					<Label htmlFor="kelas-manual" className="text-xs font-medium text-foreground">
 						Kelas
 					</Label>
@@ -106,7 +106,7 @@ export function FormulirAbsensiManual({ peserta }: { peserta: PesertaBelumHadir[
 						))}
 					</Select>
 				</div>
-				<div className="space-y-1.5">
+				<div className="flex flex-col gap-1.5">
 					<Label htmlFor="cari-peserta" className="text-xs font-medium text-foreground">
 						Cari peserta
 					</Label>
@@ -140,7 +140,7 @@ export function FormulirAbsensiManual({ peserta }: { peserta: PesertaBelumHadir[
 				<p className="text-xs text-muted-foreground">Tidak ada peserta yang cocok pada kelas ini.</p>
 			) : null}
 
-			<ul className="space-y-2">
+			<ul className="flex flex-col gap-2">
 				{pesertaTerlihat.map((p) => (
 					<li
 						key={p.enrollmentId}

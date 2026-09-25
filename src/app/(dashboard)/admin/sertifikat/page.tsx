@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { Search } from "lucide-react"
 
 import {
 	aksiBatalkanSertifikat,
@@ -37,14 +36,14 @@ export default async function HalamanSertifikatAdmin() {
 	])
 
 	return (
-		<div className="space-y-6">
+		<div className="flex flex-col gap-6">
 			{/* Page Header */}
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-bold tracking-tight text-zinc-950 font-heading">
+					<h1 className="text-2xl font-bold tracking-tight text-foreground font-heading">
 						Penerbitan sertifikat
 					</h1>
-					<p className="text-xs text-zinc-500 mt-0.5">
+					<p className="text-xs text-muted-foreground mt-0.5">
 						Sertifikat diterbitkan per absensi kehadiran dan diverifikasi secara publik via QR.
 					</p>
 				</div>
@@ -58,16 +57,16 @@ export default async function HalamanSertifikatAdmin() {
 			</Alert>
 
 			{/* Candidate Table Card */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
-				<div className="flex items-center justify-between border-b border-[#F5F3EF] pb-2">
-					<h2 className="text-base font-bold text-zinc-950 font-heading">
+			<div className="bg-card rounded-lg border border-border p-6 flex flex-col gap-4">
+				<div className="flex items-center justify-between border-b border-border pb-2">
+					<h2 className="text-base font-bold text-foreground font-heading">
 						Peserta Berhak Menerima Sertifikat ({kandidat.length})
 					</h2>
 				</div>
 
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#FAF8F5] rounded-lg">
+						<TableHeader className="bg-background rounded-lg">
 							<TableRow>
 								<TableHead>Peserta</TableHead>
 								<TableHead>Kelas</TableHead>
@@ -84,17 +83,17 @@ export default async function HalamanSertifikatAdmin() {
 								</TableRow>
 							) : (
 								kandidat.map((item) => (
-									<TableRow key={item.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
+									<TableRow key={item.id} className="hover:bg-background/60 transition-colors">
 										<TableCell>
-											<span className="font-semibold text-zinc-900 block text-sm">{item.enrollment.user.nama}</span>
-											<span className="block text-zinc-400 font-mono text-[11px]">
+											<span className="font-semibold text-foreground block text-sm">{item.enrollment.user.nama}</span>
+											<span className="block text-muted-foreground font-mono text-xs">
 												{item.enrollment.user.email}
 											</span>
 										</TableCell>
-										<TableCell className="text-xs font-medium text-zinc-800">
+										<TableCell className="text-xs font-medium text-foreground">
 											{item.enrollment.kelas.judul}
 										</TableCell>
-										<TableCell className="text-xs text-zinc-600">
+										<TableCell className="text-xs text-muted-foreground">
 											{formatTanggalWaktu(item.waktuScan)} WIB
 										</TableCell>
 										<TableCell className="text-right">
@@ -114,29 +113,21 @@ export default async function HalamanSertifikatAdmin() {
 			</div>
 
 			{/* Issued Certificates Table Card */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
-				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[#F5F3EF] pb-2">
+			<div className="bg-card rounded-lg border border-border p-6 flex flex-col gap-4">
+				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border pb-2">
 					<div>
-						<h2 className="text-base font-bold text-zinc-950 font-heading">
+						<h2 className="text-base font-bold text-foreground font-heading">
 							Sertifikat Terbit ({sertifikat.length})
 						</h2>
 					</div>
 
 					<div className="flex items-center gap-2">
-						<div className="relative w-52">
-							<Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-							<input
-								type="text"
-								placeholder="Cari nomor sertifikat..."
-								className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#FAF8F5] border border-[#E5E0D8] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D49A28]"
-							/>
-						</div>
 					</div>
 				</div>
 
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#FAF8F5] rounded-lg">
+						<TableHeader className="bg-background rounded-lg">
 							<TableRow>
 								<TableHead>Nomor</TableHead>
 								<TableHead>Peserta</TableHead>
@@ -155,20 +146,20 @@ export default async function HalamanSertifikatAdmin() {
 								</TableRow>
 							) : (
 								sertifikat.map((item) => (
-									<TableRow key={item.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
-										<TableCell className="font-mono text-xs font-semibold text-zinc-900">
+									<TableRow key={item.id} className="hover:bg-background/60 transition-colors">
+										<TableCell className="font-mono text-xs font-semibold text-foreground">
 											{item.nomor}
 										</TableCell>
 										<TableCell>
-											<span className="font-semibold text-zinc-900 block text-sm">{item.attendance.enrollment.user.nama}</span>
-											<span className="block text-zinc-400 font-mono text-[11px]">
+											<span className="font-semibold text-foreground block text-sm">{item.attendance.enrollment.user.nama}</span>
+											<span className="block text-muted-foreground font-mono text-xs">
 												{item.attendance.enrollment.user.email}
 											</span>
 										</TableCell>
-										<TableCell className="text-xs font-medium text-zinc-800">
+										<TableCell className="text-xs font-medium text-foreground">
 											{item.attendance.enrollment.kelas.judul}
 										</TableCell>
-										<TableCell className="text-xs text-zinc-600">
+										<TableCell className="text-xs text-muted-foreground">
 											{formatTanggal(item.diterbitkanPada)}
 										</TableCell>
 										<TableCell>

@@ -13,7 +13,7 @@ export function TableWrapper({
 	return (
 		<div
 			className={cn(
-				"w-full overflow-x-auto rounded-lg border border-zinc-200 bg-white shadow-xs",
+				"w-full overflow-x-auto rounded-md border border-border bg-card focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
 				className,
 			)}
 			tabIndex={0}
@@ -22,11 +22,10 @@ export function TableWrapper({
 		</div>
 	)
 }
-
 export function Table({ className, ...props }: React.ComponentProps<"table">) {
 	return (
 		<table
-			className={cn("w-full min-w-[36rem] caption-bottom text-sm", className)}
+			className={cn("w-full min-w-[32rem] sm:min-w-[38rem] caption-bottom text-sm", className)}
 			{...props}
 		/>
 	)
@@ -38,7 +37,7 @@ export function TableCaption({
 }: React.ComponentProps<"caption">) {
 	return (
 		<caption
-			className={cn("p-4 text-left text-xs text-zinc-500", className)}
+			className={cn("p-4 text-left text-sm text-muted-foreground", className)}
 			{...props}
 		/>
 	)
@@ -50,7 +49,7 @@ export function TableHeader({
 }: React.ComponentProps<"thead">) {
 	return (
 		<thead
-			className={cn("bg-zinc-50/80 text-xs font-medium text-zinc-500 border-b border-zinc-200", className)}
+			className={cn("border-b border-border bg-muted text-xs font-semibold uppercase tracking-wide text-muted-foreground", className)}
 			{...props}
 		/>
 	)
@@ -62,7 +61,7 @@ export function TableBody({
 }: React.ComponentProps<"tbody">) {
 	return (
 		<tbody
-			className={cn("divide-y divide-zinc-200 bg-white", className)}
+			className={cn("divide-y divide-border bg-white", className)}
 			{...props}
 		/>
 	)
@@ -71,7 +70,7 @@ export function TableBody({
 export function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
 	return (
 		<tr
-			className={cn("transition-colors hover:bg-zinc-50/50 align-middle", className)}
+			className={cn("align-middle transition-colors duration-150 hover:bg-muted", className)}
 			{...props}
 		/>
 	)
@@ -81,12 +80,12 @@ export function TableHead({ className, ...props }: React.ComponentProps<"th">) {
 	return (
 		<th
 			scope="col"
-			className={cn("h-10 px-4 text-left align-middle font-medium text-zinc-500 text-xs", className)}
+			className={cn("h-11 px-4 text-left align-middle text-xs font-semibold text-muted-foreground", className)}
 			{...props}
 		/>
 	)
 }
 
 export function TableCell({ className, ...props }: React.ComponentProps<"td">) {
-	return <td className={cn("p-4 align-middle text-zinc-900 text-sm", className)} {...props} />
+	return <td className={cn("p-4 align-middle text-sm text-foreground", className)} {...props} />
 }

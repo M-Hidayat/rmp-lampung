@@ -125,14 +125,14 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 	}, [kameraAktif])
 
 	return (
-		<div className="space-y-6">
+		<div className="flex flex-col gap-6">
 			<canvas ref={canvasRef} className="hidden" />
 
 			{/* Panel Kamera / Scanner */}
 			<div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center">
 				{kameraAktif ? (
-					<div className="space-y-4">
-						<div className="relative mx-auto aspect-square w-full max-w-[280px] overflow-hidden rounded-lg border-2 border-primary bg-black shadow-sm">
+					<div className="flex flex-col gap-4">
+						<div className="relative mx-auto aspect-square w-full max-w-[280px] overflow-hidden rounded-lg border-2 border-primary bg-primary ">
 							<video
 								ref={videoRef}
 								playsInline
@@ -155,11 +155,11 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 						</Button>
 					</div>
 				) : (
-					<div className="space-y-3 py-2">
+					<div className="flex flex-col gap-3 py-2">
 						<div className="mx-auto flex size-12 items-center justify-center rounded-full bg-accent text-accent-foreground">
 							<Camera className="size-6" aria-hidden="true" />
 						</div>
-						<div className="space-y-1">
+						<div className="flex flex-col gap-1">
 							<p className="font-heading text-sm font-bold text-foreground">Pindai QR Absensi</p>
 							<p className="mx-auto max-w-sm text-xs text-muted-foreground">
 								Gunakan kamera perangkat Anda untuk memindai QR code absensi yang ditampilkan admin di kelas.
@@ -188,7 +188,7 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 			</div>
 
 			{/* Formulir konfirmasi: token hanya berasal dari hasil pindai / tautan. */}
-			<form ref={formRef} action={jalankan} className="space-y-4">
+			<form ref={formRef} action={jalankan} className="flex flex-col gap-4">
 				{status?.pesan ? (
 					<Alert variant="gagal" judul="Absensi gagal">
 						<p>{status.pesan}</p>

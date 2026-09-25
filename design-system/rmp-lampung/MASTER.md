@@ -1,215 +1,107 @@
-# Design System Master File
+# Design System Master File — RMP Lampung
 
-> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
-> If that file exists, its rules **override** this Master file.
-> If not, strictly follow the rules below.
+> **SUMBER KEBENARAN: [`/DESIGN.md`](../DESIGN.md)**
+>
+> Berkas ini adalah ringkasan navigasi, **bukan** spesifikasi. Nilai normatif
+> (warna, tipografi, radius, spasi, komponen) hanya ada di `DESIGN.md` dan
+> diimplementasikan di `src/app/globals.css`.
+>
+> Berkas ini sebelumnya memuat palet hasil generate otomatis yang **berbeda**
+> dari `DESIGN.md` (mis. Secondary `#334155`, CTA `#0369A1`, latar `#F8FAFC`,
+> foregound `#020617`, dan tipografi Inter+Inter). Kontradiksi itu membuat warna
+> berbeda antar halaman. Sekarang berkas ini tidak boleh lagi mendefinisikan
+> nilai sendiri — bila ada perbedaan, `DESIGN.md` yang berlaku.
+
+**Project:** RMP Lampung — Rumah Mama Pintar
+**Ruang lingkup:** seluruh permukaan aplikasi (publik, autentikasi, dashboard admin & peserta)
 
 ---
 
-**Project:** RMP Lampung
-**Generated:** 2026-09-25 17:15:36
-**Category:** General
-**Design Dials:** Variance 3/10 (Centered / Minimal) | Density 5/10 (Standard)
+## Ringkasan cepat (rujukan; nilai lengkap ada di `DESIGN.md`)
+
+### Palet inti
+
+| Peran | Hex | Token Tailwind | Rasio terukur |
+|------|-----|----------------|---------------|
+| Primary (aksi utama) | `#0F172A` | `bg-primary` | 17.85:1 putih di atasnya (AAA) |
+| Brand (identitas kuliner) | `#B22222` | `bg-brand` | 6.68:1 di atas putih (AA) |
+| Accent (permukaan CTA) | `#FFF7ED` | `bg-accent` | — |
+| Accent foreground | `#C2410C` | `text-accent-foreground` | 4.88:1 di atas accent (AA) |
+| Background | `#F9FAFB` | `bg-background` | 17.08:1 dengan foreground (AAA) |
+| Card | `#FFFFFF` | `bg-card` | — |
+| Muted foreground | `#475569` | `text-muted-foreground` | 7.58:1 di atas kartu (AAA) |
+| Border | `#E2E8F0` | `border-border` | — |
+| Ring (fokus) | `#C2410C` | `ring-ring` | 5.18:1 terhadap kartu |
+| Success | `#15803D` | `text-success` / `bg-success` | 5.02:1 (AA) |
+| Warning | `#B45309` | `text-warning` / `bg-warning` | 5.02:1 (AA) |
+| Destructive | `#B91C1C` | `text-destructive` / `bg-destructive` | 6.47:1 (AA) |
+| Decorative amber | `#FFC107` | `fill-decorative-amber` | **3.19:1 — dilarang untuk teks** |
+
+### Tipografi
+
+- **Judul:** Montserrat (bobot 700–800, letter-spacing `-0.02em` s.d. `-0.025em`)
+- **Isi & data:** Inter
+- Variabel font: `--font-montserrat`, `--font-inter`; dipetakan ke `font-heading` dan `font-sans`.
+
+### Radius
+
+`sm` 6px · `md` 8px · **`lg` 12px (default)** · `xl` 16px · `2xl` 24px · `full`
+
+### Spasi
+
+`xs` 4 · `sm` 8 · `md` 16 · `lg` 24 · `xl` 32 · `2xl` 48 · `3xl` 64 (piksel)
+
+### Kedalaman
+
+Tiga tingkat saja: datar (`border`), terangkat (`shadow-sm`), melayang (`shadow-md`).
 
 ---
 
-## Global Rules
+## Aturan yang mengikat
 
-### Color Palette
+1. **Warna hanya dari token semantik.** Kelas palet mentah Tailwind
+   (`bg-zinc-100`, `text-slate-600`, `border-zinc-200`) dan heksadesimal di
+   `className` dilarang. Ini penyebab utama tampilan berbeda antar halaman.
+2. **Status memakai `Badge`**, perhatian sistem memakai `Alert`, keadaan kosong
+   memakai `Empty`, pemisah memakai `Separator`, placeholder memuat memakai
+   `Skeleton`. Jangan membuat markup bergaya sendiri untuk keperluan itu.
+3. **Satu aksi utama per layar.** `Button variant="default"` (navy) untuk itu;
+   `variant="gold"` untuk jalur bernilai berulang (daftar/bayar/hubungi).
+4. **Kartu memakai komposisi penuh** `CardHeader` → `CardContent` → `CardFooter`,
+   dan satu radius per kartu.
+5. **Jarak memakai `gap-*`**, bukan `space-x-*` / `space-y-*`.
+6. **Target sentuh minimal 44×44px**; cincin fokus selalu terlihat.
+7. **Tidak ada konten yang dikarang** — testimoni, foto, logo, angka, dan klaim
+   wajib bersumber dan dapat diperiksa.
 
-| Role | Hex | CSS Variable |
-|------|-----|--------------|
-| Primary | `#0F172A` | `--color-primary` |
-| On Primary | `#FFFFFF` | `--color-on-primary` |
-| Secondary | `#334155` | `--color-secondary` |
-| On Secondary | `#FFFFFF` | `--color-on-secondary` |
-| Accent/CTA | `#0369A1` | `--color-accent` |
-| On Accent/CTA | `#FFFFFF` | `--color-on-accent` |
-| Background | `#F8FAFC` | `--color-background` |
-| Foreground | `#020617` | `--color-foreground` |
-| Card | `#FFFFFF` | `--color-card` |
-| Card Foreground | `#020617` | `--color-card-foreground` |
-| Muted | `#E8ECF1` | `--color-muted` |
-| Muted Foreground | `#475569` | `--color-muted-foreground` |
-| Border | `#E2E8F0` | `--color-border` |
-| Destructive | `#DC2626` | `--color-destructive` |
-| On Destructive | `#FFFFFF` | `--color-on-destructive` |
-| Ring | `#0F172A` | `--color-ring` |
+## Verifikasi
 
-**Color Notes:** Professional navy + blue CTA
+Sebelum menyerahkan UI, jalankan:
 
-### Typography
+```bash
+# Lint DESIGN.md (struktur + referensi token + kontras WCAG).
+# CATATAN PENTING: `npx -y @google/design.md lint ...` DIAM (exit 0, tanpa
+# output) di Windows/git-bash sehingga hasilnya tidak bisa dipercaya.
+# Panggil CLI-nya lewat Node secara langsung:
+DESIGNMD=$(ls -d ~/AppData/Local/npm-cache/_npx/*/node_modules/@google/design.md 2>/dev/null | head -1)
+node "$DESIGNMD/dist/index.js" lint DESIGN.md
 
-- **Heading Font:** Inter
-- **Body Font:** Inter
-- **Mood:** minimal, clean, swiss, functional, neutral, professional
-- **Google Fonts:** [Inter + Inter](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap)
-
-**CSS Import:**
-```css
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+npm run typecheck
+npx vitest run
+npx playwright test    # butuh server di :3001; jalankan detached + notify
+npm run lint
 ```
 
-### Spacing Variables
+### Checklist pra-pengiriman
 
-*Density: 5/10 — Standard*
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--space-xs` | `4px` / `0.25rem` | Tight gaps |
-| `--space-sm` | `8px` / `0.5rem` | Icon gaps, inline spacing |
-| `--space-md` | `16px` / `1rem` | Standard padding |
-| `--space-lg` | `24px` / `1.5rem` | Section padding |
-| `--space-xl` | `32px` / `2rem` | Large gaps |
-| `--space-2xl` | `48px` / `3rem` | Section margins |
-| `--space-3xl` | `64px` / `4rem` | Hero padding |
-
-### Shadow Depths
-
-| Level | Value | Usage |
-|-------|-------|-------|
-| `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.05)` | Subtle lift |
-| `--shadow-md` | `0 4px 6px rgba(0,0,0,0.1)` | Cards, buttons |
-| `--shadow-lg` | `0 10px 15px rgba(0,0,0,0.1)` | Modals, dropdowns |
-| `--shadow-xl` | `0 20px 25px rgba(0,0,0,0.15)` | Hero images, featured cards |
-
----
-
-## Component Specs
-
-### Buttons
-
-```css
-/* Primary Button */
-.btn-primary {
-  background: #0369A1;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-/* Secondary Button */
-.btn-secondary {
-  background: transparent;
-  color: #0F172A;
-  border: 2px solid #0F172A;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-```
-
-### Cards
-
-```css
-.card {
-  background: #F8FAFC;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: var(--shadow-md);
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-```
-
-### Inputs
-
-```css
-.input {
-  padding: 12px 16px;
-  border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 200ms ease;
-}
-
-.input:focus {
-  border-color: #0F172A;
-  outline: none;
-  box-shadow: 0 0 0 3px #0F172A20;
-}
-```
-
-### Modals
-
-```css
-.modal-overlay {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-}
-
-.modal {
-  background: white;
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: var(--shadow-xl);
-  max-width: 500px;
-  width: 90%;
-}
-```
-
----
-
-## Style Guidelines
-
-**Style:** Minimalism & Swiss Style
-
-**Keywords:** Clean, simple, spacious, functional, white space, high contrast, geometric, sans-serif, grid-based, essential
-
-**Best For:** Enterprise apps, dashboards, documentation sites, SaaS platforms, professional tools
-
-**Key Effects:** Subtle hover (200-250ms), smooth transitions, sharp shadows if any, clear type hierarchy, fast loading
-
-### Page Pattern
-
-**Pattern Name:** Hero + Features + CTA
-
-- **Conversion Strategy:** Deep CTA placement. For CTA label text, verify at least 4.5:1 against the button fill; use 7:1 only when the product explicitly targets AAA normal-text contrast. Keep focus and component boundaries independently visible. Disable hero parallax under reduced motion and render its static final state.
-- **CTA Placement:** Hero (sticky) + Bottom
-- **Section Order:** Hero with headline/image > Value prop > Key features (3-5) > CTA section > Footer
-
----
-
-## Anti-Patterns (Do NOT Use)
-
-
-### Additional Forbidden Patterns
-
-- ❌ **Emojis as icons** — Use SVG icons (Heroicons, Lucide, Simple Icons)
-- ❌ **Missing cursor:pointer** — All clickable elements must have cursor:pointer
-- ❌ **Layout-shifting hovers** — Avoid scale transforms that shift layout
-- ❌ **Low contrast text** — Maintain 4.5:1 minimum contrast ratio
-- ❌ **Instant state changes** — Always use transitions (150-300ms)
-- ❌ **Invisible focus states** — Focus states must be visible for a11y
-
----
-
-## Pre-Delivery Checklist
-
-Before delivering any UI code, verify:
-
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from consistent icon set (Heroicons/Lucide)
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover states with smooth transitions (150-300ms)
-- [ ] Light mode: text contrast 4.5:1 minimum
-- [ ] Focus states visible for keyboard navigation
-- [ ] `prefers-reduced-motion` respected
-- [ ] Responsive: 375px, 768px, 1024px, 1440px
-- [ ] No content hidden behind fixed navbars
-- [ ] No horizontal scroll on mobile
+- [ ] Tidak ada kelas palet mentah (`bg-zinc-*`, `text-slate-*`) atau heksadesimal di `className`
+- [ ] Tidak ada `space-x-*` / `space-y-*` (pakai `gap-*`)
+- [ ] Permukaan datar: `shadow-*` hanya pada elemen mengambang (dropdown, drawer, dialog)
+- [ ] Radius hanya dari skala `sm 4 / md 6 / lg 8 / xl 12 / 2xl 16`
+- [ ] Semua ikon dari Lucide; ikon dekoratif diberi `aria-hidden="true"`
+- [ ] `cursor-pointer` pada elemen yang dapat diklik
+- [ ] Transisi 150–300ms; `prefers-reduced-motion` dihormati
+- [ ] Kontras teks minimal 4.5:1; cincin fokus minimal 3:1
+- [ ] Keadaan fokus terlihat untuk navigasi keyboard
+- [ ] Responsif pada 375 / 768 / 1024 / 1440 px, tanpa overflow horizontal
+- [ ] Konten tidak tertutup header lengket (`scroll-mt-24` pada anchor)

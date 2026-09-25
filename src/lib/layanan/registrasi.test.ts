@@ -49,7 +49,7 @@ describe("registrasi pengguna", () => {
 	it("menetapkan peran USER dan mengabaikan peran dari input", async () => {
 		let dataTersimpan: Record<string, unknown> = {}
 		await daftarPengguna(
-			{ ...masukanSah, peran: "PEMILIK" },
+			{ ...masukanSah, peran: "ADMIN" },
 			{
 				db: dbPalsu(async ({ data }) => {
 					dataTersimpan = data

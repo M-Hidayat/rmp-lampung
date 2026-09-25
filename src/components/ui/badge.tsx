@@ -3,30 +3,36 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Lencana status. Satu-satunya cara menampilkan status di aplikasi ini.
+ *
+ * Varian dipetakan langsung ke status domain (lihat DESIGN.md bagian
+ * Components) sehingga halaman mana pun memakai nama varian yang sama:
+ * - `sukses`      -> hadir, lunas, terverifikasi, valid
+ * - `menunggu`    -> menunggu pembayaran, sisa kuota, placeholder
+ * - `destructive` -> penuh, dibatalkan, gagal
+ * - `netral`      -> nonaktif, informasi
+ *
+ * Isian berteks putih; seluruh pasangan diuji dan lulus WCAG AA.
+ */
 const badgeVariants = cva(
-	"inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 select-none",
+	"inline-flex select-none items-center rounded-sm border px-2.5 py-1 text-xs font-semibold transition-colors",
 	{
 		variants: {
 			variant: {
 				default:
-					"border-transparent bg-zinc-900 text-white shadow-xs hover:bg-zinc-800",
+					"border-transparent bg-primary text-primary-foreground",
 				secondary:
-					"border-transparent bg-zinc-100 text-zinc-900 hover:bg-zinc-200",
+					"border-transparent bg-secondary text-secondary-foreground",
 				destructive:
-					"border-transparent bg-red-600 text-white shadow-xs hover:bg-red-500",
-				outline: "text-zinc-950 border-zinc-200",
-				brand:
-					"border-orange-200 bg-orange-50 text-orange-700",
+					"border-transparent bg-destructive text-destructive-foreground",
 				sukses:
-					"border-emerald-200 bg-emerald-50 text-emerald-700",
-				success:
-					"border-emerald-200 bg-emerald-50 text-emerald-700",
-				gagal:
-					"border-red-200 bg-red-50 text-red-700",
+					"border-transparent bg-success text-success-foreground",
 				menunggu:
-					"border-amber-200 bg-amber-50 text-amber-700",
+					"border-transparent bg-warning text-warning-foreground",
 				netral:
-					"border-zinc-200 bg-zinc-100 text-zinc-700",
+					"border-transparent bg-secondary text-secondary-foreground",
+				outline: "border-border text-foreground",
 			},
 		},
 		defaultVariants: {

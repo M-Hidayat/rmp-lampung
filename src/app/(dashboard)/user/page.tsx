@@ -43,25 +43,25 @@ export default async function HalamanRingkasanUser() {
 	).length
 
 	return (
-		<div className="space-y-6">
+		<div className="flex flex-col gap-6">
 			{/* Page Header */}
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
-					<h1 className="text-2xl font-bold tracking-tight text-zinc-950 font-heading">
+					<h1 className="text-2xl font-bold tracking-tight text-foreground font-heading">
 						Ringkasan saya
 					</h1>
-					<p className="text-xs text-zinc-500 mt-0.5">
+					<p className="text-xs text-muted-foreground mt-0.5">
 						Status aktivitas kursus kuliner, transaksi, kehadiran, dan sertifikasi resmi Anda.
 					</p>
 				</div>
 
 				<div className="flex items-center gap-3">
-					<Button asChild variant="outline" size="sm" className="bg-white border-[#E2E8F0] text-xs h-9 font-medium text-zinc-700 hover:bg-[#F8FAFC] rounded-md shadow-sm">
+					<Button asChild variant="outline" size="sm" className="bg-card border-border text-xs h-9 font-medium text-muted-foreground hover:bg-background rounded-md ">
 						<Link href="/user/pembayaran">
 							Riwayat Transaksi
 						</Link>
 					</Button>
-					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-md shadow-sm">
+					<Button asChild size="sm" variant="gold" className="text-xs h-9 font-semibold rounded-md ">
 						<Link href="/kelas">
 							Jelajahi Kelas Baru <ArrowRight className="size-3.5 ml-1" />
 						</Link>
@@ -71,70 +71,70 @@ export default async function HalamanRingkasanUser() {
 
 			{/* KPI Summary Cards */}
 			<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-				<div className="bg-white rounded-lg border border-[#E2E8F0] p-5 shadow-sm transition-all hover:border-primary/40">
+				<div className="bg-card rounded-lg border border-border p-5 transition-all hover:border-primary/40">
 					<div className="flex items-center justify-between">
-						<span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
+						<span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
 							Kelas Terdaftar
 						</span>
-						<div className="flex size-8 items-center justify-center rounded-lg bg-[#FFF7ED] text-foreground font-semibold">
+						<div className="flex size-8 items-center justify-center rounded-lg bg-accent text-foreground font-semibold">
 							<BookOpen className="size-4" />
 						</div>
 					</div>
-					<p className="mt-2 text-3xl font-extrabold tracking-tight text-zinc-950 font-heading">
+					<p className="mt-2 text-3xl font-extrabold tracking-tight text-foreground font-heading">
 						{pendaftaran.length}
 					</p>
-					<p className="mt-1 text-xs text-zinc-400">
+					<p className="mt-1 text-xs text-muted-foreground">
 						{lunas} lunas · {menunggu} pending
 					</p>
 				</div>
 
-				<div className="bg-white rounded-lg border border-[#E2E8F0] p-5 shadow-sm transition-all hover:border-primary/40">
+				<div className="bg-card rounded-lg border border-border p-5 transition-all hover:border-primary/40">
 					<div className="flex items-center justify-between">
-						<span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
+						<span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
 							Menunggu Bayar
 						</span>
-						<div className="flex size-8 items-center justify-center rounded-lg bg-[#FEF3C7] text-[#92400E]">
+						<div className="flex size-8 items-center justify-center rounded-lg bg-warning-surface text-warning">
 							<Clock className="size-4" />
 						</div>
 					</div>
-					<p className="mt-2 text-3xl font-extrabold tracking-tight text-zinc-950 font-heading">
+					<p className="mt-2 text-3xl font-extrabold tracking-tight text-foreground font-heading">
 						{menunggu}
 					</p>
-					<p className="mt-1 text-xs text-zinc-400">
+					<p className="mt-1 text-xs text-muted-foreground">
 						{menunggu > 0 ? "Menunggu pelunasan" : "Semua tagihan lunas"}
 					</p>
 				</div>
 
-				<div className="bg-white rounded-lg border border-[#E2E8F0] p-5 shadow-sm transition-all hover:border-primary/40">
+				<div className="bg-card rounded-lg border border-border p-5 transition-all hover:border-primary/40">
 					<div className="flex items-center justify-between">
-						<span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
+						<span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
 							Kehadiran Fisik
 						</span>
-						<div className="flex size-8 items-center justify-center rounded-lg bg-zinc-100 text-zinc-800">
+						<div className="flex size-8 items-center justify-center rounded-lg bg-muted text-foreground">
 							<CheckCircle2 className="size-4" />
 						</div>
 					</div>
-					<p className="mt-2 text-3xl font-extrabold tracking-tight text-zinc-950 font-heading">
+					<p className="mt-2 text-3xl font-extrabold tracking-tight text-foreground font-heading">
 						{hadir}
 					</p>
-					<p className="mt-1 text-xs text-zinc-400">
+					<p className="mt-1 text-xs text-muted-foreground">
 						Tercatat via QR scanner
 					</p>
 				</div>
 
-				<div className="bg-white rounded-lg border border-[#E2E8F0] p-5 shadow-sm transition-all hover:border-primary/40">
+				<div className="bg-card rounded-lg border border-border p-5 transition-all hover:border-primary/40">
 					<div className="flex items-center justify-between">
-						<span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
+						<span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
 							Sertifikat Terbit
 						</span>
-						<div className="flex size-8 items-center justify-center rounded-lg bg-[#FFF7ED] text-foreground font-semibold">
+						<div className="flex size-8 items-center justify-center rounded-lg bg-accent text-foreground font-semibold">
 							<Award className="size-4" />
 						</div>
 					</div>
-					<p className="mt-2 text-3xl font-extrabold tracking-tight text-zinc-950 font-heading">
+					<p className="mt-2 text-3xl font-extrabold tracking-tight text-foreground font-heading">
 						{sertifikat}
 					</p>
-					<p className="mt-1 text-xs text-zinc-400">
+					<p className="mt-1 text-xs text-muted-foreground">
 						Dokumen kelulusan resmi
 					</p>
 				</div>
@@ -142,25 +142,25 @@ export default async function HalamanRingkasanUser() {
 
 			{/* Sesi Absensi Live Banner */}
 			{sesiAbsensi.length > 0 ? (
-				<div className="bg-linear-to-r from-[#FFF7ED] to-[#FFFFFF] rounded-lg border border-[#F3DC9B] p-5 shadow-sm">
+				<div className="bg-linear-to-r from-accent to-card rounded-lg border border-warning/30 p-5 ">
 					<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-						<div className="space-y-1">
+						<div className="flex flex-col gap-1">
 							<div className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground font-semibold">
 								<span className="size-2 rounded-full bg-primary animate-ping" />
 								<span>SESI ABSENSI KELAS DIBUKA</span>
 							</div>
-							<h3 className="text-sm font-bold text-zinc-950 font-heading">
+							<h3 className="text-sm font-bold text-foreground font-heading">
 								Sesi QR absensi aktif saat ini untuk kelas yang Anda ikuti
 							</h3>
-							<ul className="space-y-0.5 text-xs text-zinc-600">
+							<ul className="flex flex-col gap-0.5 text-xs text-muted-foreground">
 								{sesiAbsensi.map((item) => (
 									<li key={item.id}>
-										<span className="font-semibold text-zinc-950">{item.kelas.judul}</span> · Aktif tanpa batas waktu
+										<span className="font-semibold text-foreground">{item.kelas.judul}</span> · Aktif tanpa batas waktu
 									</li>
 								))}
 							</ul>
 						</div>
-						<Button asChild size="sm" variant="gold" className="shrink-0 text-xs font-semibold rounded-md shadow-sm">
+						<Button asChild size="sm" variant="gold" className="shrink-0 text-xs font-semibold rounded-md ">
 							<Link href="/user/absensi">
 								<QrCode className="size-3.5 mr-1.5" />
 								Buka Kamera Absensi
@@ -171,17 +171,17 @@ export default async function HalamanRingkasanUser() {
 			) : null}
 
 			{/* Main Data Card with Toolbar */}
-			<div className="bg-white rounded-lg border border-[#E2E8F0] p-6 shadow-sm space-y-4">
+			<div className="bg-card rounded-lg border border-border p-6 flex flex-col gap-4">
 				{/* Card Toolbar */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
 					<div className="flex items-center gap-2">
-						<h2 className="text-base font-bold text-zinc-950 font-heading">
+						<h2 className="text-base font-bold text-foreground font-heading">
 							Pendaftaran Saya ({pendaftaran.length})
 						</h2>
 					</div>
 
 					<div className="flex items-center gap-2">
-						<Button asChild variant="outline" size="sm" className="h-8 text-xs bg-white border-[#E2E8F0] rounded-lg">
+						<Button asChild variant="outline" size="sm" className="h-8 text-xs bg-card border-border rounded-lg">
 							<Link href="/user/kelas-saya">
 								Lihat Semua
 							</Link>
@@ -192,7 +192,7 @@ export default async function HalamanRingkasanUser() {
 				{/* Table */}
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#F8FAFC] rounded-lg">
+						<TableHeader className="bg-background rounded-lg">
 							<TableRow>
 								<TableHead>Kelas</TableHead>
 								<TableHead>Biaya</TableHead>
@@ -211,14 +211,14 @@ export default async function HalamanRingkasanUser() {
 								</TableRow>
 							) : (
 								pendaftaran.slice(0, 5).map((item) => (
-									<TableRow key={item.id} className="hover:bg-[#F8FAFC]/60 transition-colors">
-										<TableCell className="font-semibold text-zinc-900 text-sm">
+									<TableRow key={item.id} className="hover:bg-background/60 transition-colors">
+										<TableCell className="font-semibold text-foreground text-sm">
 											{item.kelas.judul}
 										</TableCell>
 										<TableCell className="font-mono font-medium text-xs text-foreground font-semibold">
 											{formatRupiah(item.kelas.harga.toString())}
 										</TableCell>
-										<TableCell className="text-xs text-zinc-500">
+										<TableCell className="text-xs text-muted-foreground">
 											{formatTanggalWaktu(item.kelas.jadwalMulai)} WIB
 										</TableCell>
 										<TableCell>
@@ -226,30 +226,30 @@ export default async function HalamanRingkasanUser() {
 										</TableCell>
 										<TableCell className="text-xs font-medium">
 											{item.attendance ? (
-												<span className="text-zinc-800 font-semibold">
+												<span className="text-foreground font-semibold">
 													Hadir
 												</span>
 											) : (
-												<span className="text-zinc-400">Belum absen</span>
+												<span className="text-muted-foreground">Belum absen</span>
 											)}
 										</TableCell>
 										<TableCell className="text-right">
 											{item.status === "PENDING" ? (
-												<Button asChild size="sm" variant="gold" className="h-7 text-xs font-semibold rounded-lg shadow-sm">
+												<Button asChild size="sm" variant="gold" className="h-7 text-xs font-semibold rounded-lg ">
 													<Link href={`/user/pembayaran?order_id=${item.payment?.pakasirRef || ''}`}>
 														Bayar
 													</Link>
 												</Button>
 											) : item.status === "PAID" && !item.attendance ? (
-												<Button asChild size="sm" variant="outline" className="h-7 text-xs border-[#E2E8F0] rounded-lg">
+												<Button asChild size="sm" variant="outline" className="h-7 text-xs border-border rounded-lg">
 													<Link href="/user/absensi">Absen QR</Link>
 												</Button>
 											) : item.attendance?.certificate ? (
-												<Button asChild size="sm" variant="outline" className="h-7 text-xs border-primary text-foreground font-semibold hover:bg-[#FFF7ED] rounded-lg">
+												<Button asChild size="sm" variant="outline" className="h-7 text-xs border-primary text-foreground font-semibold hover:bg-accent rounded-lg">
 													<Link href="/user/sertifikat">Sertifikat</Link>
 												</Button>
 											) : (
-												<span className="text-xs text-zinc-400">-</span>
+												<span className="text-xs text-muted-foreground">-</span>
 											)}
 										</TableCell>
 									</TableRow>

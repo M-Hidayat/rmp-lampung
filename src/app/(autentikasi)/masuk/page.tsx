@@ -3,14 +3,8 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { FormulirMasuk } from "./formulir-masuk"
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { sesiPengguna } from "@/lib/auth"
 import { berandaDashboard } from "@/lib/rbac"
 
@@ -26,20 +20,24 @@ export default async function HalamanMasuk({ searchParams }: Props) {
 	const tujuan = lanjut?.startsWith("/") ? lanjut : undefined
 
 	return (
-		<Card className="rounded-2xl border border-[#EFECE6] bg-white shadow-xs">
-			<CardHeader className="space-y-1">
-				<CardTitle className="text-xl font-bold text-zinc-950 font-heading">Masuk ke akun</CardTitle>
-				<CardDescription className="text-xs text-zinc-500">
+		<Card>
+			<CardHeader>
+				<CardTitle className="text-xl">Masuk ke akun</CardTitle>
+				<CardDescription>
 					Gunakan email dan kata sandi akun Anda untuk mengakses dashboard.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<FormulirMasuk lanjut={tujuan} />
 			</CardContent>
-			<CardFooter className="border-t border-[#F5F3EF] pt-4 flex justify-center">
-				<p className="text-xs text-zinc-500">
+			<CardFooter className="flex-col items-stretch gap-4">
+				<Separator />
+				<p className="text-center text-sm text-muted-foreground">
 					Belum punya akun?{" "}
-					<Link className="font-semibold text-[#B47517] hover:text-[#854D0E] underline underline-offset-4" href="/daftar">
+					<Link
+						className="font-semibold text-accent-foreground underline underline-offset-4 hover:text-foreground"
+						href="/daftar"
+					>
 						Daftar akun peserta
 					</Link>
 				</p>

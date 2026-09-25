@@ -112,24 +112,22 @@ export function bersihkanPayload(
 	return hasil
 }
 
-/** Adapter sandbox/dummy: tidak memanggil jaringan sama sekali. */
+/** Adapter sandbox: memakai checkout Pakasir nyata, tanpa simulator lokal. */
 export function adapterPakasirSandbox(opsi?: {
-	appUrl?: string
 	slug?: string
 }): AdapterPakasir {
-	const appUrl = opsi?.appUrl ?? "http://localhost:3000"
 	const slug = opsi?.slug ?? "rmp-sandbox"
 
 	return {
 		mode: "sandbox",
-		buatUrlPembayaran: ({ orderId, nominal, urlKembali }) => {
-			const url = new URL("/simulasi-pembayaran", appUrl)
-			url.searchParams.set("proyek", slug)
-			url.searchParams.set("order_id", orderId)
-			url.searchParams.set("amount", String(keRupiahBulat(nominal)))
-			url.searchParams.set("redirect", urlKembali)
-			return url.toString()
-		},
+		buatUrlPembayaran: ({ orderId, nominal, urlKembali }) =>
+			bangunUrlPembayaran({
+				baseUrl: konfigurasi().PAKASIR_BASE_URL,
+				slug,
+				orderId,
+				nominal,
+				urlKembali,
+			}),
 		verifikasiWebhook: ({ body }) =>
 			body.project === slug
 				? { valid: true }
@@ -228,10 +226,7 @@ export function adapterPakasir(): AdapterPakasir {
 					apiKey: env.PAKASIR_API_KEY,
 					webhookSecret: env.PAKASIR_WEBHOOK_SECRET,
 				})
-			: adapterPakasirSandbox({
-					appUrl: env.APP_URL,
-					slug: env.PAKASIR_SLUG || "rmp-sandbox",
-				})
+			: adapterPakasirSandbox({ slug: env.PAKASIR_SLUG })
 
 	return adapterCache
 }

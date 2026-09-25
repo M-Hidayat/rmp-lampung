@@ -3,26 +3,27 @@
 /*
  * Token desain RMP Lampung.
  *
- * SUMBER KEBENARAN: DESIGN.md (RMP Culinary Excellence System). Nilai di sini
- * harus sama dengan berkas itu; sebelumnya globals.css memakai palet neutral
- * bawaan shadcn (#18181b) sehingga menyimpang dari DESIGN.md dan membuat warna
- * berbeda antar halaman.
+ * SUMBER KEBENARAN: DESIGN.md (RMP Culinary Excellence System).
+ * Setiap nilai di bawah ini harus sama dengan berkas itu. Sebelumnya
+ * globals.css memuat nilai yang menyimpang dari DESIGN.md (mis. muted-foreground
+ * #64748B yang gagal AA di atas permukaan muted, dan destructive dua versi),
+ * sehingga warna antar halaman tidak seragam. Sekarang satu token per peran.
  *
- * Catatan kontras (diukur, bukan diperkirakan):
- * - Teks putih di atas --color-tertiary (#EA580C) hanya 3.56:1 -> GAGAL WCAG AA
- *   untuk teks normal. Karena itu permukaan CTA memakai --color-accent-foreground
- *   (#C2410C = 5.18:1) yang LULUS.
- * - --color-brand-gold (#FFC107) hanya 1.63:1 di atas putih -> dilarang dipakai
- *   sebagai teks atau latar tombol berteks. Hanya untuk aksen dekoratif.
- * - --color-success dibuat #15803D (bukan #16A34A) karena yang lama 3.30:1 GAGAL
- *   saat dipakai sebagai teks.
+ * Rasio kontras diukur, bukan diperkirakan:
+ * - Putih di atas primary (#0F172A)              = 17.85:1  AAA
+ * - Putih di atas brand (#B22222)                =  6.68:1  AA
+ * - accent-foreground (#C2410C) di atas accent   =  4.88:1  AA
+ * - muted-foreground (#475569) di atas muted     =  6.92:1  AA
+ * - success/warning/destructive di atas putih    = 5.02 / 5.02 / 6.47:1  AA
+ * - ring (#C2410C) terhadap kartu (non-teks)     =  5.18:1  (syarat >=3:1)
+ * - decorative-amber (#FFC107) di atas kartu     =  3.19:1  DILARANG sebagai teks
  */
 @theme {
 	--font-sans: var(--font-inter), system-ui, sans-serif;
 	--font-heading: var(--font-montserrat), system-ui, sans-serif;
 	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-	/* Permukaan & teks */
+	/* Permukaan */
 	--color-background: #f9fafb;
 	--color-foreground: #0f172a;
 	--color-card: #ffffff;
@@ -30,57 +31,75 @@
 	--color-popover: #ffffff;
 	--color-popover-foreground: #0f172a;
 
-	/* Aksi utama: midnight navy (bukan near-black) sesuai DESIGN.md */
+	/* Aksi utama: navy. Satu-satunya aksi penuh-perhatian per layar. */
 	--color-primary: #0f172a;
+	--color-primary-hover: #1e293b;
 	--color-primary-foreground: #ffffff;
+	/* Teks sekunder di atas permukaan navy. 12.02:1 di atas primary (AAA).
+	   Tanpa token ini, panel navy akan memakai kelas putih-transparan. */
+	--color-primary-muted: #cbd5e1;
 
 	--color-secondary: #f1f5f9;
 	--color-secondary-foreground: #0f172a;
 	--color-muted: #f1f5f9;
-	--color-muted-foreground: #64748b;
+	--color-muted-foreground: #475569;
+
+	/* Permukaan CTA hangat. Satu-satunya cara memakai amber untuk teks. */
 	--color-accent: #fff7ed;
 	--color-accent-foreground: #c2410c;
 
-	/* Aksen hangat. Dipakai untuk permukaan CTA & label; lihat catatan kontras. */
-	--color-tertiary: #ea580c;
-	--color-tertiary-foreground: #ffffff;
-
-	/* Identitas kuliner tradisional, aman untuk teks di atas putih (6.68:1) */
+	/* Identitas kuliner tradisional. */
 	--color-brand: #b22222;
 	--color-brand-foreground: #ffffff;
-	--color-brand-muted: #fef2f2;
+	--color-brand-surface: #fef2f2;
 	--color-brand-border: #fecaca;
-	--color-brand-gold: #ffc107;
 
-	--color-destructive: #dc2626;
-	--color-destructive-foreground: #ffffff;
+	/* Amber dekoratif: bintang penilaian & garis. Bukan untuk teks. */
+	--color-decorative-amber: #ffc107;
+
+	/* Status. Satu token per status; lulus sebagai teks maupun sebagai isian. */
 	--color-success: #15803d;
 	--color-success-foreground: #ffffff;
-
-	/* Permukaan status (dipakai Alert/Badge agar seluruh halaman konsisten
-	   tanpa warna palet Tailwind yang berbeda-beda per file). */
-	--color-info-surface: #f1f5f9;
-	--color-warning: #b45309;
-	--color-warning-surface: #fffbeb;
 	--color-success-surface: #f0fdf4;
+	--color-warning: #b45309;
+	--color-warning-foreground: #ffffff;
+	--color-warning-surface: #fffbeb;
+	--color-destructive: #b91c1c;
+	--color-destructive-foreground: #ffffff;
 	--color-destructive-surface: #fef2f2;
+	--color-info-surface: #f1f5f9;
 
 	--color-border: #e2e8f0;
 	--color-input: #e2e8f0;
-	--color-ring: #ea580c;
+	--color-ring: #c2410c;
 
-	/* Skala sudut. Sebelumnya tidak terdefinisi sehingga rounded-* memakai
-	   default Tailwind dan berbeda dari DESIGN.md (sm 6 / md 8 / lg 12 / xl 16). */
-	--radius-sm: 6px;
-	--radius-md: 8px;
-	--radius-lg: 12px;
-	--radius-xl: 16px;
-	--radius-2xl: 24px;
+	/* Skala sudut sesuai DESIGN.md: kecil & tegas, tidak "menggelembung". */
+	--radius-sm: 4px;
+	--radius-md: 6px;
+	--radius-lg: 8px;
+	--radius-xl: 12px;
+	--radius-2xl: 16px;
+
+	/* Judul hero. Satu-satunya ukuran di luar skala bawaan Tailwind; dipakai
+	   hanya pada breakpoint lg ke atas (lihat DESIGN.md bagian Typography). */
+	--text-display: 3.25rem;
+	--text-display--line-height: 1.05;
+	--text-display--font-weight: 800;
+	--text-display--letter-spacing: -0.025em;
+
+	/* Kedalaman. Tiga tingkat saja, sesuai bagian Elevation di DESIGN.md. */
+	--shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06);
+	--shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.10);
 }
 
 @layer base {
-	* { border-color: var(--color-border); }
-	html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+	* {
+		border-color: var(--color-border);
+	}
+	html {
+		-webkit-text-size-adjust: 100%;
+		scroll-behavior: smooth;
+	}
 	body {
 		background-color: var(--color-background);
 		color: var(--color-foreground);
@@ -91,13 +110,27 @@
 		text-rendering: optimizeLegibility;
 		line-height: 1.5;
 	}
-	button, input, select, textarea { font: inherit; }
-	h1, h2, h3, h4, h5, h6 {
+	button,
+	input,
+	select,
+	textarea {
+		font: inherit;
+	}
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
 		font-family: var(--font-heading);
 		letter-spacing: -0.025em;
 		font-weight: 700;
+		text-wrap: balance;
 	}
-	:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+	:focus-visible {
+		outline: 2px solid var(--color-ring);
+		outline-offset: 2px;
+	}
 }
 
 /* Tinggi header tetap; dipakai agar anchor tidak tertutup header lengket. */
@@ -117,10 +150,14 @@
 	font-weight: 600;
 	font-size: 0.875rem;
 }
-.lewati-ke-konten:focus { left: 0; }
+.lewati-ke-konten:focus {
+	left: 0;
+}
 
 @media (prefers-reduced-motion: reduce) {
-	*, *::before, *::after {
+	*,
+	*::before,
+	*::after {
 		scroll-behavior: auto !important;
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;

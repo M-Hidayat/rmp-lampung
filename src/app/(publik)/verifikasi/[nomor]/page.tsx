@@ -1,16 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import { JudulHalaman } from "@/components/kerangka"
+import { JudulHalaman, LabelBagian } from "@/components/kerangka"
 import { Alert } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { verifikasiSertifikatPublik } from "@/lib/layanan/sertifikat"
 import { formatTanggal } from "@/lib/uang"
 import { skemaNomorSertifikat } from "@/lib/validasi"
@@ -19,6 +14,15 @@ export const metadata: Metadata = { title: "Hasil verifikasi sertifikat" }
 export const dynamic = "force-dynamic"
 
 type Props = { params: Promise<{ nomor: string }> }
+
+function BarisData({ label, children }: { label: string; children: React.ReactNode }) {
+	return (
+		<div className="flex items-center justify-between gap-4 py-2.5">
+			<dt className="shrink-0 text-sm text-muted-foreground">{label}</dt>
+			<dd className="min-w-0 text-right text-sm font-semibold text-foreground">{children}</dd>
+		</div>
+	)
+}
 
 export default async function HalamanHasilVerifikasi({ params }: Props) {
 	const { nomor } = await params
@@ -30,8 +34,9 @@ export default async function HalamanHasilVerifikasi({ params }: Props) {
 		: ({ ditemukan: false } as const)
 
 	return (
-		<div className="mx-auto max-w-xl space-y-6">
+		<div className="mx-auto flex max-w-xl flex-col gap-6">
 			<JudulHalaman
+				labels={<LabelBagian>Keaslian dokumen</LabelBagian>}
 				judul="Hasil verifikasi sertifikat"
 				keterangan={`Nomor diperiksa: ${nomorDidekode}`}
 			/>
@@ -44,47 +49,35 @@ export default async function HalamanHasilVerifikasi({ params }: Props) {
 					</p>
 				</Alert>
 			) : (
-				<Card className="rounded-2xl border border-[#EFECE6] bg-white shadow-xs">
-					<CardHeader className="border-b border-[#F5F3EF] pb-4">
-						<div className="flex items-center justify-between">
-							<CardTitle className="text-base font-bold text-zinc-950 font-heading">Data sertifikat</CardTitle>
+				<Card>
+					<CardHeader>
+						<div className="flex items-center justify-between gap-3">
+							<CardTitle>Data sertifikat</CardTitle>
 							<Badge variant={hasil.status === "valid" ? "sukses" : "destructive"}>
 								{hasil.status === "valid" ? "Valid" : "Dibatalkan"}
 							</Badge>
 						</div>
+						<CardDescription>
+							Data ini diambil langsung dari catatan penerbitan sertifikat.
+						</CardDescription>
 					</CardHeader>
-					<CardContent className="space-y-3 pt-4 text-sm">
-						<dl className="divide-y divide-[#F5F3EF]">
-							<div className="py-2.5 flex items-center justify-between">
-								<dt className="text-zinc-500 text-xs font-medium">Nomor sertifikat</dt>
-								<dd className="font-mono font-bold text-[#854D0E]">{hasil.nomor}</dd>
-							</div>
-							<div className="py-2.5 flex items-center justify-between">
-								<dt className="text-zinc-500 text-xs font-medium">Nama peserta</dt>
-								<dd className="font-semibold text-zinc-950">{hasil.namaPeserta}</dd>
-							</div>
-							<div className="py-2.5 flex items-center justify-between">
-								<dt className="text-zinc-500 text-xs font-medium">Kelas</dt>
-								<dd className="font-semibold text-zinc-950">{hasil.judulKelas}</dd>
-							</div>
-							<div className="py-2.5 flex items-center justify-between">
-								<dt className="text-zinc-500 text-xs font-medium">Tanggal terbit</dt>
-								<dd className="text-zinc-700 font-medium">{formatTanggal(hasil.diterbitkanPada)}</dd>
-							</div>
-							<div className="py-2.5 flex items-center justify-between">
-								<dt className="text-zinc-500 text-xs font-medium">Status keabsahan</dt>
-								<dd>
-									<Badge
-										variant={hasil.status === "valid" ? "sukses" : "destructive"}
-									>
-										{hasil.status === "valid"
-											? "Valid"
-											: "Dibatalkan"}
-									</Badge>
-								</dd>
-							</div>
+					<CardContent>
+						<dl className="divide-y divide-border">
+							<BarisData label="Nomor sertifikat">
+								<span className="font-mono">{hasil.nomor}</span>
+							</BarisData>
+							<BarisData label="Nama peserta">{hasil.namaPeserta}</BarisData>
+							<BarisData label="Kelas">{hasil.judulKelas}</BarisData>
+							<BarisData label="Tanggal terbit">
+								{formatTanggal(hasil.diterbitkanPada)}
+							</BarisData>
+							<BarisData label="Status keabsahan">
+								<Badge variant={hasil.status === "valid" ? "sukses" : "destructive"}>
+									{hasil.status === "valid" ? "Valid" : "Dibatalkan"}
+								</Badge>
+							</BarisData>
 						</dl>
-						<p className="text-xs text-zinc-400 border-t border-[#F5F3EF] pt-3">
+						<p className="mt-4 border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
 							Data pembayaran, email, dan telepon peserta tidak ditampilkan pada
 							halaman publik.
 						</p>
@@ -92,7 +85,7 @@ export default async function HalamanHasilVerifikasi({ params }: Props) {
 				</Card>
 			)}
 
-			<Button asChild variant="outline" className="w-full bg-white border-[#EFECE6] rounded-xl hover:bg-[#FAF8F5]">
+			<Button asChild variant="outline" className="w-full">
 				<Link href="/verifikasi">Periksa nomor lain</Link>
 			</Button>
 		</div>

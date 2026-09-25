@@ -1,14 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Plus, BookOpen, Search, ArrowRight } from "lucide-react"
+import { Plus } from "lucide-react"
 
-import { FormulirKelas, type NilaiAwalKelas } from "./formulir-kelas"
 import { aksiUbahStatusKelas } from "../../aksi"
 import { FormulirAksi } from "@/components/formulir-aksi"
-import { JudulHalaman } from "@/components/kerangka"
 import { LencanaAktif } from "@/components/status-lencana"
 import { Alert } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
 import {
 	Table,
 	TableBody,
@@ -25,29 +22,32 @@ import { formatRupiah, formatTanggalWaktu } from "@/lib/uang"
 export const metadata: Metadata = { title: "Kelola kelas" }
 export const dynamic = "force-dynamic"
 
-/** Nilai untuk input datetime-local (menit terdekat, zona waktu WIB). */
-function keNilaiWaktuLokal(tanggal: Date | null): string {
-	if (!tanggal) return ""
-	const wib = new Date(tanggal.getTime() + 7 * 60 * 60 * 1000)
-	return wib.toISOString().slice(0, 16)
-}
-
 export default async function HalamanKelolaKelas() {
 	const sesi = await sesiPengguna()
 	const kelas = await daftarKelasOperasional(sesi)
+	const jumlahAktif = kelas.filter((item) => item.aktif).length
+	const jumlahNonaktif = kelas.length - jumlahAktif
+	const jumlahPesertaAktif = kelas.reduce((total, item) => total + item._count.enrollments, 0)
 
 	return (
-		<div className="space-y-6">
+		<div className="flex flex-col gap-6">
 			{/* Page Header */}
-			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div>
-					<h1 className="text-2xl font-bold tracking-tight text-zinc-950 font-heading">
+					<h1 className="text-2xl font-bold tracking-tight text-foreground font-heading">
 						Kelola kelas
 					</h1>
-					<p className="text-xs text-zinc-500 mt-0.5">
+					<p className="text-xs text-muted-foreground mt-0.5">
 						Kelas tidak dapat dihapus. Kelas yang tidak lagi dijual cukup dinonaktifkan agar riwayat tetap utuh.
 					</p>
 				</div>
+				<Link
+					href="/admin/kelas/baru"
+					className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-semibold text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+				>
+					<Plus className="size-4" aria-hidden="true" />
+					Tambah Kelas
+				</Link>
 			</div>
 
 			<Alert variant="info" judul="Aturan kuota">
@@ -57,47 +57,32 @@ export default async function HalamanKelolaKelas() {
 				</p>
 			</Alert>
 
-			{/* Create Class Card */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
-				<div className="border-b border-[#F5F3EF] pb-3">
-					<h2 className="text-base font-bold text-zinc-950 font-heading flex items-center gap-2">
-						<Plus className="size-4 text-[#D49A28]" />
-						Tambah kelas baru
-					</h2>
-					<p className="text-xs text-zinc-500 mt-0.5">
-						Slug dipakai pada tautan publik /kelas/&lt;slug&gt; dan harus unik.
-					</p>
-				</div>
-				<div className="pt-2">
-					<FormulirKelas mode="buat" />
-				</div>
+			<div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+				{[
+					["Total kelas", kelas.length],
+					["Aktif", jumlahAktif],
+					["Nonaktif", jumlahNonaktif],
+					["Peserta menggunakan kuota", jumlahPesertaAktif],
+				].map(([label, nilai]) => (
+					<div key={label} className="rounded-lg border border-border bg-card p-4 ">
+						<p className="text-xs font-medium text-muted-foreground">{label}</p>
+						<p className="mt-1 text-2xl font-bold text-foreground">{nilai}</p>
+					</div>
+				))}
 			</div>
 
 			{/* Main Catalog Table Card */}
-			<div className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
+			<div className="bg-card rounded-lg border border-border p-6 flex flex-col gap-4">
 				{/* Card Toolbar */}
-				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
-					<div>
-						<h2 className="text-base font-bold text-zinc-950 font-heading">
-							Daftar Kelas ({kelas.length})
-						</h2>
-					</div>
-
-					<div className="flex items-center gap-2">
-						<div className="relative w-52">
-							<Search className="size-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-							<input
-								type="text"
-								placeholder="Cari kelas..."
-								className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#FAF8F5] border border-[#E5E0D8] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#D49A28]"
-							/>
-						</div>
-					</div>
+				<div className="pb-2">
+					<h2 className="text-base font-bold text-foreground font-heading">
+						Daftar Kelas ({kelas.length})
+					</h2>
 				</div>
 
 				<TableWrapper>
 					<Table>
-						<TableHeader className="bg-[#FAF8F5] rounded-lg">
+						<TableHeader className="bg-background rounded-lg">
 							<TableRow>
 								<TableHead>Kelas</TableHead>
 								<TableHead>Harga</TableHead>
@@ -111,34 +96,47 @@ export default async function HalamanKelolaKelas() {
 							{kelas.length === 0 ? (
 								<TableRow>
 									<TableCell colSpan={6} className="text-muted-foreground py-10 text-center text-xs">
-										Belum ada kelas. Tambahkan kelas pertama pada formulir di atas.
+										<p>Belum ada kelas.</p>
+										<Link
+											href="/admin/kelas/baru"
+											className="mt-3 inline-flex min-h-11 items-center justify-center rounded-lg border border-border px-4 py-2 font-semibold text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+										>
+											Tambah kelas pertama
+										</Link>
 									</TableCell>
 								</TableRow>
 							) : (
 								kelas.map((item) => (
-									<TableRow key={item.id} className="hover:bg-[#FAF8F5]/60 transition-colors">
+									<TableRow key={item.id} className="hover:bg-background/60 transition-colors">
 										<TableCell>
-											<span className="font-semibold text-zinc-900 block text-sm">{item.judul}</span>
-											<span className="block font-mono text-xs text-zinc-400">
+											<span className="font-semibold text-foreground block text-sm">{item.judul}</span>
+											<span className="block font-mono text-xs text-muted-foreground">
 												/{item.slug}
 											</span>
 										</TableCell>
-										<TableCell className="font-mono font-semibold text-[#854D0E] text-xs">
+										<TableCell className="font-mono text-xs font-semibold text-foreground">
 											{formatRupiah(item.harga.toString())}
 										</TableCell>
 										<TableCell className="text-xs">
-											<span className="font-semibold text-zinc-800">{item._count.enrollments} / {item.kuota} terpakai</span>
-											<span className="block text-zinc-400 text-[11px]">
+											<span className="font-semibold text-foreground">{item._count.enrollments} / {item.kuota} terpakai</span>
+											<span className="block text-muted-foreground text-xs">
 												Sisa {sisaKuota(item.kuota, item._count.enrollments)} kursi
 											</span>
 										</TableCell>
-										<TableCell className="text-xs text-zinc-600">
+										<TableCell className="text-xs text-muted-foreground">
 											{formatTanggalWaktu(item.jadwalMulai)} WIB
 										</TableCell>
 										<TableCell>
 											<LencanaAktif aktif={item.aktif} />
 										</TableCell>
 										<TableCell className="text-right">
+											<div className="flex flex-wrap items-center justify-end gap-2">
+												<Link
+													href={`/admin/kelas/${item.id}/ubah`}
+													className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												>
+													Edit
+												</Link>
 											<FormulirAksi
 												aksi={aksiUbahStatusKelas}
 												nilai={{
@@ -147,7 +145,9 @@ export default async function HalamanKelolaKelas() {
 												}}
 												label={item.aktif ? "Nonaktifkan" : "Aktifkan"}
 												variant="outline"
+												kelas="[&_button]:min-h-11"
 											/>
+											</div>
 										</TableCell>
 									</TableRow>
 								))
@@ -155,44 +155,6 @@ export default async function HalamanKelolaKelas() {
 						</TableBody>
 					</Table>
 				</TableWrapper>
-			</div>
-
-			{/* Edit Class Cards */}
-			<div className="space-y-4">
-				<h2 className="text-base font-bold text-zinc-950 font-heading">
-					Ubah data kelas
-				</h2>
-				<div className="grid gap-4">
-					{kelas.map((item) => {
-						const nilaiAwal: NilaiAwalKelas = {
-							classId: item.id,
-							judul: item.judul,
-							slug: item.slug,
-							deskripsi: item.deskripsi,
-							harga: item.harga.toString(),
-							kuota: item.kuota,
-							jadwalMulai: keNilaiWaktuLokal(item.jadwalMulai),
-							jadwalSelesai: keNilaiWaktuLokal(item.jadwalSelesai),
-							lokasi: item.lokasi,
-							gambarUrl: item.gambarUrl ?? "",
-							aktif: item.aktif,
-						}
-						return (
-							<div key={item.id} className="bg-white rounded-2xl border border-[#EFECE6] p-6 shadow-xs space-y-4">
-								<div className="flex items-center justify-between border-b border-[#F5F3EF] pb-3">
-									<div>
-										<h3 className="text-base font-bold text-zinc-950 font-heading">{item.judul}</h3>
-										<p className="text-xs text-zinc-500">Perubahan berlaku langsung pada katalog publik.</p>
-									</div>
-									<LencanaAktif aktif={item.aktif} />
-								</div>
-								<div className="pt-2">
-									<FormulirKelas mode="ubah" nilaiAwal={nilaiAwal} />
-								</div>
-							</div>
-						)
-					})}
-				</div>
 			</div>
 		</div>
 	)

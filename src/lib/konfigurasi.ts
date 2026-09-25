@@ -15,10 +15,10 @@ const skemaEnv = z.object({
 	PAKASIR_WEBHOOK_SECRET: z.string().default(""),
 	SERTIFIKAT_PENANDATANGAN: z
 		.string()
-		.default("[PLACEHOLDER: Nama Pemilik RMP]"),
+		.default("[PLACEHOLDER: Nama Pemilik Rumah Mama Pintar]"),
 	SERTIFIKAT_JABATAN_PENANDATANGAN: z
 		.string()
-		.default("Pemilik RMP - Pelatihan Bisnis Kuliner"),
+		.default("Pemilik Rumah Mama Pintar"),
 })
 
 export type Konfigurasi = z.infer<typeof skemaEnv>
@@ -37,8 +37,11 @@ export function konfigurasi(): Konfigurasi {
 	}
 
 	const env = hasil.data
+	if (!env.PAKASIR_SLUG) {
+		throw new Error("PAKASIR_SLUG wajib diisi untuk checkout Pakasir.")
+	}
 	if (env.PAKASIR_MODE === "produksi") {
-		if (!env.PAKASIR_SLUG || !env.PAKASIR_API_KEY) {
+		if (!env.PAKASIR_API_KEY) {
 			throw new Error(
 				"Mode Pakasir produksi membutuhkan PAKASIR_SLUG dan PAKASIR_API_KEY.",
 			)

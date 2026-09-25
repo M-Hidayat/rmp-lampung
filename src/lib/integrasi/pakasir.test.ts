@@ -45,7 +45,6 @@ describe("URL pembayaran", () => {
 
 	it("adapter sandbox tidak menyentuh jaringan dan memakai halaman simulasi", () => {
 		const adapter = adapterPakasirSandbox({
-			appUrl: "http://localhost:3000",
 			slug: "rmp-sandbox",
 		})
 		const url = new URL(
@@ -56,8 +55,8 @@ describe("URL pembayaran", () => {
 			}),
 		)
 		expect(adapter.mode).toBe("sandbox")
-		expect(url.pathname).toBe("/simulasi-pembayaran")
-		expect(url.searchParams.get("amount")).toBe("350000")
+		expect(url.origin).toBe("https://app.pakasir.com")
+		expect(url.pathname).toBe("/pay/rmp-sandbox/350000")
 	})
 })
 

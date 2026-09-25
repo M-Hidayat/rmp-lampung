@@ -38,7 +38,7 @@ variabel lingkungan yang harus diisi pemilik.
 | --- | --- | --- |
 | Logo/identitas visual resmi | Tidak tersedia sebagai berkas resmi | Pemilik mengunggah berkas logo, lalu ganti placeholder pada header dan PDF |
 | Badan usaha / legalitas (PT, CV, NIB) | Tidak ditemukan sumber publik | Isi setelah pemilik memberikan dokumen resmi |
-| Harga resmi tiap kelas | Tidak dipublikasikan konsisten | Admin mengisi harga di dashboard admin; data seed hanya contoh |
+| Harga resmi tiap kelas | Tidak dipublikasikan konsisten | Admin mengisi harga nyata melalui dashboard admin |
 | Situs web resmi | Tidak ditemukan | Isi bila tersedia |
 | Jam operasional | Tidak ditemukan | Isi bila tersedia |
 | Nama & jabatan penandatangan sertifikat | Belum dikonfirmasi | Variabel `SERTIFIKAT_PENANDATANGAN` dan `SERTIFIKAT_JABATAN_PENANDATANGAN` |
@@ -49,8 +49,8 @@ variabel lingkungan yang harus diisi pemilik.
 1. Tidak ada logo, alamat, kontak, testimoni, sejarah, atau klaim prestasi yang
    dibuat-buat. Semua yang tampil harus punya baris di tabel bagian 1, atau
    ditandai placeholder di bagian 2.
-2. Seluruh data awal (seed) diberi awalan `CONTOH -` supaya tidak pernah
-   tertukar dengan penawaran kelas resmi.
+2. Aplikasi tidak menyediakan data awal otomatis; kelas hanya berasal dari data
+   nyata yang dimasukkan admin.
 3. Sebelum rilis produksi, pemilik wajib mengonfirmasi: alamat final, harga
    final, logo, penandatangan sertifikat, dan kredensial Pakasir resmi.
 4. Nilai terpusat pada `src/lib/identitas-rmp.ts`; setiap fakta memiliki medan

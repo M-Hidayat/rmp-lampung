@@ -8,6 +8,7 @@ import {
 } from "@react-pdf/renderer"
 
 import { identitasTampilan } from "@/lib/identitas-rmp"
+import { warnaCetak } from "@/lib/dokumen/token-cetak"
 import { formatRupiah, formatTanggalWaktu } from "@/lib/uang"
 import type { InvoiceUntukDokumen } from "@/lib/layanan/invoice"
 
@@ -15,49 +16,49 @@ const gaya = StyleSheet.create({
 	halaman: {
 		padding: 40,
 		fontSize: 10,
-		color: "#1C1917",
-		backgroundColor: "#FFFFFF",
+		color: warnaCetak.ink,
+		backgroundColor: warnaCetak.paper,
 		fontFamily: "Helvetica",
 	},
 	kepala: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 		borderBottomWidth: 2,
-		borderBottomColor: "#D49A28",
+		borderBottomColor: warnaCetak.gold,
 		paddingBottom: 14,
 		marginBottom: 20,
 	},
-	namaUsaha: { fontSize: 16, fontWeight: 700, color: "#854D0E", letterSpacing: 0.5 },
-	kecil: { fontSize: 8.5, color: "#57534E", marginTop: 1.5 },
-	judulDokumen: { fontSize: 20, fontWeight: 700, textAlign: "right", color: "#1C1917", letterSpacing: 1 },
-	nomorInvoice: { fontSize: 9, fontFamily: "Courier", fontWeight: 700, color: "#854D0E", textAlign: "right", marginTop: 2 },
+	namaUsaha: { fontSize: 16, fontWeight: 700, color: warnaCetak.brown, letterSpacing: 0.5 },
+	kecil: { fontSize: 8.5, color: warnaCetak.gray, marginTop: 1.5 },
+	judulDokumen: { fontSize: 20, fontWeight: 700, textAlign: "right", color: warnaCetak.ink, letterSpacing: 1 },
+	nomorInvoice: { fontSize: 9, fontFamily: "Courier", fontWeight: 700, color: warnaCetak.brown, textAlign: "right", marginTop: 2 },
 	baris: { flexDirection: "row", marginBottom: 5 },
-	label: { width: 130, color: "#78716C", fontSize: 9 },
-	nilai: { flex: 1, color: "#1C1917", fontSize: 9.5, fontWeight: 700 },
+	label: { width: 130, color: warnaCetak.grayMid, fontSize: 9 },
+	nilai: { flex: 1, color: warnaCetak.ink, fontSize: 9.5, fontWeight: 700 },
 	blok: {
 		marginBottom: 16,
 		padding: 12,
-		backgroundColor: "#FAF8F5",
+		backgroundColor: warnaCetak.ivory,
 		borderRadius: 6,
 		borderWidth: 1,
-		borderColor: "#EFECE6",
+		borderColor: warnaCetak.ivoryLine,
 	},
-	judulBlok: { fontSize: 10.5, fontWeight: 700, color: "#854D0E", marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 },
+	judulBlok: { fontSize: 10.5, fontWeight: 700, color: warnaCetak.brown, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 },
 	tabelKepala: {
 		flexDirection: "row",
-		backgroundColor: "#FDF8ED",
+		backgroundColor: warnaCetak.ivoryWarm,
 		borderWidth: 1,
-		borderColor: "#E8DFC8",
+		borderColor: warnaCetak.ivoryBorder,
 		borderRadius: 4,
 		padding: 7,
 		fontWeight: 700,
-		color: "#854D0E",
+		color: warnaCetak.brown,
 	},
 	tabelBaris: {
 		flexDirection: "row",
 		padding: 8,
 		borderBottomWidth: 1,
-		borderBottomColor: "#EFECE6",
+		borderBottomColor: warnaCetak.ivoryLine,
 	},
 	kolomUraian: { flex: 3 },
 	kolomNominal: { flex: 1, textAlign: "right" },
@@ -67,9 +68,9 @@ const gaya = StyleSheet.create({
 		marginTop: 12,
 		fontSize: 12,
 		fontWeight: 700,
-		color: "#854D0E",
+		color: warnaCetak.brown,
 	},
-	catatan: { marginTop: 24, fontSize: 7.5, color: "#A8A29E", lineHeight: 1.5, borderTopWidth: 1, borderTopColor: "#EFECE6", paddingTop: 10 },
+	catatan: { marginTop: 24, fontSize: 7.5, color: warnaCetak.grayLight, lineHeight: 1.5, borderTopWidth: 1, borderTopColor: warnaCetak.ivoryLine, paddingTop: 10 },
 })
 
 export function DokumenInvoice({ invoice }: { invoice: InvoiceUntukDokumen }) {

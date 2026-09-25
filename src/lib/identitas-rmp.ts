@@ -1,5 +1,5 @@
 /**
- * Identitas publik RMP.
+ * Identitas publik Rumah Mama Pintar.
  *
  * ATURAN: setiap nilai `terverifikasi: true` WAJIB memiliki sumber publik yang
  * dapat diperiksa. Nilai yang belum ditemukan tetap berupa placeholder
@@ -16,7 +16,7 @@ export type FaktaIdentitas<T> = {
 
 export const identitasRmp = {
 	namaUsaha: {
-		nilai: "RMP - Pelatihan Bisnis Kuliner",
+		nilai: "Rumah Mama Pintar",
 		terverifikasi: true,
 		sumber: [
 			"https://www.facebook.com/rumahmasyarakatpintar.rmp/",
@@ -99,7 +99,7 @@ export const identitasRmp = {
 		nilai: "[PLACEHOLDER: berkas logo resmi belum tersedia dari pemilik]",
 		terverifikasi: false,
 		catatan:
-			"Sistem tidak membuat logo. UI memakai penanda teks 'RMP' sampai berkas resmi diberikan pemilik.",
+			"Sistem tidak membuat logo. UI memakai nama teks 'Rumah Mama Pintar' sampai berkas resmi diberikan pemilik.",
 	} satisfies FaktaIdentitas<string>,
 
 	kelasYangPernahDitawarkan: {
@@ -118,7 +118,7 @@ export const identitasRmp = {
 			"https://www.facebook.com/rumahmasyarakatpintar.rmp/",
 		],
 		catatan:
-			"Judul, harga, dan jadwal resmi tiap kelas belum terkonfirmasi, sehingga data seed diberi label CONTOH.",
+			"Judul, harga, dan jadwal resmi tiap kelas belum terkonfirmasi; admin harus memasukkan data nyata melalui dashboard.",
 	} satisfies FaktaIdentitas<string[]>,
 
 	polaPendaftaranSaatIni: {

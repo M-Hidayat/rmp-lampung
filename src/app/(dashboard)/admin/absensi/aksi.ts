@@ -7,7 +7,7 @@ import { sesiPengguna } from "@/lib/auth"
 import { KesalahanDomain } from "@/lib/kesalahan"
 import { konfigurasi } from "@/lib/konfigurasi"
 import { buatSesiAbsensi, perbaruiTokenSesi } from "@/lib/layanan/absensi"
-import { urlScanAbsensi } from "@/lib/layanan/token-absensi"
+import { buatTokenAbsensi, urlScanAbsensi } from "@/lib/layanan/token-absensi"
 
 export type HasilQrAbsensi = {
 	pesan?: string
@@ -18,7 +18,6 @@ export type HasilQrAbsensi = {
 		token: string
 		url: string
 		gambar: string
-		kedaluwarsaPada: string
 	}
 }
 
@@ -26,8 +25,8 @@ function keHasilKesalahan(kesalahan: unknown): HasilQrAbsensi {
 	if (kesalahan instanceof KesalahanDomain) {
 		return { pesan: kesalahan.message }
 	}
-	console.error("[aksi-buka-sesi-qr]", kesalahan)
-	return { pesan: `Terjadi kesalahan: ${kesalahan instanceof Error ? kesalahan.message : String(kesalahan)}` }
+	console.error("[aksi-qr-absensi]", kesalahan)
+	return { pesan: "Terjadi kesalahan pada server. Silakan coba lagi." }
 }
 
 /**
@@ -40,24 +39,22 @@ export async function aksiBukaSesiQr(
 ): Promise<HasilQrAbsensi> {
 	try {
 		const sesi = await sesiPengguna()
+		const token = buatTokenAbsensi()
+		const url = urlScanAbsensi(konfigurasi().APP_URL, token)
+		const gambar = await QRCode.toDataURL(url, { width: 320, margin: 1 })
 		const hasil = await buatSesiAbsensi(sesi, {
 			classId: String(data.get("classId") ?? ""),
-			masaBerlakuMenit: Number(data.get("masaBerlakuMenit") ?? 10),
-		})
-
-		const url = urlScanAbsensi(konfigurasi().APP_URL, hasil.token)
-		const gambar = await QRCode.toDataURL(url, { width: 320, margin: 1 })
+		}, { buatToken: () => token })
 		revalidatePath("/admin/absensi")
 
 		return {
 			sukses:
-				"Sesi absensi dibuka. Tampilkan QR ini kepada peserta sebelum kedaluwarsa.",
+				"Sesi absensi dibuka tanpa batas waktu. Simpan atau tampilkan QR ini; token hanya ditampilkan sekali.",
 			qr: {
 				sessionId: hasil.sessionId,
 				token: hasil.token,
 				url,
 				gambar,
-				kedaluwarsaPada: hasil.kedaluwarsaPada.toISOString(),
 			},
 		}
 	} catch (kesalahan) {
@@ -72,24 +69,23 @@ export async function aksiPerbaruiTokenQr(
 ): Promise<HasilQrAbsensi> {
 	try {
 		const sesi = await sesiPengguna()
+		const token = buatTokenAbsensi()
+		const url = urlScanAbsensi(konfigurasi().APP_URL, token)
+		const gambar = await QRCode.toDataURL(url, { width: 320, margin: 1 })
 		const hasil = await perbaruiTokenSesi(
 			sesi,
 			String(data.get("sessionId") ?? ""),
-			Number(data.get("masaBerlakuMenit") ?? 10),
+			{ buatToken: () => token },
 		)
-
-		const url = urlScanAbsensi(konfigurasi().APP_URL, hasil.token)
-		const gambar = await QRCode.toDataURL(url, { width: 320, margin: 1 })
 		revalidatePath("/admin/absensi")
 
 		return {
-			sukses: "Token diperbarui. QR lama tidak dapat dipakai lagi.",
+			sukses: "QR berhasil diganti. QR lama tidak dapat dipakai lagi.",
 			qr: {
 				sessionId: hasil.sessionId,
 				token: hasil.token,
 				url,
 				gambar,
-				kedaluwarsaPada: hasil.kedaluwarsaPada.toISOString(),
 			},
 		}
 	} catch (kesalahan) {

@@ -4,16 +4,29 @@ import {
 	ArrowRight,
 	BookOpenCheck,
 	Calendar,
-	ChefHat,
+	ChevronRight,
+	Clock,
+	Layers,
 	MapPin,
 	MessageCircle,
 	MonitorCheck,
+	UserPlus,
 	Utensils,
 } from "lucide-react"
 
 import { BuktiPublik, GaleriKegiatan, UlasanPeserta } from "@/components/bukti-publik"
+import { LabelBagian } from "@/components/kerangka"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card"
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Separator } from "@/components/ui/separator"
 import { identitasRmp } from "@/lib/identitas-rmp"
 import { daftarKelasPublik, sisaKuota } from "@/lib/layanan/kelas"
@@ -49,171 +62,178 @@ const langkahPendaftaran = [
 	{
 		judul: "Pilih program",
 		deskripsi: "Lihat daftar kelas, jadwal, lokasi, dan sisa kuota yang tersedia.",
+		ikon: Layers,
 	},
 	{
 		judul: "Buat akun",
 		deskripsi: "Daftar dengan email agar riwayat kelas dan pembayaran tercatat.",
+		ikon: UserPlus,
 	},
 	{
 		judul: "Selesaikan pembayaran",
 		deskripsi: "Lanjutkan pembayaran setelah memilih kelas yang sesuai.",
+		ikon: MessageCircle,
 	},
 	{
 		judul: "Ikuti kelas",
 		deskripsi: "Hadir di kelas tatap muka atau ikuti kelas online sesuai jadwal.",
+		ikon: Calendar,
 	},
 ]
+
+/** Label bagian di atas permukaan navy memakai token, bukan kelas transparan. */
+function LabelBagianTerang({ children }: { children: React.ReactNode }) {
+	return (
+		<p className="text-xs font-bold uppercase tracking-[0.16em] text-primary-muted">
+			{children}
+		</p>
+	)
+}
 
 export default async function Beranda() {
 	// Kegagalan query kelas tidak boleh meruntuhkan bagian lain halaman ini.
 	const kelas = await daftarKelasPublik().catch(() => [])
 	const pilihan = kelas.slice(0, 3)
 	const whatsapp = identitasRmp.whatsapp.nilai
+	const totalKuota = kelas.reduce((jumlah, item) => jumlah + sisaKuota(item.kuota, item._count.enrollments), 0)
 
 	return (
-		<div className="space-y-16 pb-4 sm:space-y-20 lg:space-y-24">
-			{/* Pembuka: satu janji faktual + satu aksi utama. Tanpa foto hero
-			    (dihapus atas permintaan) sehingga muat pertama lebih ringan. */}
+		<div className="flex flex-col gap-16 lg:gap-28">
+			{/* Pembuka. Panel navy memberi hierarki tegas pada aksi utama tanpa
+			    memakai foto hero buatan. */}
 			<section id="beranda" aria-labelledby="judul-beranda" className="scroll-mt-24">
-				<div className="max-w-3xl space-y-6">
-					<p className="text-xs font-bold uppercase tracking-[0.16em] text-accent-foreground sm:text-sm">
-						Pelatihan Bisnis Kuliner di Bandar Lampung
-					</p>
-					<h1
-						id="judul-beranda"
-						className="font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl"
-					>
-						Belajar melalui praktik, siapkan langkah kerja atau usaha
-					</h1>
-					<p className="max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-						Rumah Mama Pintar menyediakan kursus masakan, roti, kue, dan minuman dalam
-						format tatap muka maupun online.
-					</p>
-					<div className="flex flex-col gap-3 sm:flex-row">
-						<Button asChild size="lg" variant="gold">
-							<Link href="#program">Lihat Program Kelas</Link>
-						</Button>
-						<Button asChild size="lg" variant="outline">
-							<a href={whatsapp} target="_blank" rel="noreferrer noopener">
-								<MessageCircle aria-hidden="true" /> Konsultasi via WhatsApp
-							</a>
-						</Button>
-					</div>
-					<div className="flex flex-col gap-2 border-l-4 border-accent-foreground/40 pl-4 text-sm text-muted-foreground sm:flex-row sm:gap-6">
-						<span className="inline-flex items-center gap-2">
-							<MapPin aria-hidden="true" className="size-4 text-accent-foreground" />
-							{identitasRmp.kota.nilai}
-						</span>
+				<div className="overflow-hidden rounded-xl bg-primary px-6 py-16 text-primary-foreground sm:px-10 sm:py-20 lg:px-16 lg:py-24">
+					<div className="flex flex-col gap-6 lg:max-w-3xl">
+						<LabelBagianTerang>Pelatihan Bisnis Kuliner di Bandar Lampung</LabelBagianTerang>
+						<h1
+							id="judul-beranda"
+							className="text-3xl font-extrabold sm:text-4xl lg:text-display"
+						>
+							Belajar melalui praktik, siapkan langkah kerja atau usaha
+						</h1>
+						<p className="max-w-xl text-lg leading-8 text-primary-muted">
+							Rumah Mama Pintar menyediakan kursus masakan, roti, kue, dan minuman
+							dalam format tatap muka maupun online.
+						</p>
+
+						<div className="flex flex-col gap-3 sm:flex-row">
+							<Button asChild size="lg" variant="gold">
+								<Link href="#program">Lihat Program Kelas</Link>
+							</Button>
+							<Button asChild size="lg" variant="onDark">
+								<a href={whatsapp} target="_blank" rel="noreferrer noopener">
+									<MessageCircle aria-hidden="true" /> Konsultasi via WhatsApp
+								</a>
+							</Button>
+						</div>
+
+						<div className="flex flex-col gap-2 text-sm text-primary-muted sm:flex-row sm:gap-6">
+							<span className="inline-flex items-center gap-2">
+								<MapPin aria-hidden="true" className="size-4" />
+								{identitasRmp.kota.nilai}
+							</span>
+							<span className="inline-flex items-center gap-2">
+								<Clock aria-hidden="true" className="size-4" />
+								{kelas.length > 0
+									? `${kelas.length} kelas aktif · ${totalKuota} kursi tersedia`
+									: "Jadwal kelas diperbarui berkala"}
+							</span>
+						</div>
 					</div>
 				</div>
 
-				<div className="mt-10 grid gap-5 sm:grid-cols-3">
+				{/* Tiga cara belajar. Kartu putih di atas latar agar terpisah dari panel navy. */}
+				<div className="mt-6 grid gap-5 sm:grid-cols-3">
 					{keunggulan.map(({ judul, deskripsi, ikon: Ikon }) => (
-						<Card key={judul} className="pt-0">
-							<CardHeader className="pt-5">
-								<div className="flex size-11 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+						<Card key={judul}>
+							<CardHeader>
+								<span className="flex size-11 items-center justify-center rounded-lg bg-brand text-brand-foreground">
 									<Ikon aria-hidden="true" className="size-5" />
-								</div>
-								<CardTitle className="mt-3 text-base font-bold">{judul}</CardTitle>
+								</span>
+								<CardTitle className="mt-3">{judul}</CardTitle>
+								<CardDescription>{deskripsi}</CardDescription>
 							</CardHeader>
-							<CardContent className="pb-5">
-								<p className="text-sm leading-6 text-muted-foreground">{deskripsi}</p>
-							</CardContent>
 						</Card>
 					))}
 				</div>
 			</section>
 
 			{/* Program dari data nyata aplikasi, bukan daftar duplikat. */}
-			<section id="program" aria-labelledby="judul-program" className="scroll-mt-24 space-y-6">
+			<section id="program" aria-labelledby="judul-program" className="scroll-mt-24">
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-					<div className="max-w-2xl">
-						<p className="text-xs font-bold uppercase tracking-[0.16em] text-accent-foreground">
-							Program pilihan
-						</p>
-						<h2
-							id="judul-program"
-							className="mt-2 font-heading text-2xl font-bold text-foreground sm:text-3xl"
-						>
+					<div className="flex max-w-2xl flex-col gap-3">
+						<LabelBagian>Program pilihan</LabelBagian>
+						<h2 id="judul-program" className="text-2xl font-bold text-foreground sm:text-3xl">
 							Temukan kelas yang sesuai
 						</h2>
-						<p className="mt-2 text-sm leading-6 text-muted-foreground">
+						<CardDescription className="text-base">
 							Periksa jadwal, biaya, lokasi, dan kuota sebelum mendaftar.
-						</p>
+						</CardDescription>
 					</div>
-					<Link
-						href="/kelas"
-						className="inline-flex min-h-11 items-center gap-2 font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-					>
-						Lihat semua kelas <ArrowRight aria-hidden="true" className="size-4" />
-					</Link>
+					<Button asChild variant="link" className="justify-start self-start font-semibold">
+						<Link href="/kelas">
+							Lihat semua kelas <ArrowRight aria-hidden="true" />
+						</Link>
+					</Button>
 				</div>
 
 				{pilihan.length === 0 ? (
-					<Card className="border-dashed">
-						<CardContent className="py-12 text-center">
-							<ChefHat aria-hidden="true" className="mx-auto size-9 text-accent-foreground" />
-							<h3 className="mt-4 font-heading font-bold text-foreground">
-								Jadwal kelas sedang disiapkan
-							</h3>
-							<p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+					<Empty className="mt-8 border border-dashed">
+						<EmptyHeader>
+							<EmptyMedia variant="icon">
+								<Utensils aria-hidden="true" />
+							</EmptyMedia>
+							<EmptyTitle>Jadwal kelas sedang disiapkan</EmptyTitle>
+							<EmptyDescription>
 								Hubungi Rumah Mama Pintar untuk menanyakan informasi program terbaru.
-							</p>
-							<Button asChild variant="outline" className="mt-5">
+							</EmptyDescription>
+						</EmptyHeader>
+						<EmptyContent>
+							<Button asChild variant="outline">
 								<a href={whatsapp} target="_blank" rel="noreferrer noopener">
 									Hubungi via WhatsApp
 								</a>
 							</Button>
-						</CardContent>
-					</Card>
+						</EmptyContent>
+					</Empty>
 				) : (
-					<div className="grid gap-5 md:grid-cols-3">
+					<div className="mt-8 grid gap-5 md:grid-cols-3">
 						{pilihan.map((item) => {
 							const sisa = sisaKuota(item.kuota, item._count.enrollments)
 							return (
-								<Card key={item.id} className="flex flex-col pt-0">
-									<CardHeader className="pt-5">
-										<div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-											<CardTitle className="font-heading text-base font-bold">
-												{item.judul}
-											</CardTitle>
-											<span className="shrink-0 text-sm font-bold text-accent-foreground">
-												{formatRupiah(item.harga.toString())}
-											</span>
+								<Card key={item.id} className="h-full">
+									<CardHeader>
+										<div className="flex items-start justify-between gap-3">
+											<CardTitle className="text-lg">{item.judul}</CardTitle>
+											<Badge variant={sisa > 0 ? "sukses" : "destructive"}>
+												{sisa > 0 ? `${sisa} kursi` : "Penuh"}
+											</Badge>
 										</div>
+										<p className="font-heading text-xl font-bold text-foreground">
+											{formatRupiah(item.harga.toString())}
+										</p>
 									</CardHeader>
-									<CardContent className="flex-1 space-y-3">
-										<p className="line-clamp-3 text-sm leading-6 text-muted-foreground">
+									<CardContent className="flex flex-1 flex-col gap-4">
+										<CardDescription className="line-clamp-3">
 											{item.deskripsi || "Informasi materi akan diumumkan oleh admin."}
-										</p>
+										</CardDescription>
 										<Separator />
-										<p className="flex items-start gap-2 text-sm text-muted-foreground">
-											<Calendar
-												aria-hidden="true"
-												className="mt-0.5 size-4 shrink-0 text-accent-foreground"
-											/>
-											<span>{formatTanggalWaktu(item.jadwalMulai)} WIB</span>
-										</p>
-										<p className="flex items-start gap-2 text-sm text-muted-foreground">
-											<MapPin
-												aria-hidden="true"
-												className="mt-0.5 size-4 shrink-0 text-accent-foreground"
-											/>
-											<span className="min-w-0 break-words">{item.lokasi}</span>
-										</p>
+										<div className="flex flex-col gap-2">
+											<p className="flex items-start gap-2 text-sm text-muted-foreground">
+												<Calendar aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-brand" />
+												<span>{formatTanggalWaktu(item.jadwalMulai)} WIB</span>
+											</p>
+											<p className="flex items-start gap-2 text-sm text-muted-foreground">
+												<MapPin aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-brand" />
+												<span className="min-w-0 break-words">{item.lokasi}</span>
+											</p>
+										</div>
 									</CardContent>
-									<CardFooter className="flex-col items-stretch gap-3 pb-5 xl:flex-row xl:items-center xl:justify-between">
-										<span className="text-xs font-medium text-muted-foreground">
-											{sisa > 0 ? `${sisa} kursi tersisa` : "Kelas penuh"}
-										</span>
-										{/* min-h-11 dipaksa di mobile agar target sentuh >=44px,
-										    baru dipadatkan pada layar xl. */}
-										<Button
-											asChild
-											size="sm"
-											className="min-h-11 w-full font-semibold xl:min-h-9 xl:w-auto"
-										>
-											<Link href={`/kelas/${item.slug}`}>Lihat detail</Link>
+									<CardFooter className="mt-auto">
+										<Button asChild variant="gold" className="w-full">
+											<Link href={`/kelas/${item.slug}`}>
+												Lihat detail <ChevronRight aria-hidden="true" />
+											</Link>
 										</Button>
 									</CardFooter>
 								</Card>
@@ -233,77 +253,74 @@ export default async function Beranda() {
 			{/* Galeri dokumentasi kegiatan, memakai foto asli dari arsip RMP. */}
 			<GaleriKegiatan />
 
-			<section
-				id="cara-daftar"
-				aria-labelledby="judul-cara-daftar"
-				className="scroll-mt-24"
-			>
-				<Card className="px-5 py-10 sm:px-8 lg:px-10">
-					<div className="max-w-2xl">
-						<p className="text-xs font-bold uppercase tracking-[0.16em] text-accent-foreground">
-							Cara pendaftaran
-						</p>
+			<section id="cara-daftar" aria-labelledby="judul-cara-daftar" className="scroll-mt-24">
+				<Card>
+					<CardHeader className="gap-3 pb-0">
+						<LabelBagian>Cara pendaftaran</LabelBagian>
 						<h2
 							id="judul-cara-daftar"
-							className="mt-2 font-heading text-2xl font-bold text-foreground sm:text-3xl"
+							className="text-2xl font-bold tracking-tight text-card-foreground sm:text-3xl"
 						>
 							Empat langkah untuk mulai belajar
 						</h2>
-					</div>
-					<ol className="mt-8 max-w-3xl">
-						{langkahPendaftaran.map((langkah, indeks) => (
-							<li key={langkah.judul} className="relative flex gap-4 pb-5 last:pb-0 sm:gap-5">
-								{indeks < langkahPendaftaran.length - 1 ? (
-									<span
-										aria-hidden="true"
-										className="absolute bottom-0 left-5 top-10 border-l-2 border-brand-border"
-									/>
-								) : null}
-								<span
-									className="relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full bg-brand font-bold text-brand-foreground shadow-sm"
-									aria-hidden="true"
-								>
-									{indeks + 1}
-								</span>
-								<div className="min-w-0 flex-1 rounded-lg border border-border bg-muted p-5">
-									<h3 className="font-heading font-bold text-foreground">{langkah.judul}</h3>
-									<p className="mt-2 text-sm leading-6 text-muted-foreground">
-										{langkah.deskripsi}
-									</p>
-								</div>
-							</li>
-						))}
-					</ol>
-					<div className="mt-8 flex flex-col gap-3 sm:flex-row">
-						<Button asChild size="lg" variant="gold">
-							<Link href="/kelas">Pilih Kelas</Link>
-						</Button>
-						<Button asChild size="lg" variant="outline">
-							<Link href="/daftar">Buat Akun</Link>
-						</Button>
-					</div>
+					</CardHeader>
+					<CardContent className="pt-8">
+						<ol className="flex flex-col gap-4">
+							{langkahPendaftaran.map((langkah, indeks) => {
+								const Ikon = langkah.ikon
+								return (
+									<li key={langkah.judul}>
+										<Card>
+											<CardContent className="flex items-start gap-4 p-5">
+												<span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary font-bold text-foreground">
+													{indeks + 1}
+												</span>
+												<div className="flex min-w-0 flex-col gap-1">
+													<div className="flex items-center gap-2">
+														<Ikon aria-hidden="true" className="size-4 shrink-0 text-brand" />
+														<h3 className="font-heading font-bold text-foreground">
+															{langkah.judul}
+														</h3>
+													</div>
+													<p className="text-sm leading-6 text-muted-foreground">
+														{langkah.deskripsi}
+													</p>
+												</div>
+											</CardContent>
+										</Card>
+									</li>
+								)
+							})}
+						</ol>
+
+						<div className="mt-8 flex flex-col gap-3 sm:flex-row">
+							<Button asChild size="lg" variant="default">
+								<Link href="/kelas">Pilih Kelas</Link>
+							</Button>
+							<Button asChild size="lg" variant="outline">
+								<Link href="/daftar">Buat Akun</Link>
+							</Button>
+						</div>
+					</CardContent>
 				</Card>
 			</section>
 
-			<section aria-labelledby="judul-cta" className="rounded-2xl border border-border bg-card px-6 py-10 shadow-sm sm:px-10 sm:py-12">
-				<div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-					<div className="max-w-2xl">
-						<h2
-							id="judul-cta"
-							className="font-heading text-2xl font-bold text-foreground sm:text-3xl"
-						>
+			<section aria-labelledby="judul-cta">
+				<div className="flex flex-col items-start gap-8 rounded-xl bg-primary px-6 py-14 text-primary-foreground sm:px-10 sm:py-16 lg:flex-row lg:items-center lg:justify-between">
+					<div className="flex max-w-2xl flex-col gap-3">
+						<h2 id="judul-cta" className="text-2xl font-bold sm:text-3xl">
 							Siap memilih kelas kuliner?
 						</h2>
-						<p className="mt-3 leading-7 text-muted-foreground">
-							Lihat program yang tersedia atau hubungi Rumah Mama Pintar untuk informasi
-							lebih lanjut.
+						<p className="leading-7 text-primary-muted">
+							Lihat program yang tersedia atau hubungi Rumah Mama Pintar untuk
+							informasi lebih lanjut.
 						</p>
 					</div>
 					<div className="flex flex-col gap-3 sm:flex-row">
 						<Button asChild size="lg" variant="gold">
 							<Link href="/kelas">Lihat Program</Link>
 						</Button>
-						<Button asChild size="lg" variant="outline">
+						<Button asChild size="lg" variant="onDark">
 							<a href={whatsapp} target="_blank" rel="noreferrer noopener">
 								<MessageCircle aria-hidden="true" /> Hubungi Kami
 							</a>
