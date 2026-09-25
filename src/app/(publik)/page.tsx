@@ -61,15 +61,6 @@ const langkahPendaftaran = [
 	},
 ]
 
-/** Label bagian di atas permukaan navy memakai token, bukan kelas transparan. */
-function LabelBagianTerang({ children }: { children: React.ReactNode }) {
-	return (
-		<p className="text-xs font-bold uppercase tracking-[0.16em] text-primary-muted">
-			{children}
-		</p>
-	)
-}
-
 export default async function Beranda() {
 	// Kegagalan query kelas tidak boleh meruntuhkan bagian lain halaman ini.
 	const kelas = await daftarKelasPublik().catch(() => [])
@@ -79,47 +70,25 @@ export default async function Beranda() {
 
 	return (
 		<div className="flex flex-col gap-16 lg:gap-28">
-			{/* Pembuka. Panel navy memberi hierarki tegas pada aksi utama tanpa
-			    memakai foto hero buatan. */}
+			{/* Pembuka. Permukaan putih bersih dengan isi terpusat; penekanan aksi
+			    dibawa oleh tombol, bukan oleh latar panel gelap. */}
 			<section id="beranda" aria-labelledby="judul-beranda" className="scroll-mt-24">
-				<div className="overflow-hidden rounded-xl bg-primary px-6 py-16 text-primary-foreground sm:px-10 sm:py-20 lg:px-16 lg:py-24">
-					<div className="flex flex-col gap-6 lg:max-w-3xl">
-						<LabelBagianTerang>Pelatihan Bisnis Kuliner di Bandar Lampung</LabelBagianTerang>
-						<h1
-							id="judul-beranda"
-							className="text-3xl font-extrabold sm:text-4xl lg:text-display"
-						>
-							Belajar melalui praktik, siapkan langkah kerja atau usaha
-						</h1>
-						<p className="max-w-xl text-lg leading-8 text-primary-muted">
-							Rumah Mama Pintar menyediakan kursus masakan, roti, kue, dan minuman
-							dalam format tatap muka maupun online.
-						</p>
+				<div className="flex flex-col items-center gap-6 text-center">
+					<LabelBagian>Pelatihan Bisnis Kuliner di Bandar Lampung</LabelBagian>
+					<h1
+						id="judul-beranda"
+						className="max-w-3xl text-balance text-3xl font-extrabold text-foreground sm:text-4xl lg:text-display"
+					>
+						Belajar melalui praktik, siapkan langkah kerja atau usaha
+					</h1>
+					<p className="max-w-xl text-lg leading-8 text-muted-foreground">
+						Rumah Mama Pintar menyediakan kursus masakan, roti, kue, dan minuman
+						dalam format tatap muka maupun online.
+					</p>
 
-						<div className="flex flex-col gap-3 sm:flex-row">
-							<Button asChild size="lg" variant="gold">
-								<Link href="#program">Lihat Program Kelas</Link>
-							</Button>
-							<Button asChild size="lg" variant="onDark">
-								<a href={whatsapp} target="_blank" rel="noreferrer noopener">
-									<MessageCircle aria-hidden="true" /> Konsultasi via WhatsApp
-								</a>
-							</Button>
-						</div>
-
-						<div className="flex flex-col gap-2 text-sm text-primary-muted sm:flex-row sm:gap-6">
-							<span className="inline-flex items-center gap-2">
-								<MapPin aria-hidden="true" className="size-4" />
-								{identitasRmp.kota.nilai}
-							</span>
-							<span className="inline-flex items-center gap-2">
-								<Clock aria-hidden="true" className="size-4" />
-								{kelas.length > 0
-									? `${kelas.length} kelas aktif · ${totalKuota} kursi tersedia`
-									: "Jadwal kelas diperbarui berkala"}
-							</span>
-						</div>
-					</div>
+					<Button asChild size="lg" variant="gold">
+						<Link href="#program">Lihat Program Kelas</Link>
+					</Button>
 				</div>
 			</section>
 
@@ -134,6 +103,12 @@ export default async function Beranda() {
 						<CardDescription className="text-base">
 							Periksa jadwal, biaya, lokasi, dan kuota sebelum mendaftar.
 						</CardDescription>
+						{kelas.length > 0 ? (
+							<p className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+								<Clock aria-hidden="true" className="size-4 shrink-0 text-brand" />
+								{kelas.length} kelas aktif · {totalKuota} kursi tersedia
+							</p>
+						) : null}
 					</div>
 					<Button asChild variant="link" className="justify-start self-start font-semibold">
 						<Link href="/kelas">
