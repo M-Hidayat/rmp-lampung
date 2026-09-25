@@ -62,21 +62,44 @@ Bio Instagram mengonfirmasi nomor WA yang sama dengan halaman Facebook.
 | YouTube — "RMP TEMU MEMBER 2022 di Tabek Indah" | Tidak memuat transkrip tertulis yang bisa dipakai sebagai kutipan. |
 | Lampung Pride — "5 Tempat Kursus Masak di Bandar Lampung" | RMP tidak muncul sebagai bagian isi yang terverifikasi pada pembacaan langsung. |
 
-## 5. Foto kegiatan: status dan batasan
+## 5. Foto kegiatan
 
-**Foto tidak disalin ke situs.** Alasannya:
+**Foto SUDAH dipakai.** Pemilik mengirim 37 foto arsip resmi (berkas di
+`public/images/kegiatan`), sehingga galeri kini berisi dokumentasi asli — bukan
+gambar stok maupun foto milik pihak lain.
 
-1. Foto pada ulasan Google dan Instagram memiliki **hak cipta pengunggahnya**
-   (pengulas/kontributor), bukan milik RMP.
-2. Foto tidak dapat **diverifikasi isinya** oleh sistem ini pada saat pengerjaan:
-   model yang aktif tidak punya kemampuan melihat gambar, dan model vision
-   alternatif sedang kena batas kuota (HTTP 429).
-3. Menaruh gambar yang tidak terverifikasi ke halaman publik berisiko: bisa jadi
-   itu foto profil akun, tangkapan layar, atau foto yang tidak relevan.
+Yang tampil di galeri beranda: **9 foto kurasi**, dipilih dengan syarat:
 
-Karena itu galeri menampilkan **keadaan kosong yang jujur** sampai pemilik
-mengirim berkas asli. Ini lebih aman daripada memasang gambar stok atau gambar
-yang belum tentu benar isinya.
+1. Resolusi >= 1000 px agar tajam di layar besar.
+2. Berorientasi mendatar/kuadrat, supaya rapi sebagai kartu galeri 4:3.
+   Berkas 640x1136 (potret, rasio layar ponsel) tidak dipakai pada kartu karena
+   rasionya memotong isi terlalu banyak, tetapi tetap tersimpan di folder.
+3. Dimensi **diverifikasi dari berkas aslinya**, bukan diperkirakan.
+
+Pemeriksaan yang dijalankan sebelum foto tayang:
+
+| Pemeriksaan | Hasil |
+| --- | --- |
+| Berkas rusak / 0 byte | 0 dari 37 |
+| Blok polos / kontras rata | 0 dari 37 |
+| Hampir seluruhnya gelap/putih | 0 dari 37 |
+| Dugaan bilah UI tangkapan layar | **0 dari 37** |
+
+Catatan kejujuran: isi tiap foto **tidak** diverifikasi secara visual karena
+model yang aktif tidak punya kemampuan melihat gambar dan model vision
+alternatif terkena batas kuota. Karena itu:
+
+- Alt text ditulis faktual-netral ("Kegiatan pelatihan kuliner Rumah Mama
+  Pintar") tanpa mengklaim detail yang tidak bisa dipastikan.
+- Pemeriksaan di atas bersifat objektif dari piksel (keragaman warna, kontras,
+  deteksi tepi tajam), bukan pembacaan isi.
+- Bila ada foto yang tidak layak tayang, cukup sebutkan nama berkasnya.
+
+Hipotesis yang diuji dan **terbantah**: 20 berkas sempat diduga berupa tangkapan
+layar Instagram karena rasio 9:16 dan tepi atas tampak rata. Pengukuran tepi yang
+lebih tajam menunjukkan transisi berlangsung halus (lonjakan 0-11 dari ambang
+25), jadi itu latar polos alami, bukan bilah UI.
+
 
 ## 6. Ketidakcocokan antar sumber (sudah ditampilkan di /profil)
 
