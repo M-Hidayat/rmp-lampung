@@ -11,7 +11,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
-import { BuktiPublik } from "@/components/bukti-publik"
+import { BuktiPublik, UlasanPeserta } from "@/components/bukti-publik"
 import { buktiPublik, catatanRiset } from "@/lib/bukti-publik"
 import { daftarPlaceholder, identitasRmp } from "@/lib/identitas-rmp"
 
@@ -111,7 +111,9 @@ export default function HalamanProfil() {
 				</p>
 			</Alert>
 
-			{/* Bukti pihak ketiga yang dapat diperiksa sendiri oleh pengunjung. */}
+			{/* Ulasan asli peserta + liputan pihak ketiga, semuanya bertaut sumber. */}
+			<UlasanPeserta batas={5} />
+
 			<div className="space-y-4">
 				<BuktiPublik jumlahAwal={buktiPublik.length} />
 
@@ -122,13 +124,19 @@ export default function HalamanProfil() {
 					</p>
 					<ul className="space-y-2 text-sm">
 						<li>
-							<span className="font-semibold">Alamat:</span> {catatanRiset.alamat.catatan}
+							<span className="font-semibold">Alamat:</span>{" "}
+							{catatanRiset.alamatTerkonfirmasi.catatan}
 						</li>
 						<li>
 							<span className="font-semibold">Telepon:</span> {catatanRiset.telepon.catatan}
 						</li>
 						<li>
-							<span className="font-semibold">Foto kegiatan:</span> {catatanRiset.fotoKegiatan.catatan}
+							<span className="font-semibold">Foto kegiatan:</span>{" "}
+							{catatanRiset.fotoKegiatan.catatan}
+						</li>
+						<li>
+							<span className="font-semibold">Nama instruktur:</span>{" "}
+							{catatanRiset.sertifikat.catatan}
 						</li>
 					</ul>
 				</Alert>

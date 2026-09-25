@@ -14,7 +14,7 @@ import {
 
 import hero from "../../../public/images/hero-culinary.jpg"
 import { Button } from "@/components/ui/button"
-import { BuktiPublik, GaleriKegiatan } from "@/components/bukti-publik"
+import { BuktiPublik, GaleriKegiatan, UlasanPeserta } from "@/components/bukti-publik"
 import { identitasRmp } from "@/lib/identitas-rmp"
 import { daftarKelasPublik, sisaKuota } from "@/lib/layanan/kelas"
 import { formatRupiah, formatTanggalWaktu } from "@/lib/uang"
@@ -188,6 +188,9 @@ export default async function Beranda() {
 					<Button asChild size="lg" variant="outline"><Link href="/daftar">Buat Akun</Link></Button>
 				</div>
 			</section>
+
+			{/* Ulasan asli peserta dari Google Maps, beserta penilaian 4,9/186 ulasan. */}
+			<UlasanPeserta />
 
 			{/* Bukti pihak ketiga: liputan media, institusi pendidikan, organisasi.
 			    Semua tautan mengarah ke sumber asli agar dapat diperiksa sendiri. */}

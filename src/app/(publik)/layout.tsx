@@ -8,6 +8,7 @@ import Link from "next/link"
 const tautan = [
 	{ href: "/#beranda", label: "Beranda" },
 	{ href: "/#program", label: "Program" },
+	{ href: "/#ulasan", label: "Ulasan" },
 	{ href: "/#bukti", label: "Rekam Jejak" },
 	{ href: "/#cara-daftar", label: "Cara Daftar" },
 ]
