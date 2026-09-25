@@ -5,14 +5,19 @@ import { AlertCircle, AlertTriangle, CheckCircle2, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const variasiAlert = cva(
-	"relative w-full rounded-lg border p-4 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7",
+	"relative w-full rounded-md border p-4 text-sm shadow-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg~*]:pl-7",
 	{
 		variants: {
 			variant: {
-				info: "border-zinc-200 bg-zinc-50 text-zinc-900 [&>svg]:text-zinc-900",
-				sukses: "border-emerald-200 bg-emerald-50 text-emerald-900 [&>svg]:text-emerald-600",
-				peringatan: "border-amber-200 bg-amber-50 text-amber-900 [&>svg]:text-amber-600",
-				gagal: "border-red-200 bg-red-50 text-red-900 [&>svg]:text-red-600",
+				// Memakai token semantik, bukan palet mentah, agar seragam di semua
+				// halaman yang nanti ikut memakai shadcn.
+				info: "border-border bg-info-surface text-foreground [&>svg]:text-muted-foreground",
+				sukses:
+					"border-success/30 bg-success-surface text-foreground [&>svg]:text-success",
+				peringatan:
+					"border-warning/30 bg-warning-surface text-foreground [&>svg]:text-warning",
+				gagal:
+					"border-destructive/30 bg-destructive-surface text-foreground [&>svg]:text-destructive",
 			},
 		},
 		defaultVariants: { variant: "info" },
@@ -51,7 +56,7 @@ export function Alert({
 			{renderIcon()}
 			<div className="space-y-1">
 				{judul ? <h5 className="font-semibold leading-none tracking-tight">{judul}</h5> : null}
-				<div className="text-xs sm:text-sm text-zinc-600 leading-relaxed">{children}</div>
+				<div className="text-sm leading-relaxed text-current/80">{children}</div>
 			</div>
 		</div>
 	)

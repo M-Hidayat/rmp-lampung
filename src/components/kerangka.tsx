@@ -26,7 +26,7 @@ export function LogoRmp({ className }: { className?: string }) {
 				priority
 			/>
 			<div className="flex flex-col">
-				<span className="text-base font-bold tracking-tight text-zinc-950 font-heading">
+				<span className="text-base font-bold tracking-tight text-foreground font-heading">
 					Rumah Mama Pintar
 				</span>
 			</div>
@@ -43,7 +43,7 @@ export function KepalaHalaman({
 	aksi?: React.ReactNode
 }) {
 	return (
-		<header className="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur-xs">
+		<header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-xs">
 			<div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
 				<Link
 					href="/"
@@ -52,7 +52,7 @@ export function KepalaHalaman({
 					<LogoRmp />
 				</Link>
 				<nav aria-label="Navigasi utama">
-					<ul className="flex items-center gap-1 sm:gap-2 text-sm font-medium text-zinc-700">
+					<ul className="flex items-center gap-1 sm:gap-2 text-sm font-medium text-card-foreground">
 						{tautan.map((item) => (
 							<li key={item.href} className="relative">
 								<Link
@@ -61,7 +61,7 @@ export function KepalaHalaman({
 										"relative inline-flex min-h-11 items-center px-3.5 py-2 text-sm font-medium transition-colors hover:text-foreground",
 										item.active
 											? "font-semibold text-foreground after:absolute after:bottom-0 after:left-3.5 after:right-3.5 after:h-0.5 after:rounded-full after:bg-primary"
-											: "text-slate-600"
+											: "text-muted-foreground"
 									)}
 								>
 									{item.label}
@@ -78,45 +78,45 @@ export function KepalaHalaman({
 
 export function KakiHalaman() {
 	return (
-		<footer className="mt-20 border-t border-border bg-slate-50 text-sm text-slate-600">
+		<footer className="mt-20 border-t border-border bg-muted text-sm text-muted-foreground">
 			<div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 sm:grid-cols-2 lg:grid-cols-4">
 				<div className="space-y-3 lg:col-span-2">
 					<LogoRmp />
-					<p className="max-w-md text-xs leading-relaxed text-zinc-500 pt-1">
+					<p className="max-w-md text-xs leading-relaxed text-muted-foreground pt-1">
 						Pelatihan bisnis kuliner di Bandar Lampung dengan pilihan kursus masakan, roti, kue, dan minuman.
 					</p>
-					<p className="text-xs text-zinc-400 pt-1">
+					<p className="text-xs text-muted-foreground pt-1">
 						© {new Date().getFullYear()} {identitasTampilan.nama}. Hak cipta dilindungi.
 					</p>
 				</div>
 				<div>
-					<p className="font-semibold text-zinc-950 text-sm">Kontak & Lokasi</p>
-					<div className="mt-3 space-y-1.5 text-xs text-zinc-500">
+					<p className="font-semibold text-foreground text-sm">Kontak & Lokasi</p>
+					<div className="mt-3 space-y-1.5 text-xs text-muted-foreground">
 						<p className="leading-relaxed">{identitasTampilan.alamat}</p>
-						<p>Telepon: <span className="font-medium text-zinc-800">{identitasTampilan.telepon}</span></p>
-						<p>Email: <span className="font-medium text-zinc-800">{identitasTampilan.email}</span></p>
+						<p>Telepon: <span className="font-medium text-foreground">{identitasTampilan.telepon}</span></p>
+						<p>Email: <span className="font-medium text-foreground">{identitasTampilan.email}</span></p>
 					</div>
 				</div>
 				<div>
-					<p className="font-semibold text-zinc-950 text-sm">Akses Cepat</p>
-					<ul className="mt-3 space-y-1.5 text-xs text-zinc-500">
+					<p className="font-semibold text-foreground text-sm">Akses Cepat</p>
+					<ul className="mt-3 space-y-0.5 text-sm text-muted-foreground">
 						<li>
-							<Link className="inline-flex items-center gap-1 hover:text-zinc-950 hover:underline transition-colors" href="/kelas">
+							<Link className="inline-flex min-h-11 items-center gap-1 rounded-md transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="/kelas">
 								Katalog Kursus <ArrowUpRight className="size-3 opacity-60" />
 							</Link>
 						</li>
 						<li>
-							<Link className="inline-flex items-center gap-1 hover:text-zinc-950 hover:underline transition-colors" href="/cara-pendaftaran">
+							<Link className="inline-flex min-h-11 items-center gap-1 rounded-md transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="/cara-pendaftaran">
 								Cara Pendaftaran <ArrowUpRight className="size-3 opacity-60" />
 							</Link>
 						</li>
 						<li>
-							<Link className="inline-flex items-center gap-1 hover:text-zinc-950 hover:underline transition-colors" href="/verifikasi">
+							<Link className="inline-flex min-h-11 items-center gap-1 rounded-md transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="/verifikasi">
 								Verifikasi Sertifikat <ArrowUpRight className="size-3 opacity-60" />
 							</Link>
 						</li>
 						<li>
-							<Link className="inline-flex items-center gap-1 hover:text-zinc-950 hover:underline transition-colors" href="/profil">
+							<Link className="inline-flex min-h-11 items-center gap-1 rounded-md transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="/profil">
 								Profil Lembaga <ArrowUpRight className="size-3 opacity-60" />
 							</Link>
 						</li>
@@ -156,7 +156,7 @@ export function KartuStatistik({
 	nilai: string | number
 }) {
 	return (
-		<div className="rounded-md border border-border bg-white p-5 shadow-sm sm:p-6">
+		<div className="rounded-md border border-border bg-card p-5 shadow-sm sm:p-6">
 			<p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
 				{label}
 			</p>
