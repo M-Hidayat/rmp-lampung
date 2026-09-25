@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import {
 	ArrowRight,
@@ -12,9 +11,8 @@ import {
 	Utensils,
 } from "lucide-react"
 
-import hero from "../../../public/images/hero-culinary.jpg"
-import { Button } from "@/components/ui/button"
 import { BuktiPublik, GaleriKegiatan, UlasanPeserta } from "@/components/bukti-publik"
+import { Button } from "@/components/ui/button"
 import { identitasRmp } from "@/lib/identitas-rmp"
 import { daftarKelasPublik, sisaKuota } from "@/lib/layanan/kelas"
 import { formatRupiah, formatTanggalWaktu } from "@/lib/uang"
@@ -77,38 +75,31 @@ export default async function Beranda() {
 				aria-labelledby="judul-beranda"
 				className="scroll-mt-24 pt-2"
 			>
-				<div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
-					<div className="space-y-6 lg:col-span-6">
-						<p className="text-xs font-bold uppercase tracking-[0.16em] text-primary sm:text-sm">
-							Pelatihan Bisnis Kuliner di Bandar Lampung
-						</p>
-						<h1
-							id="judul-beranda"
-							className="font-heading text-3xl font-extrabold leading-tight tracking-tight text-zinc-950 sm:text-4xl lg:text-5xl"
-						>
-							Belajar melalui praktik, siapkan langkah kerja atau usaha
-						</h1>
-						<p className="max-w-xl text-base leading-7 text-zinc-600 sm:text-lg">
-							Rumah Mama Pintar menyediakan kursus masakan, roti, kue, dan minuman dalam format tatap muka maupun online.
-						</p>
-						<div className="flex flex-col gap-3 sm:flex-row">
-							<Button asChild size="lg" variant="gold">
-								<Link href="#program">Lihat Program Kelas</Link>
-							</Button>
-							<Button asChild size="lg" variant="gold-outline">
-								<a href={whatsapp} target="_blank" rel="noreferrer noopener">
-									<MessageCircle aria-hidden="true" /> Konsultasi via WhatsApp
-								</a>
-							</Button>
-						</div>
-						<div className="flex flex-col gap-2 border-l-4 border-primary pl-4 text-sm text-zinc-600 sm:flex-row sm:gap-6">
-							<span className="inline-flex items-center gap-2"><MapPin aria-hidden="true" className="size-4 text-primary" />{identitasRmp.kota.nilai}</span>
-						</div>
+				<div className="max-w-3xl space-y-6">
+					<p className="text-xs font-bold uppercase tracking-[0.16em] text-primary sm:text-sm">
+						Pelatihan Bisnis Kuliner di Bandar Lampung
+					</p>
+					<h1
+						id="judul-beranda"
+						className="font-heading text-3xl font-extrabold leading-tight tracking-tight text-zinc-950 sm:text-4xl lg:text-5xl"
+					>
+						Belajar melalui praktik, siapkan langkah kerja atau usaha
+					</h1>
+					<p className="max-w-xl text-base leading-7 text-zinc-600 sm:text-lg">
+						Rumah Mama Pintar menyediakan kursus masakan, roti, kue, dan minuman dalam format tatap muka maupun online.
+					</p>
+					<div className="flex flex-col gap-3 sm:flex-row">
+						<Button asChild size="lg" variant="gold">
+							<Link href="#program">Lihat Program Kelas</Link>
+						</Button>
+						<Button asChild size="lg" variant="gold-outline">
+							<a href={whatsapp} target="_blank" rel="noreferrer noopener">
+								<MessageCircle aria-hidden="true" /> Konsultasi via WhatsApp
+							</a>
+						</Button>
 					</div>
-					<div className="lg:col-span-6">
-						<div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-zinc-200 bg-orange-50 shadow-sm">
-							<Image src={hero} alt="Kegiatan pelatihan kuliner Rumah Mama Pintar" fill priority placeholder="blur" className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
-						</div>
+					<div className="flex flex-col gap-2 border-l-4 border-primary pl-4 text-sm text-zinc-600 sm:flex-row sm:gap-6">
+						<span className="inline-flex items-center gap-2"><MapPin aria-hidden="true" className="size-4 text-primary" />{identitasRmp.kota.nilai}</span>
 					</div>
 				</div>
 				<div className="mt-10 grid gap-4 sm:grid-cols-3">

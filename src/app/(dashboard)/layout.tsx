@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -43,7 +44,13 @@ export default async function TataLetakDashboard({ children }: { children: React
 			<aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-card lg:flex lg:h-dvh lg:min-h-0">
 				<div className="flex h-[72px] shrink-0 items-center border-b border-border px-6">
 					<Link href="/" className="flex items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-						<div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-semibold text-primary-foreground">RM</div>
+						<Image
+							src="/images/logo.jpg"
+							alt="Logo Rumah Mama Pintar"
+							width={80}
+							height={80}
+							className="size-9 shrink-0 rounded-md object-cover"
+						/>
 						<div className="min-w-0">
 							<p className="truncate text-sm font-semibold tracking-tight">{identitasTampilan.nama}</p>
 							<p className="truncate text-xs text-muted-foreground">Panel {labelPeran}</p>

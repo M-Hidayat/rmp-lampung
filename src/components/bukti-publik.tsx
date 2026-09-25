@@ -19,6 +19,7 @@ import {
 	ulasanMaps,
 	type BuktiPublik as TBukti,
 } from "@/lib/bukti-publik"
+import { galeriKegiatan, type FotoKegiatan } from "@/lib/galeri-kegiatan"
 import { cn } from "@/lib/utils"
 
 const labelJenis: Record<TBukti["jenis"], { teks: string; Ikon: typeof Newspaper }> = {
@@ -253,16 +254,11 @@ export function BuktiPublik({ jumlahAwal = 3 }: { jumlahAwal?: number }) {
 /**
  * Galeri dokumentasi kegiatan.
  *
- * Sengaja menerima `foto` dari luar: situs tidak menyimpan foto milik media
- * maupun pengunggah ulasan Google karena hak ciptanya bukan milik RMP. Selama
- * pemilik belum mengirim foto asli, komponen ini menampilkan keadaan kosong
- * yang jujur — bukan gambar stok yang menyesatkan.
+ * Memakai foto ASLI dari arsip resmi RMP (`src/lib/galeri-kegiatan.ts`).
+ * Ukuran kartu seragam 4:3 dengan `object-cover` agar baris tetap rapi walau
+ * rasio berkas aslinya berbeda-beda.
  */
-export function GaleriKegiatan({
-	foto = [],
-}: {
-	foto?: { src: string; alt: string; keterangan?: string }[]
-}) {
+export function GaleriKegiatan({ foto = galeriKegiatan }: { foto?: FotoKegiatan[] }) {
 	return (
 		<section id="galeri" aria-labelledby="judul-galeri" className="scroll-mt-24 space-y-6">
 			<div className="max-w-2xl">
@@ -276,42 +272,28 @@ export function GaleriKegiatan({
 			</div>
 
 			{foto.length === 0 ? (
-				<div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-8 text-center sm:p-12">
-					<Image
-						src="/images/hero-culinary.jpg"
-						alt=""
-						width={1200}
-						height={600}
-						className="mx-auto h-auto w-full max-w-lg rounded-xl object-cover opacity-25"
-					/>
-					<h3 className="mt-6 font-heading font-bold text-zinc-950">
-						Foto kegiatan sedang disiapkan
-					</h3>
+				<div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-8 text-center">
+					<h3 className="font-heading font-bold text-zinc-950">Belum ada foto</h3>
 					<p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-600">
-						Galeri ini akan diisi dokumentasi asli kelas dan pelatihan. Sementara itu,
-						Anda dapat melihat ulasan peserta dan rekam jejak kerja sama kami di bagian
-						atas halaman.
+						Dokumentasi kegiatan akan ditampilkan di sini.
 					</p>
 				</div>
 			) : (
-				<div
-					className={cn(
-						"grid gap-4",
-						foto.length >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2",
-					)}
-				>
+				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 					{foto.map((g) => (
 						<figure
 							key={g.src}
-							className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
+							className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition-shadow hover:shadow-md"
 						>
-							<Image
-								src={g.src}
-								alt={g.alt}
-								width={800}
-								height={600}
-								className="aspect-[4/3] w-full object-cover"
-							/>
+							<div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+								<Image
+									src={g.src}
+									alt={g.alt}
+									fill
+									sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+									className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+								/>
+							</div>
 							{g.keterangan ? (
 								<figcaption className="px-4 py-3 text-xs leading-5 text-zinc-600">
 									{g.keterangan}
