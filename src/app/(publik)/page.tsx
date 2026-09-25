@@ -2,14 +2,12 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import {
 	ArrowRight,
-	BookOpenCheck,
 	Calendar,
 	ChevronRight,
 	Clock,
 	Layers,
 	MapPin,
 	MessageCircle,
-	MonitorCheck,
 	UserPlus,
 	Utensils,
 } from "lucide-react"
@@ -39,24 +37,6 @@ export const metadata: Metadata = {
 	description:
 		"Pelatihan bisnis kuliner Rumah Mama Pintar di Bandar Lampung dengan pilihan kursus masakan, roti, kue, dan minuman.",
 }
-
-const keunggulan = [
-	{
-		judul: "Kelas tatap muka",
-		deskripsi: "Praktik langsung di dapur pelatihan bersama pengajar.",
-		ikon: Utensils,
-	},
-	{
-		judul: "Kelas online",
-		deskripsi: "Diikuti dari jarak jauh tanpa mengurangi materi praktik.",
-		ikon: MonitorCheck,
-	},
-	{
-		judul: "Pendampingan belajar",
-		deskripsi: "Peserta dibimbing sampai mampu mempraktikkan sendiri.",
-		ikon: BookOpenCheck,
-	},
-]
 
 const langkahPendaftaran = [
 	{
@@ -140,21 +120,6 @@ export default async function Beranda() {
 							</span>
 						</div>
 					</div>
-				</div>
-
-				{/* Tiga cara belajar. Kartu putih di atas latar agar terpisah dari panel navy. */}
-				<div className="mt-6 grid gap-5 sm:grid-cols-3">
-					{keunggulan.map(({ judul, deskripsi, ikon: Ikon }) => (
-						<Card key={judul}>
-							<CardHeader>
-								<span className="flex size-11 items-center justify-center rounded-lg bg-brand text-brand-foreground">
-									<Ikon aria-hidden="true" className="size-5" />
-								</span>
-								<CardTitle className="mt-3">{judul}</CardTitle>
-								<CardDescription>{deskripsi}</CardDescription>
-							</CardHeader>
-						</Card>
-					))}
 				</div>
 			</section>
 
