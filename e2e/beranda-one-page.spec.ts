@@ -13,7 +13,12 @@ test("beranda menampilkan struktur one-page dan CTA utama", async ({ page }) => 
 		await expect(section).toBeVisible()
 	}
 	await expect(main.getByRole("link", { name: "Lihat semua kelas" })).toHaveAttribute("href", "/kelas")
-	const whatsappHref = await main.getByRole("link", { name: "Konsultasi via WhatsApp" }).getAttribute("href")
+
+	// Tombol "Konsultasi via WhatsApp" di hero DIHAPUS atas permintaan pemilik
+	// (hero kini hanya memuat satu aksi utama: "Lihat Program Kelas"). Jalur
+	// WhatsApp tetap tersedia di bagian CTA bawah, jadi yang diuji kini itu.
+	await expect(main.getByRole("link", { name: "Lihat Program Kelas" })).toHaveAttribute("href", "#program")
+	const whatsappHref = await main.getByRole("link", { name: "Hubungi Kami" }).getAttribute("href")
 	expect(whatsappHref?.startsWith(whatsappUrl)).toBe(true)
 })
 

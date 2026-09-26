@@ -23,8 +23,12 @@ const SANDI_ADMIN = bacaEnv("INITIAL_ADMIN_PASSWORD")
 
 async function masukSebagaiAdmin(page: Page) {
 	await page.goto("/masuk")
-	await page.getByLabel("Email").fill(EMAIL_ADMIN)
-	await page.getByLabel("Kata sandi").fill(SANDI_ADMIN)
+	// `exact: true` wajib di sini: formulir masuk memuat tombol "Lihat kata sandi"
+	// yang aria-label-nya juga mengandung frasa "kata sandi". Tanpa `exact`,
+	// getByLabel("Kata sandi") cocok ke dua elemen (input + tombol) dan Playwright
+	// melempar strict-mode violation.
+	await page.getByLabel("Email", { exact: true }).fill(EMAIL_ADMIN)
+	await page.getByLabel("Kata sandi", { exact: true }).fill(SANDI_ADMIN)
 	await page.getByRole("button", { name: /^Masuk$/ }).click()
 	await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 })
 }
