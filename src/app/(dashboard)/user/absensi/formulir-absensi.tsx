@@ -195,9 +195,26 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 					</Alert>
 				) : null}
 				{status?.sukses ? (
-					<Alert variant="sukses" judul="Absensi berhasil">
-						<p>{status.sukses}</p>
-					</Alert>
+					<div
+						role="status"
+						className="animasi-absensi-naik flex flex-col items-center gap-3 rounded-lg border border-success/30 bg-success-surface p-6 text-center"
+					>
+						{/* Cincin berdenyut + centang membesar: umpan balik visual bahwa
+						    kehadiran benar-benar tercatat. Murni dekoratif (`aria-hidden`),
+						    maknanya dibawa teks di bawah. */}
+						<span className="relative flex size-16 items-center justify-center" aria-hidden="true">
+							<span className="animasi-absensi-denyut absolute inset-0 rounded-full bg-success/20" />
+							<span className="animasi-absensi-muncul relative flex size-14 items-center justify-center rounded-full bg-success text-success-foreground">
+								<CheckCircle2 className="size-8" />
+							</span>
+						</span>
+						<div className="flex flex-col gap-1">
+							<p className="font-heading text-base font-bold text-foreground">Absensi berhasil</p>
+							<p className="mx-auto max-w-sm text-sm leading-6 text-muted-foreground">
+								{status.sukses}
+							</p>
+						</div>
+					</div>
 				) : null}
 
 				<input type="hidden" name="token" value={token} />

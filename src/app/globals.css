@@ -154,6 +154,65 @@
 	left: 0;
 }
 
+/* Animasi umpan balik absensi berhasil.
+ *
+ * Dipakai sekali saat kehadiran tercatat: cincin berdenyut dari tengah, ikon
+ * centang membesar, lalu kartu naik sedikit. Semuanya murni dekoratif —
+ * makna "berhasil" tetap dibawa teks Alert — dan otomatis dinonaktifkan oleh
+ * blok `prefers-reduced-motion` di bawah. */
+@keyframes absensi-denyut {
+	0% {
+		transform: scale(0.7);
+		opacity: 0.7;
+	}
+	70% {
+		transform: scale(1.5);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1.5);
+		opacity: 0;
+	}
+}
+
+@keyframes absensi-muncul {
+	0% {
+		transform: scale(0.5);
+		opacity: 0;
+	}
+	60% {
+		transform: scale(1.08);
+		opacity: 1;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes absensi-naik {
+	0% {
+		transform: translateY(8px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.animasi-absensi-denyut {
+	animation: absensi-denyut 1.4s ease-out 1;
+}
+
+.animasi-absensi-muncul {
+	animation: absensi-muncul 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1;
+}
+
+.animasi-absensi-naik {
+	animation: absensi-naik 0.45s ease-out 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	*,
 	*::before,

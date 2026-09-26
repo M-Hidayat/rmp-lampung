@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 
 import { FormulirAbsensi } from "./formulir-absensi"
-import { Alert } from "@/components/ui/alert"
 
 export const metadata: Metadata = { title: "Absensi" }
 export const dynamic = "force-dynamic"
@@ -21,14 +20,6 @@ export default async function HalamanAbsensiUser({ searchParams }: Props) {
 					Kehadiran tercatat satu kali per pendaftaran yang sudah berstatus lunas.
 				</p>
 			</div>
-
-			<Alert variant="info" judul="Cara mencatat kehadiran">
-				<p>
-					Pindai QR code absensi yang ditampilkan instruktur di kelas fisik menggunakan kamera
-					perangkat Anda. Bila kamera tidak tersedia, buka tautan absensi yang dibagikan admin.
-					Kehadiran yang terlewat dapat dicatatkan oleh admin secara manual.
-				</p>
-			</Alert>
 
 			<div className="bg-card rounded-lg border border-border p-6 ">
 				<FormulirAbsensi token={token} />
