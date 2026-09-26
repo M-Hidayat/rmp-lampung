@@ -3,8 +3,6 @@ import {
 	ArrowUpRight,
 	Building2,
 	GraduationCap,
-	Instagram,
-	MapPin,
 	Newspaper,
 	Quote,
 	Star,
@@ -23,7 +21,6 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
 	buktiPublik,
-	profilInstagram,
 	profilMaps,
 	ringkasanBukti,
 	ulasanMaps,
@@ -85,17 +82,10 @@ export function UlasanPeserta({ batas = 3 }: { batas?: number }) {
 	const tampil = ulasanMaps.slice(0, batas)
 
 	return (
-		<section id="ulasan" aria-labelledby="judul-ulasan" className="scroll-mt-24">
+		<section id="ulasan" aria-label="Ulasan peserta" className="scroll-mt-24">
 			<div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
 				<div className="flex max-w-2xl flex-col gap-3">
 					<LabelBagian>Kata peserta</LabelBagian>
-					<h2 id="judul-ulasan" className="text-2xl font-bold text-foreground sm:text-3xl">
-						Ulasan asli dari Google
-					</h2>
-					<CardDescription className="text-base">
-						Kutipan di bawah ditulis peserta sendiri di Google Maps dan tidak kami
-						ubah, termasuk salah tulisnya. Silakan periksa langsung di tautannya.
-					</CardDescription>
 				</div>
 
 				<Card className="shrink-0 lg:max-w-xs">
@@ -163,31 +153,6 @@ export function UlasanPeserta({ batas = 3 }: { batas?: number }) {
 				<CarouselNext />
 				<CarouselDots className="mt-5" />
 			</Carousel>
-
-			{/* Tautan sosial resmi untuk verifikasi mandiri */}
-			<div className="mt-6 flex flex-wrap gap-3">
-				<a
-					href={profilInstagram.url}
-					target="_blank"
-					rel="noreferrer noopener"
-					className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-card px-4 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-				>
-					<Instagram aria-hidden="true" className="size-4 text-brand" />
-					{profilInstagram.akun}
-					<span className="font-normal text-muted-foreground">
-						{profilInstagram.pengikut} pengikut
-					</span>
-				</a>
-				<a
-					href={profilMaps.url}
-					target="_blank"
-					rel="noreferrer noopener"
-					className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-card px-4 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-				>
-					<MapPin aria-hidden="true" className="size-4 text-brand" />
-					{profilMaps.alamat.split(",")[0]}
-				</a>
-			</div>
 		</section>
 	)
 }
@@ -201,16 +166,9 @@ export function BuktiPublik({ jumlahAwal = 3 }: { jumlahAwal?: number }) {
 	const daftar = buktiPublik.slice(0, jumlahAwal)
 
 	return (
-		<section id="bukti" aria-labelledby="judul-bukti" className="scroll-mt-24">
+		<section id="bukti" aria-label="Rekam jejak pihak ketiga" className="scroll-mt-24">
 			<div className="flex max-w-2xl flex-col gap-3">
 				<LabelBagian>Rekam jejak</LabelBagian>
-				<h2 id="judul-bukti" className="text-2xl font-bold text-foreground sm:text-3xl">
-					Dipercaya sekolah dan komunitas
-				</h2>
-				<CardDescription className="text-base">
-					Rumah Mama Pintar telah bekerja sama dengan sekolah dan organisasi. Setiap
-					sumber di bawah ini dapat Anda periksa sendiri lewat tautannya.
-				</CardDescription>
 			</div>
 
 			<div className="mt-8 grid gap-5 lg:grid-cols-3">
@@ -297,15 +255,9 @@ export function BuktiPublik({ jumlahAwal = 3 }: { jumlahAwal?: number }) {
  */
 export function GaleriKegiatan({ foto = galeriKegiatan }: { foto?: FotoKegiatan[] }) {
 	return (
-		<section id="galeri" aria-labelledby="judul-galeri" className="scroll-mt-24">
+		<section id="galeri" aria-label="Dokumentasi kegiatan" className="scroll-mt-24">
 			<div className="flex max-w-2xl flex-col gap-3">
 				<LabelBagian>Dokumentasi</LabelBagian>
-				<h2 id="judul-galeri" className="text-2xl font-bold text-foreground sm:text-3xl">
-					Suasana kegiatan
-				</h2>
-				<CardDescription className="text-base">
-					Dokumentasi langsung dari kelas dan pelatihan Rumah Mama Pintar.
-				</CardDescription>
 			</div>
 
 			{foto.length === 0 ? (

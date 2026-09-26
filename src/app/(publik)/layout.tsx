@@ -38,7 +38,11 @@ export default async function TataLetakPublik({
 							<Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
 								<Link href="/masuk">Masuk</Link>
 							</Button>
-							<Button asChild size="sm" variant="gold">
+							{/* Tombol "Daftar Sekarang" disembunyikan di layar sempit agar header
+							    tidak berdesakan dengan tombol buka-menu. Pendaftaran tetap
+							    terjangkau dari mobile lewat halaman /masuk ("Daftar akun
+							    peserta") dan /cara-pendaftaran ("Buat Akun"). */}
+							<Button asChild size="sm" variant="gold" className="hidden sm:inline-flex">
 								<Link href="/daftar">Daftar Sekarang</Link>
 							</Button>
 						</>
