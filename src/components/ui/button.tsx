@@ -16,9 +16,9 @@ import { cn } from "@/lib/utils"
  * kontras teks berubah-ubah dan sulit diaudit.
  *
  * Rasio terukur (lihat DESIGN.md):
- * - default:  putih di atas primary (#0F172A)   = 17.85:1 AAA
- * - brand:    putih di atas brand (#B22222)     =  6.68:1 AA
- * - gold:     accent-foreground di atas accent  =  4.88:1 AA
+ * - default:  putih di atas primary (#0E1316) = 18.69:1 AAA
+ * - brand:    putih di atas brand (#745FD4)    =  4.85:1 AA
+ * - gold:     accent-foreground di atas accent =  6.67:1 AA
  * - destructive: putih di atas destructive      =  6.47:1 AA
  */
 const buttonVariants = cva(

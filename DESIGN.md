@@ -1,38 +1,38 @@
 ---
 version: alpha
 name: RMP Culinary Excellence System
-description: Sistem desain resmi Rumah Mama Pintar untuk platform kursus kuliner Bandar Lampung — navy otoritatif sebagai aksi utama, crimson sebagai identitas kuliner tradisional, dan amber hangat sebagai penanda aksi bernilai. Tipografi Montserrat (judul) + Inter (isi).
+description: Sistem desain resmi Rumah Mama Pintar untuk platform kursus kuliner Bandar Lampung — near-black otoritatif sebagai aksi utama, ungu sebagai identitas merek, dan amber hangat sebagai penanda aksi bernilai. Tipografi Montserrat (judul) + Inter (isi).
 colors:
-  # --- Aksi utama: navy. Kontras putih di atasnya 17.85:1 (AAA). ---
-  primary: "#0F172A"
+  # --- Aksi utama: near-black. Kontras putih di atasnya 18.69:1 (AAA). ---
+  primary: "#0E1316"
   primary-foreground: "#FFFFFF"
-  primary-hover: "#1E293B"
-  # Teks sekunder di atas permukaan navy (12.02:1 di atas primary).
-  primary-muted: "#CBD5E1"
+  primary-hover: "#1A2226"
+  # Teks sekunder di atas permukaan near-black (12.02:1 di atas primary).
+  primary-muted: "#B8C0C6"
 
   # --- Permukaan ---
   background: "#F9FAFB"
-  foreground: "#0F172A"
+  foreground: "#0E1316"
   card: "#FFFFFF"
-  card-foreground: "#0F172A"
+  card-foreground: "#0E1316"
   popover: "#FFFFFF"
-  popover-foreground: "#0F172A"
+  popover-foreground: "#0E1316"
 
   # --- Sekunder & redam ---
-  secondary: "#F1F5F9"
-  secondary-foreground: "#0F172A"
-  muted: "#F1F5F9"
-  muted-foreground: "#475569"
+  secondary: "#F1F4F5"
+  secondary-foreground: "#0E1316"
+  muted: "#F1F4F5"
+  muted-foreground: "#4B5563"
 
   # --- Aksen hangat: permukaan CTA. accent-foreground 4.88:1 di atas accent. ---
-  accent: "#FFF7ED"
-  accent-foreground: "#C2410C"
+  accent: "#F2EFFC"
+  accent-foreground: "#5B46B8"
 
   # --- Identitas kuliner tradisional. 6.68:1 di atas putih. ---
-  brand: "#B22222"
+  brand: "#745FD4"
   brand-foreground: "#FFFFFF"
-  brand-surface: "#FEF2F2"
-  brand-border: "#FECACA"
+  brand-surface: "#F2EFFC"
+  brand-border: "#D9D1F5"
 
   # --- Amber dekoratif. HANYA untuk isian grafis, bukan teks. ---
   decorative-amber: "#FFC107"
@@ -47,13 +47,13 @@ colors:
   warning-surface: "#FFFBEB"
   destructive: "#B91C1C"
   destructive-foreground: "#FFFFFF"
-  destructive-surface: "#FEF2F2"
-  info-surface: "#F1F5F9"
+  destructive-surface: "#F2EFFC"
+  info-surface: "#F1F4F5"
 
   # --- Garis & fokus. Cincin 5.18:1 terhadap kartu (butuh >=3:1 non-teks). ---
-  border: "#E2E8F0"
-  input: "#E2E8F0"
-  ring: "#C2410C"
+  border: "#E3E7EA"
+  input: "#E3E7EA"
+  ring: "#5B46B8"
 
 typography:
   display:
@@ -295,14 +295,14 @@ bukan landing page yang ramai.
 
 Tiga keputusan membentuk seluruh tampilan:
 
-1. **Navy otoritatif sebagai aksi utama.** Setiap halaman hanya punya satu aksi
-   utama berwarna navy (`#0F172A`). Ini memberi hierarki yang tidak ambigu:
+1. **Near-black otoritatif sebagai aksi utama.** Setiap halaman hanya punya satu aksi
+   utama berwarna near-black (`#0E1316`). Ini memberi hierarki yang tidak ambigu:
    pengguna selalu tahu langkah berikutnya.
-2. **Crimson sebagai identitas, bukan hiasan.** `#B22222` muncul pada label
+2. **Ungu sebagai identitas, bukan hiasan.** `#745FD4` muncul pada label
    bagian dan aksen identitas kuliner tradisional, tidak pernah bersaing dengan
    aksi utama.
-3. **Amber hangat menandai aksi bernilai.** Permukaan `#FFF7ED` dengan teks
-   `#C2410C` dipakai untuk jalur pendaftaran dan pembayaran — satu-satunya
+3. **Amber hangat menandai aksi bernilai.** Permukaan `#F2EFFC` dengan teks
+   `#5B46B8` dipakai untuk jalur pendaftaran dan pembayaran — satu-satunya
    jalur yang menggerakkan bisnis.
 
 Aturan isi yang mengikat seluruh permukaan: **tidak ada klaim, testimoni, logo,
@@ -322,30 +322,30 @@ Palet sengaja sempit. Semua warna berasal dari token di atas; kelas warna mentah
 Tailwind (`bg-zinc-100`, `text-slate-600`, dan sejenisnya) dilarang di permukaan
 aplikasi karena memutus hubungan dengan bagian ini.
 
-- **Primary (#0F172A):** navy hampir hitam. Aksi utama, judul, dan teks isi.
+- **Primary (#0E1316):** near-black. Aksi utama, judul, dan teks isi.
   Putih di atasnya terukur **17.85:1** (AAA).
-- **Brand (#B22222):** crimson. Identitas kuliner tradisional dan label bagian.
+- **Brand (#745FD4):** ungu. Identitas kuliner tradisional dan label bagian.
   Terukur **6.68:1** di atas putih (AA).
-- **Accent (#FFF7ED) + Accent Foreground (#C2410C):** permukaan CTA hangat.
+- **Accent (#F2EFFC) + Accent Foreground (#5B46B8):** permukaan CTA hangat.
   Pasangan ini terukur **4.88:1** (AA) dan menjadi satu-satunya cara memakai
   amber untuk teks.
-- **Muted Foreground (#475569):** teks sekunder. Terukur **7.58:1** di atas
+- **Muted Foreground (#4B5563):** teks sekunder. Terukur **7.58:1** di atas
   kartu dan **7.25:1** di atas latar (AAA). Nilai ini sengaja lebih gelap dari
   default Tailwind (`#64748B`, 4.76:1) agar tetap lolos di atas permukaan
-  `muted` `#F1F5F9` — kombinasi yang sebelumnya gagal di 4.34:1.
+  `muted` `#F1F4F5` — kombinasi yang sebelumnya gagal di 4.34:1.
 - **Success (#15803D), Warning (#B45309), Destructive (#B91C1C):** token status.
   Ketiganya lulus ganda: sebagai teks di atas putih (**5.02 / 5.02 / 6.47:1**)
   dan sebagai isian berteks putih. Satu token per status, tidak ada varian
   gelap-terang terpisah.
 - **Decorative Amber (#FFC107):** hanya 3.19:1 di atas kartu. **Dilarang** untuk
   teks atau isian berteks. Hanya untuk bintang penilaian dan garis dekoratif.
-- **Border (#E2E8F0) / Ring (#C2410C):** cincin fokus terukur **5.18:1** terhadap
+- **Border (#E3E7EA) / Ring (#5B46B8):** cincin fokus terukur **5.18:1** terhadap
   kartu, jauh di atas syarat 3:1 untuk komponen non-teks.
 
 ### Palet Dokumen Cetak
 
 Sertifikat dan invoice memakai palet **ivory/gold** tersendiri, bukan palet
-aplikasi. Ini disengaja: keduanya artefak seremonial, dan warna crimson/navy
+aplikasi. Ini disengaja: keduanya artefak seremonial, dan warna ungu/near-black
 berkesan digital. Nilainya tinggal di `src/lib/dokumen/token-cetak.ts` karena
 React-PDF tidak bisa memakai CSS variable.
 

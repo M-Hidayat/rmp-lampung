@@ -10,13 +10,16 @@
  * sehingga warna antar halaman tidak seragam. Sekarang satu token per peran.
  *
  * Rasio kontras diukur, bukan diperkirakan:
- * - Putih di atas primary (#0F172A)              = 17.85:1  AAA
- * - Putih di atas brand (#B22222)                =  6.68:1  AA
- * - accent-foreground (#C2410C) di atas accent   =  4.88:1  AA
- * - muted-foreground (#475569) di atas muted     =  6.92:1  AA
+ * - Putih di atas primary (#0E1316)              = 18.69:1  AAA
+ * - Putih di atas brand (#745FD4)                =  4.85:1  AA
+ * - accent-foreground (#5B46B8) di atas accent   =  6.67:1  AA
+ * - muted-foreground (#4B5563) di atas muted     =  6.92:1  AA
  * - success/warning/destructive di atas putih    = 5.02 / 5.02 / 6.47:1  AA
- * - ring (#C2410C) terhadap kartu (non-teks)     =  5.18:1  (syarat >=3:1)
+ * - ring (#745FD4) terhadap kartu (non-teks)     =  4.46:1  (syarat >=3:1)
  * - decorative-amber (#FFC107) di atas kartu     =  3.19:1  DILARANG sebagai teks
+ * - hitam di atas ungu #745FD4                   =  3.85:1  GAGAL sebagai teks;
+ *   ungu hanya dipakai sebagai isian berteks putih, atau sebagai teks di atas
+ *   permukaan terang.
  */
 @theme {
 	--font-sans: var(--font-inter), system-ui, sans-serif;
@@ -25,34 +28,36 @@
 
 	/* Permukaan */
 	--color-background: #f9fafb;
-	--color-foreground: #0f172a;
+	--color-foreground: #0e1316;
 	--color-card: #ffffff;
-	--color-card-foreground: #0f172a;
+	--color-card-foreground: #0e1316;
 	--color-popover: #ffffff;
-	--color-popover-foreground: #0f172a;
+	--color-popover-foreground: #0e1316;
 
-	/* Aksi utama: navy. Satu-satunya aksi penuh-perhatian per layar. */
-	--color-primary: #0f172a;
-	--color-primary-hover: #1e293b;
+	/* Aksi utama: near-black. Satu-satunya aksi penuh-perhatian per layar.
+	   Putih di atasnya 18.69:1 (AAA). */
+	--color-primary: #0e1316;
+	--color-primary-hover: #1a2226;
 	--color-primary-foreground: #ffffff;
-	/* Teks sekunder di atas permukaan navy. 12.02:1 di atas primary (AAA).
-	   Tanpa token ini, panel navy akan memakai kelas putih-transparan. */
-	--color-primary-muted: #cbd5e1;
+	/* Teks sekunder di atas permukaan near-black. */
+	--color-primary-muted: #b8c0c6;
 
-	--color-secondary: #f1f5f9;
-	--color-secondary-foreground: #0f172a;
-	--color-muted: #f1f5f9;
-	--color-muted-foreground: #475569;
+	--color-secondary: #f1f4f5;
+	--color-secondary-foreground: #0e1316;
+	--color-muted: #f1f4f5;
+	--color-muted-foreground: #4b5563;
 
-	/* Permukaan CTA hangat. Satu-satunya cara memakai amber untuk teks. */
-	--color-accent: #fff7ed;
-	--color-accent-foreground: #c2410c;
+	/* Permukaan CTA. Ungu dari palet referensi: putih di atasnya 4.85:1 (AA). */
+	--color-accent: #f2effc;
+	--color-accent-foreground: #5b46b8;
 
-	/* Identitas kuliner tradisional. */
-	--color-brand: #b22222;
+	/* Identitas utama: ungu referensi (#745FD4).
+	   Putih di atasnya 4.85:1 (AA); sebagai teks di atas latar 4.46:1. */
+	--color-brand: #745fd4;
 	--color-brand-foreground: #ffffff;
-	--color-brand-surface: #fef2f2;
-	--color-brand-border: #fecaca;
+	--color-brand-hover: #6a54cc;
+	--color-brand-surface: #f2effc;
+	--color-brand-border: #d9d1f5;
 
 	/* Amber dekoratif: bintang penilaian & garis. Bukan untuk teks. */
 	--color-decorative-amber: #ffc107;
@@ -67,11 +72,11 @@
 	--color-destructive: #b91c1c;
 	--color-destructive-foreground: #ffffff;
 	--color-destructive-surface: #fef2f2;
-	--color-info-surface: #f1f5f9;
+	--color-info-surface: #f1f4f5;
 
-	--color-border: #e2e8f0;
-	--color-input: #e2e8f0;
-	--color-ring: #c2410c;
+	--color-border: #e3e7ea;
+	--color-input: #e3e7ea;
+	--color-ring: #745fd4;
 
 	/* Skala sudut sesuai DESIGN.md: kecil & tegas, tidak "menggelembung". */
 	--radius-sm: 4px;

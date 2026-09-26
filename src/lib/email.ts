@@ -121,17 +121,17 @@ export function pesanAturUlangSandi({
 	].join("\n")
 
 	const html = `
-		<div style="font-family:system-ui,sans-serif;line-height:1.6;color:#0f172a">
+		<div style="font-family:system-ui,sans-serif;line-height:1.6;color:#0e1316">
 			<p>Halo ${nama},</p>
 			<p>Kami menerima permintaan untuk mengatur ulang kata sandi akun Rumah Mama Pintar Anda.</p>
 			<p>
-				<a href="${tautan}" style="display:inline-block;background:#0f172a;color:#ffffff;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:600">
+				<a href="${tautan}" style="display:inline-block;background:#745fd4;color:#ffffff;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:600">
 					Buat kata sandi baru
 				</a>
 			</p>
 			<p>Tautan ini berlaku ${masaBerlakuMenit} menit dan hanya dapat dipakai sekali.</p>
-			<p style="color:#475569">Bila Anda tidak meminta hal ini, abaikan email ini. Kata sandi Anda tidak berubah.</p>
-			<p style="color:#475569">Salam,<br />Rumah Mama Pintar</p>
+			<p style="color:#4b5563">Bila Anda tidak meminta hal ini, abaikan email ini. Kata sandi Anda tidak berubah.</p>
+			<p style="color:#4b5563">Salam,<br />Rumah Mama Pintar</p>
 		</div>
 	`.trim()
 
