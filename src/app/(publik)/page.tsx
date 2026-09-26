@@ -88,10 +88,6 @@ export default async function Beranda() {
 					>
 						Belajar melalui praktik, siapkan langkah kerja atau usaha
 					</h1>
-					<p className="max-w-xl text-lg leading-8 text-muted-foreground">
-						Rumah Mama Pintar menyediakan kursus masakan, roti, kue, dan minuman
-						dalam format tatap muka maupun online.
-					</p>
 
 					<Button asChild size="lg" variant="gold">
 						<Link href="#program">Lihat Program Kelas</Link>
