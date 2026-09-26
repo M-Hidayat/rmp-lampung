@@ -17,6 +17,14 @@ import { LabelBagian } from "@/components/kerangka"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
+	Carousel,
+	CarouselContent,
+	CarouselDots,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+} from "@/components/ui/carousel"
+import {
 	Card,
 	CardContent,
 	CardDescription,
@@ -137,48 +145,61 @@ export default async function Beranda() {
 						</EmptyContent>
 					</Empty>
 				) : (
-					<div className="mt-8 grid gap-5 md:grid-cols-3">
-						{pilihan.map((item) => {
-							const sisa = sisaKuota(item.kuota, item._count.enrollments)
-							return (
-								<Card key={item.id} className="h-full">
-									<CardHeader>
-										<div className="flex items-start justify-between gap-3">
-											<CardTitle className="text-lg">{item.judul}</CardTitle>
-											<Badge variant={sisa > 0 ? "sukses" : "destructive"}>
-												{sisa > 0 ? `${sisa} kursi` : "Penuh"}
-											</Badge>
-										</div>
-										<p className="font-heading text-xl font-bold text-foreground">
-											{formatRupiah(item.harga.toString())}
-										</p>
-									</CardHeader>
-									<CardContent className="flex flex-1 flex-col gap-4">
-										<CardDescription className="line-clamp-3">
-											{item.deskripsi || "Informasi materi akan diumumkan oleh admin."}
-										</CardDescription>
-										<Separator />
-										<div className="flex flex-col gap-2">
-											<p className="flex items-start gap-2 text-sm text-muted-foreground">
-												<Calendar aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-brand" />
-												<span>{formatTanggalWaktu(item.jadwalMulai)} WIB</span>
-											</p>
-											<p className="flex items-start gap-2 text-sm text-muted-foreground">
-												<MapPin aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-brand" />
-												<span className="min-w-0 break-words">{item.lokasi}</span>
-											</p>
-										</div>
-									</CardContent>
-									<CardFooter className="mt-auto">
-										<Button asChild variant="gold" className="w-full">
-											<Link href={`/kelas/${item.slug}`}>
-												Lihat detail <ChevronRight aria-hidden="true" />
-											</Link>
-										</Button>
-									</CardFooter>
-								</Card>
-							)
-						})}
+					<div className="mt-8">
+						<Carousel label="Program kelas yang tersedia" opts={{ align: "start", loop: false }}>
+							<CarouselContent>
+								{pilihan.map((item, indeks) => {
+									const sisa = sisaKuota(item.kuota, item._count.enrollments)
+									return (
+										<CarouselItem
+											key={item.id}
+											className="sm:basis-1/2 lg:basis-1/3"
+											aria-label={`Kelas ${indeks + 1} dari ${pilihan.length}`}
+										>
+											<Card className="h-full">
+												<CardHeader>
+													<div className="flex items-start justify-between gap-3">
+														<CardTitle className="text-lg">{item.judul}</CardTitle>
+														<Badge variant={sisa > 0 ? "sukses" : "destructive"}>
+															{sisa > 0 ? `${sisa} kursi` : "Penuh"}
+														</Badge>
+													</div>
+													<p className="font-heading text-xl font-bold text-foreground">
+														{formatRupiah(item.harga.toString())}
+													</p>
+												</CardHeader>
+												<CardContent className="flex flex-1 flex-col gap-4">
+													<CardDescription className="line-clamp-3">
+														{item.deskripsi || "Informasi materi akan diumumkan oleh admin."}
+													</CardDescription>
+													<Separator />
+													<div className="flex flex-col gap-2">
+														<p className="flex items-start gap-2 text-sm text-muted-foreground">
+															<Calendar aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-brand" />
+															<span>{formatTanggalWaktu(item.jadwalMulai)} WIB</span>
+														</p>
+														<p className="flex items-start gap-2 text-sm text-muted-foreground">
+															<MapPin aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-brand" />
+															<span className="min-w-0 break-words">{item.lokasi}</span>
+														</p>
+													</div>
+												</CardContent>
+												<CardFooter className="mt-auto">
+													<Button asChild variant="gold" className="w-full">
+														<Link href={`/kelas/${item.slug}`}>
+															Lihat detail <ChevronRight aria-hidden="true" />
+														</Link>
+													</Button>
+												</CardFooter>
+											</Card>
+										</CarouselItem>
+									)
+								})}
+							</CarouselContent>
+							<CarouselPrevious />
+							<CarouselNext />
+							<CarouselDots className="mt-5" />
+						</Carousel>
 					</div>
 				)}
 			</section>

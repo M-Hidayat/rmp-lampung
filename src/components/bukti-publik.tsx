@@ -12,6 +12,14 @@ import {
 } from "lucide-react"
 
 import { LabelBagian } from "@/components/kerangka"
+import {
+	Carousel,
+	CarouselContent,
+	CarouselDots,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+} from "@/components/ui/carousel"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
 	buktiPublik,
@@ -116,28 +124,45 @@ export function UlasanPeserta({ batas = 3 }: { batas?: number }) {
 				</Card>
 			</div>
 
-			<div className="mt-8 grid gap-5 md:grid-cols-3">
-				{tampil.map((u) => (
-					<Card key={u.nama + u.ketika} className="h-full">
-						<CardContent className="flex h-full flex-col p-6">
-							<Bintang nilai={5} ukuran="size-3.5" />
-							<blockquote className="mt-3 flex-1">
-								<Quote aria-hidden="true" className="size-4 text-brand" />
-								<p className="mt-2 text-sm leading-6 text-card-foreground">{u.teks}</p>
-							</blockquote>
-							{/* Bukan <figcaption>: kartu ini memakai Card, bukan <figure>,
-							    sehingga figcaption di sini akan melanggar struktur HTML. */}
-							<div className="mt-4 border-t border-border pt-3">
-								<p className="text-sm font-semibold text-foreground">{u.nama}</p>
-								<p className="text-xs text-muted-foreground">
-									{u.profil ? `${u.profil} · ` : ""}
-									{u.ketika}
-								</p>
-							</div>
-						</CardContent>
-					</Card>
-				))}
-			</div>
+			{/* Ulasan dipindahkan ke carousel agar dapat digeser di layar sempit
+			    tanpa memaksa pengguna menggulir halaman sangat panjang. */}
+			<Carousel
+				className="mt-8"
+				label="Ulasan peserta dari Google Maps"
+				opts={{ align: "start", loop: false }}
+			>
+				<CarouselContent>
+					{tampil.map((u, indeks) => (
+						<CarouselItem
+							key={u.nama + u.ketika}
+							className="sm:basis-1/2 lg:basis-1/3"
+							aria-label={`Ulasan ${indeks + 1} dari ${tampil.length}`}
+						>
+							<Card className="h-full">
+								<CardContent className="flex h-full flex-col p-6">
+									<Bintang nilai={5} ukuran="size-3.5" />
+									<blockquote className="mt-3 flex-1">
+										<Quote aria-hidden="true" className="size-4 text-brand" />
+										<p className="mt-2 text-sm leading-6 text-card-foreground">{u.teks}</p>
+									</blockquote>
+									{/* Bukan <figcaption>: kartu ini memakai Card, bukan <figure>,
+									    sehingga figcaption di sini akan melanggar struktur HTML. */}
+									<div className="mt-4 border-t border-border pt-3">
+										<p className="text-sm font-semibold text-foreground">{u.nama}</p>
+										<p className="text-xs text-muted-foreground">
+											{u.profil ? `${u.profil} · ` : ""}
+											{u.ketika}
+										</p>
+									</div>
+								</CardContent>
+							</Card>
+						</CarouselItem>
+					))}
+				</CarouselContent>
+				<CarouselPrevious />
+				<CarouselNext />
+				<CarouselDots className="mt-5" />
+			</Carousel>
 
 			{/* Tautan sosial resmi untuk verifikasi mandiri */}
 			<div className="mt-6 flex flex-wrap gap-3">
@@ -293,29 +318,41 @@ export function GaleriKegiatan({ foto = galeriKegiatan }: { foto?: FotoKegiatan[
 					</CardHeader>
 				</Card>
 			) : (
-				<div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-					{foto.map((g) => (
-						<figure
-							key={g.src}
-							className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-foreground/20"
-						>
-							<div className="relative aspect-4/3 overflow-hidden bg-muted">
-								<Image
-									src={g.src}
-									alt={g.alt}
-									fill
-									sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-									className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-								/>
-							</div>
-							{g.keterangan ? (
-								<figcaption className="px-4 py-3 text-xs leading-5 text-muted-foreground">
-									{g.keterangan}
-								</figcaption>
-							) : null}
-						</figure>
-					))}
-				</div>
+				<Carousel
+					className="mt-8"
+					label="Dokumentasi kegiatan Rumah Mama Pintar"
+					opts={{ align: "start", loop: false }}
+				>
+					<CarouselContent>
+						{foto.map((g, indeks) => (
+							<CarouselItem
+								key={g.src}
+								className="sm:basis-1/2 lg:basis-1/3"
+								aria-label={`Foto ${indeks + 1} dari ${foto.length}`}
+							>
+								<figure className="group overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-foreground/20">
+									<div className="relative aspect-4/3 overflow-hidden bg-muted">
+										<Image
+											src={g.src}
+											alt={g.alt}
+											fill
+											sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+											className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+										/>
+									</div>
+									{g.keterangan ? (
+										<figcaption className="px-4 py-3 text-xs leading-5 text-muted-foreground">
+											{g.keterangan}
+										</figcaption>
+									) : null}
+								</figure>
+							</CarouselItem>
+						))}
+					</CarouselContent>
+					<CarouselPrevious />
+					<CarouselNext />
+					<CarouselDots className="mt-5" />
+				</Carousel>
 			)}
 		</section>
 	)
