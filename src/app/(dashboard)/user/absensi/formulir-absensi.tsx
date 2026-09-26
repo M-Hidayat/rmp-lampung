@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useEffect, useState, useRef } from "react"
+import { useActionState, useCallback, useEffect, useState, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { Camera, CheckCircle2, ScanLine, X } from "lucide-react"
 import jsQR from "jsqr"
@@ -12,9 +12,16 @@ import { Button } from "@/components/ui/button"
 
 /**
  * Absensi peserta berbasis pemindaian QR.
- * Token tidak lagi dapat diketik manual: token hanya masuk lewat hasil pindai
- * kamera atau tautan absensi, sehingga kehadiran selalu berasal dari QR resmi
- * yang ditampilkan admin.
+ *
+ * Alur: buka kamera (satu layar penuh) -> pindai -> kehadiran tercatat otomatis.
+ * Tidak ada langkah konfirmasi manual: begitu token terbaca, formulir langsung
+ * dikirim sehingga peserta tidak perlu menekan apa pun lagi.
+ *
+ * Token tidak dapat diketik manual. Sumbernya hanya dua, keduanya resmi:
+ * hasil pindai kamera, atau parameter `token` pada tautan yang dibagikan admin.
+ *
+ * Kamera memakai `jsQR` di atas canvas WebRTC (`getUserMedia`) agar berjalan di
+ * seluruh browser desktop maupun mobile tanpa flag eksperimental.
  */
 export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 	const searchParams = useSearchParams()
@@ -26,19 +33,62 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 	const videoRef = useRef<HTMLVideoElement | null>(null)
 	const canvasRef = useRef<HTMLCanvasElement | null>(null)
 	const formRef = useRef<HTMLFormElement | null>(null)
+	// Menandai token yang sudah dikirim, agar auto-kirim tidak berulang saat
+	// komponen render ulang (mis. saat status aksi berubah).
+	const tokenTerkirimRef = useRef("")
 
 	const [status, jalankan, sedangProses] = useActionState<HasilAksi, FormData>(
 		aksiScanAbsensi,
 		undefined,
 	)
 
+	// Token dari tautan admin hanya diterapkan sekali per nilai, dilacak lewat
+	// ref. Tanpa ref, perbandingannya harus membaca `token` sehingga dependensi
+	// effect menjadi tidak jujur (dan bisa menimpa hasil pindai kamera).
+	const tokenUrlTerakhirRef = useRef("")
 	useEffect(() => {
-		if (tokenUrl && tokenUrl !== token) {
+		if (tokenUrl && tokenUrl !== tokenUrlTerakhirRef.current) {
+			tokenUrlTerakhirRef.current = tokenUrl
 			setToken(tokenUrl)
 		}
 	}, [tokenUrl])
 
-	// Universal QR Scanner via jsQR canvas processor
+	/**
+	 * Auto-kirim: begitu ada token (dari pindai kamera atau tautan admin),
+	 * kehadiran langsung dicatat tanpa perlu menekan tombol konfirmasi.
+	 */
+	useEffect(() => {
+		const bersih = token.trim()
+		if (!bersih) return
+		if (sedangProses) return
+		// Sudah pernah dikirim untuk token ini; jangan ulangi.
+		if (tokenTerkirimRef.current === bersih) return
+
+		tokenTerkirimRef.current = bersih
+		formRef.current?.requestSubmit()
+	}, [token, sedangProses])
+
+	const tutupKamera = useCallback(() => setKameraAktif(false), [])
+
+	// Escape menutup kamera, dan gulir halaman dikunci selama kamera terbuka.
+	useEffect(() => {
+		if (!kameraAktif) return
+
+		const onKeyDown = (event: KeyboardEvent) => {
+			if (event.key === "Escape") tutupKamera()
+		}
+		document.addEventListener("keydown", onKeyDown)
+
+		const overflowSebelumnya = document.body.style.overflow
+		document.body.style.overflow = "hidden"
+
+		return () => {
+			document.removeEventListener("keydown", onKeyDown)
+			document.body.style.overflow = overflowSebelumnya
+		}
+	}, [kameraAktif, tutupKamera])
+
+	// Pemindai QR: jsQR di atas frame canvas dari stream kamera.
 	useEffect(() => {
 		let stream: MediaStream | null = null
 		let animId: number | null = null
@@ -51,11 +101,12 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 					setStatusKamera(
 						"Kamera tidak didukung atau memerlukan koneksi aman (HTTPS / localhost).",
 					)
+					setKameraAktif(false)
 					return
 				}
 
 				stream = await navigator.mediaDevices.getUserMedia({
-					video: { facingMode: { ideal: "environment" }, width: { ideal: 640 }, height: { ideal: 480 } },
+					video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } },
 				})
 
 				if (videoRef.current) {
@@ -91,11 +142,10 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 							}
 
 							if (tokenParsed) {
-								setToken(tokenParsed)
+								// Tutup kamera lalu isi token; efek auto-kirim di atas
+								// yang mencatat kehadiran tanpa aksi tambahan.
 								setKameraAktif(false)
-								setTimeout(() => {
-									formRef.current?.requestSubmit()
-								}, 100)
+								setToken(tokenParsed)
 								return
 							}
 						}
@@ -128,33 +178,62 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 		<div className="flex flex-col gap-6">
 			<canvas ref={canvasRef} className="hidden" />
 
-			{/* Panel Kamera / Scanner */}
-			<div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center">
-				{kameraAktif ? (
-					<div className="flex flex-col gap-4">
-						<div className="relative mx-auto aspect-square w-full max-w-[280px] overflow-hidden rounded-lg border-2 border-primary bg-primary ">
-							<video
-								ref={videoRef}
-								playsInline
-								muted
-								className="h-full w-full object-cover"
-							/>
-						</div>
-						<p className="text-xs text-muted-foreground">
-							Arahkan kamera ke QR Code di layar admin atau proyektor…
+			{/* Kamera satu layar penuh. `fixed inset-0` agar bidang pandang
+			    seluas mungkin — memindai QR dari proyektor butuh area besar. */}
+			{kameraAktif ? (
+				<div
+					role="dialog"
+					aria-modal="true"
+					aria-label="Pemindai QR absensi"
+					className="fixed inset-0 z-50 flex flex-col bg-primary"
+				>
+					<div className="flex shrink-0 items-center justify-between gap-4 px-4 py-3">
+						<p className="font-heading text-sm font-bold text-primary-foreground">
+							Pindai QR Absensi
 						</p>
 						<Button
 							type="button"
-							variant="outline"
-							size="sm"
-							className="min-h-11"
-							onClick={() => setKameraAktif(false)}
+							variant="onDark"
+							size="icon"
+							onClick={tutupKamera}
+							aria-label="Tutup kamera"
 						>
-							<X className="mr-1 size-3.5" aria-hidden="true" />
-							Tutup Kamera
+							<X aria-hidden="true" />
 						</Button>
 					</div>
-				) : (
+
+					{/* `min-h-0` wajib: tanpa itu anak flex tidak boleh menyusut dan
+					    video akan mendorong bilah bawah keluar layar. */}
+					<div className="relative min-h-0 flex-1">
+						<video
+							ref={videoRef}
+							playsInline
+							muted
+							className="h-full w-full object-cover"
+						/>
+						{/* Bingkai bidik: murni pemandu visual, tidak menghalangi sentuhan. */}
+						<div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+							<div className="aspect-square w-[72vmin] max-w-[440px] rounded-xl border-2 border-primary-foreground/70" />
+						</div>
+					</div>
+
+					<div className="shrink-0 px-4 py-4 text-center">
+						<p className="text-xs leading-5 text-primary-muted">
+							Arahkan kamera ke QR Code di layar admin. Kehadiran tercatat otomatis
+							begitu kode terbaca.
+						</p>
+						{statusKamera ? (
+							<p role="status" className="mt-2 text-xs text-primary-foreground">
+								{statusKamera}
+							</p>
+						) : null}
+					</div>
+				</div>
+			) : null}
+
+			{/* Ajakan membuka kamera (tampil saat kamera tertutup). */}
+			{!kameraAktif ? (
+				<div className="rounded-lg border border-dashed border-border bg-muted/40 p-6 text-center">
 					<div className="flex flex-col gap-3 py-2">
 						<div className="mx-auto flex size-12 items-center justify-center rounded-full bg-accent text-accent-foreground">
 							<Camera className="size-6" aria-hidden="true" />
@@ -178,22 +257,40 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 							<ScanLine className="mr-1.5 size-4" aria-hidden="true" />
 							Buka Kamera Pemindai
 						</Button>
+						{statusKamera ? (
+							<p role="status" className="mt-1 rounded-lg border border-border bg-background p-2 text-xs text-foreground">
+								{statusKamera}
+							</p>
+						) : null}
 					</div>
-				)}
-				{statusKamera ? (
-					<p role="status" className="mt-3 rounded-lg border border-border bg-background p-2 text-xs text-foreground">
-						{statusKamera}
-					</p>
-				) : null}
-			</div>
+				</div>
+			) : null}
 
-			{/* Formulir konfirmasi: token hanya berasal dari hasil pindai / tautan. */}
+			{/* Formulir: hanya pembawa token. Tidak ada tombol konfirmasi —
+			    pengiriman dilakukan otomatis oleh efek auto-kirim. */}
 			<form ref={formRef} action={jalankan} className="flex flex-col gap-4">
 				{status?.pesan ? (
-					<Alert variant="gagal" judul="Absensi gagal">
-						<p>{status.pesan}</p>
-					</Alert>
+					<div className="flex flex-col gap-3">
+						<Alert variant="gagal" judul="Absensi gagal">
+							<p>{status.pesan}</p>
+						</Alert>
+						{/* Auto-kirim hanya berjalan sekali per token. Bila gagal,
+						    peserta diberi satu jalan keluar agar tidak buntu. */}
+						<Button
+							type="button"
+							variant="outline"
+							className="min-h-11 w-full font-semibold"
+							disabled={sedangProses}
+							onClick={() => {
+								tokenTerkirimRef.current = token.trim()
+								formRef.current?.requestSubmit()
+							}}
+						>
+							{sedangProses ? "Mencoba lagi…" : "Coba catat lagi"}
+						</Button>
+					</div>
 				) : null}
+
 				{status?.sukses ? (
 					<div
 						role="status"
@@ -217,22 +314,13 @@ export function FormulirAbsensi({ token: tokenDariProps }: { token?: string }) {
 					</div>
 				) : null}
 
+				{sedangProses ? (
+					<p role="status" className="text-center text-sm text-muted-foreground">
+						Mencatat kehadiran…
+					</p>
+				) : null}
+
 				<input type="hidden" name="token" value={token} />
-
-				<p className="text-xs text-muted-foreground">
-					Token terisi otomatis dari hasil pemindaian QR. Bila kamera tidak tersedia, buka tautan
-					absensi yang dibagikan admin.
-				</p>
-
-				<Button
-					type="submit"
-					variant="gold"
-					className="min-h-11 w-full font-semibold"
-					disabled={sedangProses || !token.trim()}
-				>
-					<CheckCircle2 className="mr-1.5 size-4" aria-hidden="true" />
-					{sedangProses ? "Memproses absensi…" : "Konfirmasi & Catat Kehadiran"}
-				</Button>
 			</form>
 		</div>
 	)
