@@ -92,9 +92,11 @@
 	--text-display--font-weight: 800;
 	--text-display--letter-spacing: -0.025em;
 
-	/* Kedalaman. Tiga tingkat saja, sesuai bagian Elevation di DESIGN.md. */
-	--shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06);
-	--shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.10);
+	/* Kedalaman. Tiga tingkat saja, sesuai bagian Elevation di DESIGN.md.
+	   Warna bayangan memakai RGB primary (#0E1316 = 14 19 22), bukan navy lama,
+	   agar bayangan tidak membawa rona biru dari palet sebelumnya. */
+	--shadow-sm: 0 1px 2px 0 rgb(14 19 22 / 0.06);
+	--shadow-md: 0 4px 12px -2px rgb(14 19 22 / 0.10);
 }
 
 @layer base {
