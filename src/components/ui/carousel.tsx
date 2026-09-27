@@ -242,9 +242,13 @@ function CarouselPrevious({
 			size={size}
 			className={cn(
 				"absolute touch-manipulation",
+				// Panah disembunyikan di mobile: di layar sempit tombol 44px ini
+				// menutupi kartu, dan pengguna mobile menggeser dengan sentuhan.
+				// Kendali sisanya tetap ada lewat titik navigasi di bawah carousel,
+				// jadi tidak ada fungsi yang hilang. Muncul lagi dari breakpoint sm.
 				orientation === "horizontal"
-					? "top-1/2 -left-3 -translate-y-1/2 sm:-left-5"
-					: "-top-3 left-1/2 -translate-x-1/2 rotate-90",
+					? "hidden top-1/2 -left-3 -translate-y-1/2 sm:inline-flex sm:-left-5"
+					: "hidden -top-3 left-1/2 -translate-x-1/2 rotate-90 sm:inline-flex",
 				className,
 			)}
 			disabled={!canScrollPrev}
@@ -272,9 +276,11 @@ function CarouselNext({
 			size={size}
 			className={cn(
 				"absolute touch-manipulation",
+				// Sama seperti tombol sebelumnya: disembunyikan di mobile agar tidak
+				// menutupi kartu. Muncul lagi dari breakpoint sm.
 				orientation === "horizontal"
-					? "top-1/2 -right-3 -translate-y-1/2 sm:-right-5"
-					: "-bottom-3 left-1/2 -translate-x-1/2 rotate-90",
+					? "hidden top-1/2 -right-3 -translate-y-1/2 sm:inline-flex sm:-right-5"
+					: "hidden -bottom-3 left-1/2 -translate-x-1/2 rotate-90 sm:inline-flex",
 				className,
 			)}
 			disabled={!canScrollNext}
