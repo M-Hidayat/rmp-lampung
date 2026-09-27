@@ -339,6 +339,14 @@ aplikasi karena memutus hubungan dengan bagian ini.
   gelap-terang terpisah.
 - **Decorative Amber (#FFC107):** hanya 3.19:1 di atas kartu. **Dilarang** untuk
   teks atau isian berteks. Hanya untuk bintang penilaian dan garis dekoratif.
+- **Hero Glow (#745FD4):** token aksen hero. Nilainya sama dengan `brand`,
+  tetapi perannya berbeda: ia hanya dipakai sebagai **cahaya latar radial**
+  yang sangat redup (`34%` opasitas, memudar pada `65%`), bukan sebagai warna
+  elemen. Karena itu tidak ada rasio kontras minimum untuknya — ia tidak
+  pernah membawa teks, dan kontras judul tetap diukur terhadap `background`,
+  bukan terhadap glow. **Dilarang** memakainya sebagai teks atau isian
+  berteks. Pola aksen ini diadopsi dari hero serbamager, tetapi warnanya
+  diambil dari identitas RMP, bukan oranye milik serbamager.
 - **Border (#E3E7EA) / Ring (#5B46B8):** cincin fokus terukur **5.18:1** terhadap
   kartu, jauh di atas syarat 3:1 untuk komponen non-teks.
 
