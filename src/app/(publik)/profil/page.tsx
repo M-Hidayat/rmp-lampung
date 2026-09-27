@@ -94,7 +94,7 @@ export default function HalamanProfil() {
 		<div className="flex flex-col gap-12">
 			<JudulHalaman
 				labels={<LabelBagian>Transparansi data</LabelBagian>}
-				judul="Profil Rumah Mama Pintar dan sumber data"
+				judul="Profil Rumah Mama Pintar dan Sumber Data"
 				keterangan="Setiap fakta identitas disertai sumber publik. Data yang belum ditemukan tetap ditandai sebagai placeholder."
 			/>
 
@@ -140,7 +140,7 @@ export default function HalamanProfil() {
 				<div className="flex flex-col gap-3">
 					<LabelBagian>Daftar fakta</LabelBagian>
 					<h2 id="judul-fakta" className="text-2xl font-bold text-foreground sm:text-3xl">
-						Fakta identitas dan sumbernya
+						Fakta Identitas dan Sumbernya
 					</h2>
 				</div>
 

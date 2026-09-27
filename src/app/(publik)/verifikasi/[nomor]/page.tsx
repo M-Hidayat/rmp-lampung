@@ -10,7 +10,7 @@ import { verifikasiSertifikatPublik } from "@/lib/layanan/sertifikat"
 import { formatTanggal } from "@/lib/uang"
 import { skemaNomorSertifikat } from "@/lib/validasi"
 
-export const metadata: Metadata = { title: "Hasil verifikasi sertifikat" }
+export const metadata: Metadata = { title: "Hasil Verifikasi Sertifikat" }
 export const dynamic = "force-dynamic"
 
 type Props = { params: Promise<{ nomor: string }> }
@@ -37,7 +37,7 @@ export default async function HalamanHasilVerifikasi({ params }: Props) {
 		<div className="mx-auto flex max-w-xl flex-col gap-6">
 			<JudulHalaman
 				labels={<LabelBagian>Keaslian dokumen</LabelBagian>}
-				judul="Hasil verifikasi sertifikat"
+				judul="Hasil Verifikasi Sertifikat"
 				keterangan={`Nomor diperiksa: ${nomorDidekode}`}
 			/>
 

@@ -8,36 +8,36 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { identitasRmp } from "@/lib/identitas-rmp"
 
-export const metadata: Metadata = { title: "Cara pendaftaran" }
+export const metadata: Metadata = { title: "Cara Pendaftaran" }
 
 const langkah = [
 	{
-		judul: "Buat akun peserta",
+		judul: "Buat Akun Peserta",
 		isi: "Isi nama, email, dan kata sandi pada halaman daftar akun. Peran akun baru selalu peserta.",
 		ikon: UserPlus,
 	},
 	{
-		judul: "Pilih kelas pada katalog",
+		judul: "Pilih Kelas pada Katalog",
 		isi: "Periksa jadwal, biaya, dan sisa kuota. Satu akun hanya dapat memiliki satu pendaftaran per kelas.",
 		ikon: BookOpen,
 	},
 	{
-		judul: "Selesaikan pembayaran",
+		judul: "Selesaikan Pembayaran",
 		isi: "Sistem membuat pendaftaran berstatus menunggu pembayaran dan mengarahkan Anda ke halaman pembayaran Pakasir.",
 		ikon: CreditCard,
 	},
 	{
-		judul: "Tunggu konfirmasi resmi",
+		judul: "Tunggu Konfirmasi Resmi",
 		isi: "Status berubah menjadi lunas hanya setelah konfirmasi resmi diterima server. Halaman kembali dari pembayaran bersifat informasi.",
 		ikon: CheckCheck,
 	},
 	{
-		judul: "Absen saat kelas berlangsung",
+		judul: "Absen saat Kelas Berlangsung",
 		isi: "Pindai QR absensi yang ditampilkan admin. Setiap pendaftaran hanya dapat absen satu kali.",
 		ikon: QrCode,
 	},
 	{
-		judul: "Unduh invoice dan sertifikat",
+		judul: "Unduh Invoice dan Sertifikat",
 		isi: "Invoice tersedia setelah pembayaran lunas. Sertifikat tersedia setelah kehadiran tercatat dan diterbitkan admin.",
 		ikon: Award,
 	},
@@ -48,7 +48,7 @@ export default function HalamanCaraPendaftaran() {
 		<div className="mx-auto flex max-w-4xl flex-col gap-8">
 			<JudulHalaman
 				labels={<LabelBagian>Panduan</LabelBagian>}
-				judul="Cara pendaftaran"
+				judul="Cara Pendaftaran"
 				keterangan="Alur pendaftaran kelas melalui sistem ini dari registrasi hingga sertifikat terbit."
 			/>
 

@@ -48,22 +48,22 @@ export const metadata: Metadata = {
 
 const langkahPendaftaran = [
 	{
-		judul: "Pilih program",
+		judul: "Pilih Program",
 		deskripsi: "Lihat daftar kelas, jadwal, lokasi, dan sisa kuota yang tersedia.",
 		ikon: Layers,
 	},
 	{
-		judul: "Buat akun",
+		judul: "Buat Akun",
 		deskripsi: "Daftar dengan email agar riwayat kelas dan pembayaran tercatat.",
 		ikon: UserPlus,
 	},
 	{
-		judul: "Selesaikan pembayaran",
+		judul: "Selesaikan Pembayaran",
 		deskripsi: "Lanjutkan pembayaran setelah memilih kelas yang sesuai.",
 		ikon: MessageCircle,
 	},
 	{
-		judul: "Ikuti kelas",
+		judul: "Ikuti Kelas",
 		deskripsi: "Hadir di kelas tatap muka atau ikuti kelas online sesuai jadwal.",
 		ikon: Calendar,
 	},
@@ -106,7 +106,7 @@ export default async function Beranda() {
 					<div className="flex max-w-2xl flex-col gap-3">
 						<LabelBagian>Program pilihan</LabelBagian>
 						<h2 id="judul-program" className="text-2xl font-bold text-foreground sm:text-3xl">
-							Temukan kelas yang sesuai
+							Temukan Kelas yang Sesuai
 						</h2>
 						<CardDescription className="text-base">
 							Periksa jadwal, biaya, lokasi, dan kuota sebelum mendaftar.
@@ -222,7 +222,7 @@ export default async function Beranda() {
 							id="judul-cara-daftar"
 							className="text-2xl font-bold tracking-tight text-card-foreground sm:text-3xl"
 						>
-							Empat langkah untuk mulai belajar
+							Empat Langkah untuk Mulai Belajar
 						</h2>
 					</CardHeader>
 					<CardContent className="pt-8">
@@ -277,7 +277,7 @@ export default async function Beranda() {
 				<div className="flex flex-col items-center gap-8 rounded-xl bg-primary px-8 py-16 text-center text-primary-foreground sm:items-start sm:px-10 sm:text-left lg:flex-row lg:items-center lg:justify-between lg:px-16 lg:py-20">
 					<div className="flex max-w-2xl flex-col gap-6">
 						<h2 id="judul-cta" className="text-3xl font-bold">
-							Siap memilih kelas kuliner?
+							Siap Memilih Kelas Kuliner?
 						</h2>
 						<p className="text-lg leading-relaxed text-primary-muted">
 							Lihat program yang tersedia atau hubungi Rumah Mama Pintar untuk

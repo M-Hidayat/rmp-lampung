@@ -19,7 +19,7 @@ import { identitasRmp } from "@/lib/identitas-rmp"
 import { daftarKelasPublik, sisaKuota } from "@/lib/layanan/kelas"
 import { formatRupiah, formatTanggalWaktu } from "@/lib/uang"
 
-export const metadata: Metadata = { title: "Katalog kelas" }
+export const metadata: Metadata = { title: "Katalog Kelas" }
 export const dynamic = "force-dynamic"
 
 export default async function HalamanKatalog() {
@@ -30,7 +30,7 @@ export default async function HalamanKatalog() {
 		<div className="flex flex-col gap-8">
 			<JudulHalaman
 				labels={<LabelBagian>Program pelatihan</LabelBagian>}
-				judul="Katalog kelas"
+				judul="Katalog Kelas"
 				keterangan="Kelas aktif yang dapat didaftarkan. Kuota dihitung dari pendaftaran yang masih berlaku."
 			/>
 

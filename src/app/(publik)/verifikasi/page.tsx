@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export const metadata: Metadata = { title: "Verifikasi sertifikat" }
+export const metadata: Metadata = { title: "Verifikasi Sertifikat" }
 
 async function aksiVerifikasi(formData: FormData) {
 	"use server"
@@ -21,7 +21,7 @@ export default function HalamanVerifikasi() {
 		<div className="mx-auto flex max-w-xl flex-col gap-6">
 			<JudulHalaman
 				labels={<LabelBagian>Keaslian dokumen</LabelBagian>}
-				judul="Verifikasi sertifikat"
+				judul="Verifikasi Sertifikat"
 				keterangan="Masukkan nomor sertifikat untuk memeriksa keabsahannya."
 			/>
 
