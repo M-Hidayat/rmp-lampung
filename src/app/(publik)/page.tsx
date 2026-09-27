@@ -82,12 +82,17 @@ export default async function Beranda() {
 			    dibawa oleh tombol, bukan oleh latar panel gelap. */}
 			<section id="beranda" aria-labelledby="judul-beranda" className="scroll-mt-24">
 				<div className="flex flex-col items-center gap-6 text-center">
-					<h1
-						id="judul-beranda"
-						className="max-w-3xl text-balance text-3xl font-extrabold text-foreground sm:text-4xl lg:text-display"
-					>
-						Kursus masakan, roti, dan kue dengan praktik langsung di Bandar Lampung
-					</h1>
+					<div className="flex flex-col items-center gap-3">
+						<h1
+							id="judul-beranda"
+							className="max-w-3xl text-balance text-3xl font-extrabold text-foreground sm:text-4xl lg:text-display"
+						>
+							Nikmati Pengalaman Belajar Kuliner yang Lebih Mudah
+						</h1>
+						<p className="max-w-2xl text-balance text-base leading-7 text-muted-foreground">
+							Dengan pembelajaran yang praktis dan terarah.
+						</p>
+					</div>
 
 					<Button asChild size="lg" variant="gold">
 						<Link href="#program">Lihat Program Kelas</Link>
