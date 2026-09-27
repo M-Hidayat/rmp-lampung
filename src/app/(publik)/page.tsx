@@ -266,22 +266,29 @@ export default async function Beranda() {
 				</Card>
 			</section>
 
+			{/* Ajakan penutup. Rasa tata letak mengikuti referensi pemilik
+			    (sumopod.com): isi terpusat di layar kecil dengan tombol selebar
+			    kartu, lalu berubah menjadi teks kiri + aksi kanan mulai `sm`.
+			    Yang TIDAK diadopsi dari referensi: warna biru, sudut 16px, dan
+			    bayangan `shadow-xl` - identitas tetap near-black + gold, dan
+			    DESIGN.md menetapkan blok ajakan memakai radius `xl` (12px) serta
+			    permukaan datar tanpa bayangan. */}
 			<section aria-labelledby="judul-cta">
-				<div className="flex flex-col items-start gap-8 rounded-xl bg-primary px-6 py-14 text-primary-foreground sm:px-10 sm:py-16 lg:flex-row lg:items-center lg:justify-between">
-					<div className="flex max-w-2xl flex-col gap-3">
-						<h2 id="judul-cta" className="text-2xl font-bold sm:text-3xl">
+				<div className="flex flex-col items-center gap-8 rounded-xl bg-primary px-8 py-16 text-center text-primary-foreground sm:items-start sm:px-10 sm:text-left lg:flex-row lg:items-center lg:justify-between lg:px-16 lg:py-20">
+					<div className="flex max-w-2xl flex-col gap-6">
+						<h2 id="judul-cta" className="text-3xl font-bold">
 							Siap memilih kelas kuliner?
 						</h2>
-						<p className="leading-7 text-primary-muted">
+						<p className="text-lg leading-relaxed text-primary-muted">
 							Lihat program yang tersedia atau hubungi Rumah Mama Pintar untuk
 							informasi lebih lanjut.
 						</p>
 					</div>
-					<div className="flex flex-col gap-3 sm:flex-row">
-						<Button asChild size="lg" variant="gold">
+					<div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row lg:shrink-0">
+						<Button asChild size="lg" variant="gold" className="w-full sm:w-auto">
 							<Link href="/kelas">Lihat Program</Link>
 						</Button>
-						<Button asChild size="lg" variant="onDark">
+						<Button asChild size="lg" variant="onDark" className="w-full sm:w-auto">
 							<a href={whatsapp} target="_blank" rel="noreferrer noopener">
 								<MessageCircle aria-hidden="true" /> Hubungi Kami
 							</a>
