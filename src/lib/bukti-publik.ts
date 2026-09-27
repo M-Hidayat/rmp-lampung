@@ -168,19 +168,6 @@ export const profilInstagram = {
 	tanggalPenarikan: "2026-09-25",
 } as const
 
-/** Ringkasan yang hanya memakai angka yang benar-benar ada di sumber. */
-export function ringkasanBukti() {
-	const penerbit = new Set(buktiPublik.map((b) => b.penerbit))
-	const tahun = buktiPublik.map((b) => Number(b.tanggal.slice(0, 4)))
-	return {
-		jumlahLiputan: buktiPublik.length,
-		jumlahPenerbit: penerbit.size,
-		jumlahUlasan: ulasanMaps.length,
-		tahunTerawal: Math.min(...tahun),
-		tahunTerbaru: Math.max(...tahun),
-	}
-}
-
 /**
  * Ketidakcocokan yang ditemukan saat riset dan WAJIB diketahui pemilik.
  * Ditampilkan apa adanya di halaman profil agar tidak jadi masalah kemudian.

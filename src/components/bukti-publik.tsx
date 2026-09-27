@@ -1,7 +1,6 @@
 import Image from "next/image"
 import {
 	ArrowUpRight,
-	Building2,
 	GraduationCap,
 	Newspaper,
 	Quote,
@@ -22,7 +21,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import {
 	buktiPublik,
 	profilMaps,
-	ringkasanBukti,
 	ulasanMaps,
 	type BuktiPublik as TBukti,
 } from "@/lib/bukti-publik"
@@ -169,7 +167,6 @@ export function UlasanPeserta({ batas }: { batas?: number }) {
  * Setiap kartu menautkan sumber aslinya agar dapat diperiksa sendiri.
  */
 export function BuktiPublik({ jumlahAwal }: { jumlahAwal?: number }) {
-	const ringkas = ringkasanBukti()
 	// Sama seperti ulasan: tampilkan semua bila batas tidak diberikan, agar
 	// carousel benar-benar punya slaid untuk digeser di layar lebar.
 	const daftar =
@@ -262,14 +259,6 @@ export function BuktiPublik({ jumlahAwal }: { jumlahAwal?: number }) {
 				<CarouselNext />
 				<CarouselDots className="mt-5" />
 			</Carousel>
-
-			<p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-				<Building2 aria-hidden="true" className="size-3.5 shrink-0 text-brand" />
-				<span>
-					{ringkas.jumlahLiputan} sumber pihak ketiga dari {ringkas.jumlahPenerbit} penerbit
-					berbeda, terbit antara {ringkas.tahunTerawal} sampai {ringkas.tahunTerbaru}.
-				</span>
-			</p>
 		</section>
 	)
 }
