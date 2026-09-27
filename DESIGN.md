@@ -384,11 +384,12 @@ bukan ukuran yang lebih kecil dari `caption` (0.75rem) karena sudah batas
 keterbacaan.
 
 Pengecualian yang disengaja: **kalimat pendukung di hero beranda memakai
-tangga ukuran yang sama dengan judul hero** (`text-3xl` → `sm:text-4xl` →
-`lg:text-display`), atas permintaan pemilik. Yang membedakannya dari judul
-bukan ukuran, melainkan bobot (500 vs 800) dan warna (`muted-foreground`).
-Karena itu baris ini memakai `max-w-3xl` yang sama dengan judul: pada lebar
-`max-w-2xl` kedua baris tidak akan putus baris di titik yang sama.
+tangga ukuran DAN warna yang sama dengan judul hero** (`text-3xl` →
+`sm:text-4xl` → `lg:text-display`, keduanya `text-foreground`), atas
+permintaan pemilik. Yang membedakannya dari judul tinggal bobot huruf
+(500 vs 800). Karena itu baris ini memakai `max-w-3xl` yang sama dengan
+judul: pada lebar `max-w-2xl` kedua baris tidak akan putus baris di titik
+yang sama.
 
 Judul memakai `text-wrap: balance` (diatur di `globals.css`) agar baris terakhir
 tidak menggantung satu kata pada judul panjang.
