@@ -64,8 +64,19 @@ function Carousel({
 	className,
 	children,
 	label,
+	autoplay = false,
 	...props
-}: React.ComponentProps<"div"> & CarouselProps & { label?: string }) {
+}: React.ComponentProps<"div"> &
+	CarouselProps & {
+		label?: string
+		/** Geser otomatis. Dinonaktifkan bila pengguna mematikan animasi. */
+		autoplay?: boolean
+	}) {
+	// Autoplay dijalankan lewat `setInterval`, bukan plugin embla-carousel-autoplay,
+	// supaya hanya ada satu sumber kebenaran dan bisa dihentikan saat kursor
+	// menyentuh atau fokus masuk ke carousel — kontrol tetap di tangan pengguna.
+	const [berhentiSementara, setBerhentiSementara] = React.useState(false)
+
 	const [carouselRef, api] = useEmblaCarousel(
 		{
 			...opts,
@@ -108,6 +119,28 @@ function Carousel({
 		setApi(api)
 	}, [api, setApi])
 
+	// Geser otomatis: berpindah tiap 5 detik dan kembali ke awal setelah slaid
+	// terakhir. Berhenti sementara saat kursor menyentuh atau fokus keyboard
+	// masuk, sehingga pengguna yang sedang membaca tidak diganggu.
+	React.useEffect(() => {
+		if (!api || !autoplay || berhentiSementara) return
+
+		// Hormati preferensi sistem: bila pengguna mematikan animasi, jangan
+		// menggeser apa pun. Ini juga mencegah gerakan yang memicu mabuk gerak.
+		const media = window.matchMedia("(prefers-reduced-motion: reduce)")
+		if (media.matches) return
+
+		const id = window.setInterval(() => {
+			if (api.canScrollNext()) {
+				api.scrollNext()
+			} else {
+				api.scrollTo(0)
+			}
+		}, 5000)
+
+		return () => window.clearInterval(id)
+	}, [api, autoplay, berhentiSementara])
+
 	React.useEffect(() => {
 		if (!api) return
 		onSelect(api)
@@ -135,6 +168,10 @@ function Carousel({
 		>
 			<div
 				onKeyDownCapture={handleKeyDown}
+				onMouseEnter={() => autoplay && setBerhentiSementara(true)}
+				onMouseLeave={() => autoplay && setBerhentiSementara(false)}
+				onFocusCapture={() => autoplay && setBerhentiSementara(true)}
+				onBlurCapture={() => autoplay && setBerhentiSementara(false)}
 				className={cn("relative", className)}
 				role="region"
 				aria-roledescription="carousel"

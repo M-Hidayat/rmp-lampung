@@ -78,8 +78,12 @@ function Bintang({ nilai, ukuran = "size-4" }: { nilai: number; ukuran?: string 
  * aslinya, dan setiap kartu menautkan sumbernya. Tidak ada ulasan yang dibuat
  * atau dihaluskan oleh sistem ini.
  */
-export function UlasanPeserta({ batas = 3 }: { batas?: number }) {
-	const tampil = ulasanMaps.slice(0, batas)
+export function UlasanPeserta({ batas }: { batas?: number }) {
+	// Sengaja menampilkan SEMUA ulasan bila `batas` tidak diberikan. Carousel
+	// hanya berguna kalau isinya melebihi satu baris; dengan 3 ulasan di layar
+	// lebar, slaid tidak punya tujuan geser sehingga autoplay diam dan tombol
+	// panah nonaktif.
+	const tampil = typeof batas === "number" ? ulasanMaps.slice(0, batas) : ulasanMaps
 
 	return (
 		<section id="ulasan" aria-label="Ulasan peserta" className="scroll-mt-24">
@@ -114,12 +118,15 @@ export function UlasanPeserta({ batas = 3 }: { batas?: number }) {
 				</Card>
 			</div>
 
-			{/* Ulasan dipindahkan ke carousel agar dapat digeser di layar sempit
-			    tanpa memaksa pengguna menggulir halaman sangat panjang. */}
+			{/* Ulasan: carousel dengan autoplay supaya kutipan berganti sendiri.
+			    Autoplay berhenti sementara saat kursor atau fokus keyboard masuk
+			    (ditangani komponen Carousel), dan mati total bila pengguna
+			    mengaktifkan preferensi kurangi gerak. */}
 			<Carousel
 				className="mt-8"
 				label="Ulasan peserta dari Google Maps"
 				opts={{ align: "start", loop: false }}
+				autoplay
 			>
 				<CarouselContent>
 					{tampil.map((u, indeks) => (
@@ -161,9 +168,12 @@ export function UlasanPeserta({ batas = 3 }: { batas?: number }) {
  * Liputan pihak ketiga: institusi pendidikan, organisasi, dan media.
  * Setiap kartu menautkan sumber aslinya agar dapat diperiksa sendiri.
  */
-export function BuktiPublik({ jumlahAwal = 3 }: { jumlahAwal?: number }) {
+export function BuktiPublik({ jumlahAwal }: { jumlahAwal?: number }) {
 	const ringkas = ringkasanBukti()
-	const daftar = buktiPublik.slice(0, jumlahAwal)
+	// Sama seperti ulasan: tampilkan semua bila batas tidak diberikan, agar
+	// carousel benar-benar punya slaid untuk digeser di layar lebar.
+	const daftar =
+		typeof jumlahAwal === "number" ? buktiPublik.slice(0, jumlahAwal) : buktiPublik
 
 	return (
 		<section id="bukti" aria-label="Rekam jejak pihak ketiga" className="scroll-mt-24">
@@ -171,12 +181,25 @@ export function BuktiPublik({ jumlahAwal = 3 }: { jumlahAwal?: number }) {
 				<LabelBagian>Rekam jejak</LabelBagian>
 			</div>
 
-			<div className="mt-8 grid gap-5 lg:grid-cols-3">
-				{daftar.map((bukti) => {
-					const { teks, Ikon } = labelJenis[bukti.jenis]
-					return (
-						<Card key={bukti.id} className="h-full">
-							<CardContent className="flex h-full min-w-0 flex-col p-6">
+			{/* Rekam jejak: carousel tanpa autoplay. Isinya bukti pihak ketiga
+			    yang perlu dibaca dengan tenang, jadi perpindahan hanya atas
+			    tindakan pengguna (geser, panah, atau titik). */}
+			<Carousel
+				className="mt-8"
+				label="Rekam jejak pihak ketiga"
+				opts={{ align: "start", loop: false }}
+			>
+				<CarouselContent>
+					{daftar.map((bukti, indeks) => {
+						const { teks, Ikon } = labelJenis[bukti.jenis]
+						return (
+							<CarouselItem
+								key={bukti.id}
+								className="sm:basis-1/2 lg:basis-1/3"
+								aria-label={`Rekam jejak ${indeks + 1} dari ${daftar.length}`}
+							>
+								<Card className="h-full">
+									<CardContent className="flex h-full min-w-0 flex-col p-6">
 								<div className="flex items-center gap-2">
 									<span className="inline-flex items-center gap-1.5 rounded-md bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">
 										<Ikon aria-hidden="true" className="size-3.5 shrink-0 text-brand" />
@@ -229,11 +252,16 @@ export function BuktiPublik({ jumlahAwal = 3 }: { jumlahAwal?: number }) {
 									Baca sumber asli
 									<ArrowUpRight aria-hidden="true" className="size-4" />
 								</a>
-							</CardContent>
-						</Card>
-					)
-				})}
-			</div>
+									</CardContent>
+								</Card>
+							</CarouselItem>
+						)
+					})}
+				</CarouselContent>
+				<CarouselPrevious />
+				<CarouselNext />
+				<CarouselDots className="mt-5" />
+			</Carousel>
 
 			<p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
 				<Building2 aria-hidden="true" className="size-3.5 shrink-0 text-brand" />
