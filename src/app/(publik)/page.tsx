@@ -86,7 +86,7 @@ export default async function Beranda() {
 						id="judul-beranda"
 						className="max-w-3xl text-balance text-3xl font-extrabold text-foreground sm:text-4xl lg:text-display"
 					>
-						Belajar melalui praktik, siapkan langkah kerja atau usaha
+						Kursus masakan, roti, dan kue dengan praktik langsung di Bandar Lampung
 					</h1>
 
 					<Button asChild size="lg" variant="gold">
