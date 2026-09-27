@@ -89,7 +89,7 @@ export default async function Beranda() {
 						>
 							Nikmati Pengalaman Belajar Kuliner yang Lebih Mudah
 						</h1>
-						<p className="max-w-2xl text-balance text-base leading-7 text-muted-foreground">
+						<p className="max-w-3xl text-balance text-3xl font-medium text-muted-foreground sm:text-4xl lg:text-display">
 							Dengan pembelajaran yang praktis dan terarah.
 						</p>
 					</div>
