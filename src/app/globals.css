@@ -59,6 +59,13 @@
 	--color-brand-surface: #f2effc;
 	--color-brand-border: #d9d1f5;
 
+	/* Aksen hero. Mengadopsi pola aksen serbamager (satu warna aksen hangat
+	   yang dipakai sebagai glow radial di belakang judul hero), tetapi
+	   warnanya diambil dari identitas RMP sendiri - ungu brand #745FD4 -
+	   bukan oranye #BD5D3A milik serbamager. Dipakai HANYA sebagai cahaya
+	   latar dekoratif; dilarang untuk teks atau isian berteks. */
+	--color-hero-glow: #745fd4;
+
 	/* Amber dekoratif: bintang penilaian & garis. Bukan untuk teks. */
 	--color-decorative-amber: #ffc107;
 
@@ -218,6 +225,30 @@
 
 .animasi-absensi-naik {
 	animation: absensi-naik 0.45s ease-out 1;
+}
+
+/* Deret kelas di hero beranda.
+ *
+ * Pola diadopsi dari hero serbamager (deret logo brand yang bergulir lambat),
+ * tetapi isinya bukan logo pihak ketiga: RMP tidak menampilkan merek yang
+ * tidak punya izin, jadi yang digulirkan adalah JENIS KELAS yang benar-benar
+ * ditawarkan (terverifikasi di src/lib/identitas-rmp.ts). Karena itu deret ini
+ * bersifat informatif, bukan dekoratif.
+ *
+ * Kecepatan 40 detik untuk menyisir deret - jauh lebih lambat daripada 20
+ * detik milik serbamager, karena mata perlu waktu membaca nama kelas
+ * berbahasa Indonesia yang lebih panjang daripada nama logo. */
+@keyframes hero-gulir {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@utility animasi-hero-gulir {
+	animation: hero-gulir 40s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

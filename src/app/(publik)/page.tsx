@@ -2,12 +2,17 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import {
 	ArrowRight,
+	Beef,
+	Cake,
 	Calendar,
 	ChevronRight,
 	Clock,
+	Croissant,
+	CupSoda,
 	Layers,
 	MapPin,
 	MessageCircle,
+	Soup,
 	UserPlus,
 	Utensils,
 } from "lucide-react"
@@ -46,6 +51,24 @@ export const metadata: Metadata = {
 		"Pelatihan bisnis kuliner Rumah Mama Pintar di Bandar Lampung dengan pilihan kursus masakan, roti, kue, dan minuman.",
 }
 
+/**
+ * Deret jenis kelas untuk hero.
+ *
+ * Semua nama diambil dari `identitasRmp.kelasYangPernahDitawarkan` yang
+ * terverifikasi sumber publik - tidak ada satu pun yang dikarang. Deret ini
+ * menggantikan deret logo mitra pada hero serbamager: RMP tidak menampilkan
+ * merek pihak ketiga tanpa izin, jadi yang ditampilkan adalah apa yang ia
+ * jual sendiri.
+ */
+const deretKelas = [
+	{ nama: "Kursus Masakan", ikon: Soup },
+	{ nama: "Kursus Kue", ikon: Cake },
+	{ nama: "Kursus Roti", ikon: Croissant },
+	{ nama: "Kursus Minuman", ikon: CupSoda },
+	{ nama: "Pelatihan Mie Ayam", ikon: Utensils },
+	{ nama: "Pelatihan Bakso", ikon: Beef },
+]
+
 const langkahPendaftaran = [
 	{
 		judul: "Pilih Program",
@@ -78,10 +101,26 @@ export default async function Beranda() {
 
 	return (
 		<div className="flex flex-col gap-16 lg:gap-28">
-			{/* Pembuka. Permukaan putih bersih dengan isi terpusat; penekanan aksi
-			    dibawa oleh tombol, bukan oleh latar panel gelap. */}
-			<section id="beranda" aria-labelledby="judul-beranda" className="scroll-mt-24">
-				<div className="flex flex-col items-center gap-6 text-center">
+			{/* Pembuka. Rasa tata letak mengikuti hero serbamager: glow aksen
+			    redup di belakang teks, isi terpusat, satu aksi, lalu deret
+			    elemen yang bergulir lambat, ditutup lengkungan di kaki hero.
+
+			    Yang diadopsi: polanya. Yang TIDAK diadopsi: warnanya. Di
+			    serbamager glow-nya oranye #BD5D3A; di sini memakai ungu
+			    identitas RMP (#745FD4) lewat token `hero-glow`, sesuai
+			    permintaan pemilik "tetap gunakan warna rumah mama pintar".
+
+			    Deret yang bergulir berisi JENIS KELAS milik RMP sendiri
+			    (terverifikasi di identitas-rmp.ts), bukan logo pihak ketiga
+			    seperti pada referensi. */}
+			<section id="beranda" aria-labelledby="judul-beranda" className="relative scroll-mt-24">
+				{/* Cahaya aksen: murni dekoratif, tanpa konten di dalamnya. */}
+				<div
+					aria-hidden="true"
+					className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-[radial-gradient(ellipse_at_top,color-mix(in_srgb,var(--color-hero-glow)_34%,transparent),transparent_65%)]"
+				/>
+
+				<div className="relative flex flex-col items-center gap-10 text-center">
 					<div className="flex flex-col items-center gap-3">
 						<h1
 							id="judul-beranda"
@@ -97,6 +136,58 @@ export default async function Beranda() {
 					<Button asChild size="lg" variant="gold">
 						<Link href="#program">Lihat Program Kelas</Link>
 					</Button>
+
+					{/* Deret jenis kelas. Tepi kiri-kanan dilebur dengan mask agar
+					    tidak terpotong tajam, sama seperti referensi. Deret digandakan
+					    dua kali supaya gulirannya mulus tanpa lompatan. */}
+					<div
+						className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+						aria-label="Jenis kelas yang tersedia"
+						role="group"
+					>
+						<div className="flex w-max motion-safe:animasi-hero-gulir">
+							{deretKelas.map((item) => {
+								const Ikon = item.ikon
+								return (
+									<div
+										key={`satu-${item.nama}`}
+										className="flex shrink-0 flex-col items-center gap-2 px-6"
+									>
+										<Ikon aria-hidden="true" className="size-7 text-brand" />
+										<span className="text-sm font-semibold text-muted-foreground">
+											{item.nama}
+										</span>
+									</div>
+								)
+							})}
+							{deretKelas.map((item) => {
+								const Ikon = item.ikon
+								return (
+									<div
+										key={`dua-${item.nama}`}
+										aria-hidden="true"
+										className="flex shrink-0 flex-col items-center gap-2 px-6"
+									>
+										<Ikon aria-hidden="true" className="size-7 text-brand" />
+										<span className="text-sm font-semibold text-muted-foreground">
+											{item.nama}
+										</span>
+									</div>
+								)
+							})}
+						</div>
+					</div>
+				</div>
+
+				{/* Kaki hero: lengkungan cembung yang digambar CSS, bukan gambar.
+				    Aksen glow ungu tipis di belakangnya, sejajar dengan pola
+				    referensi (di sana memakai oranye). */}
+				<div
+					aria-hidden="true"
+					className="relative mt-10 h-16 overflow-hidden sm:h-24"
+				>
+					<div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,var(--color-hero-glow),transparent_70%)] before:opacity-25" />
+					<div className="absolute -left-1/2 top-1/2 aspect-[1/0.4] w-[200%] rounded-[100%] border-t-2 border-t-border bg-background" />
 				</div>
 			</section>
 
