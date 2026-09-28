@@ -321,15 +321,6 @@ export default async function Beranda() {
 								)
 							})}
 						</ol>
-
-						<div className="mt-8 flex flex-col gap-3 sm:flex-row">
-							<Button asChild size="lg" variant="default">
-								<Link href="/kelas">Pilih Kelas</Link>
-							</Button>
-							<Button asChild size="lg" variant="outline">
-								<Link href="/daftar">Buat Akun</Link>
-							</Button>
-						</div>
 					</CardContent>
 				</Card>
 			</section>
