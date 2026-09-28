@@ -40,7 +40,7 @@ export function LabelBagian({
  */
 export function LogoRmp({ className }: { className?: string }) {
 	return (
-		<div className={cn("flex select-none items-center gap-3", className)}>
+		<div className={cn("flex select-none items-center gap-2", className)}>
 			<Image
 				src="/images/logo.jpg"
 				alt="Logo Rumah Mama Pintar"
@@ -49,7 +49,7 @@ export function LogoRmp({ className }: { className?: string }) {
 				className="size-10 shrink-0 rounded-md object-cover"
 				priority
 			/>
-			<span className="font-heading text-base font-bold tracking-tight text-foreground">
+			<span className="font-heading text-base font-semibold tracking-tight text-foreground">
 				Rumah Mama Pintar
 			</span>
 		</div>

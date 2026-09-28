@@ -20,7 +20,7 @@ export function NavigasiPublik({
 	const [terbuka, setTerbuka] = useState(false)
 
 	return (
-		<header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-xs">
+		<header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md">
 			<div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
 				<Link href="/" className="inline-flex min-h-11 items-center transition-opacity hover:opacity-90">
 					<LogoRmp />
@@ -67,7 +67,7 @@ export function NavigasiPublik({
 
 			{/* Menu mobile */}
 			{terbuka ? (
-				<div id="menu-mobile" className="border-t border-border bg-background px-4 py-4 md:hidden">
+				<div id="menu-mobile" className="bg-background/95 px-4 py-4 shadow-md backdrop-blur-md md:hidden">
 					<nav aria-label="Navigasi utama mobile">
 						<ul className="flex flex-col gap-1">
 							{tautan.map((item) => (

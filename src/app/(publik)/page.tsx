@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import {
 	ArrowRight,
-	Beef,
 	Cake,
 	Calendar,
 	ChevronRight,
@@ -51,23 +50,13 @@ export const metadata: Metadata = {
 		"Pelatihan bisnis kuliner Rumah Mama Pintar di Bandar Lampung dengan pilihan kursus masakan, roti, kue, dan minuman.",
 }
 
-/**
- * Deret jenis kelas untuk hero.
- *
- * Semua nama diambil dari `identitasRmp.kelasYangPernahDitawarkan` yang
- * terverifikasi sumber publik - tidak ada satu pun yang dikarang. Deret ini
- * menggantikan deret logo mitra pada hero serbamager: RMP tidak menampilkan
- * merek pihak ketiga tanpa izin, jadi yang ditampilkan adalah apa yang ia
- * jual sendiri.
- */
 const deretKelas = [
 	{ nama: "Kursus Masakan", ikon: Soup },
 	{ nama: "Kursus Kue", ikon: Cake },
 	{ nama: "Kursus Roti", ikon: Croissant },
 	{ nama: "Kursus Minuman", ikon: CupSoda },
-	{ nama: "Pelatihan Mie Ayam", ikon: Utensils },
-	{ nama: "Pelatihan Bakso", ikon: Beef },
 ]
+
 
 const langkahPendaftaran = [
 	{
@@ -117,29 +106,22 @@ export default async function Beranda() {
 				{/* Cahaya aksen: murni dekoratif, tanpa konten di dalamnya. */}
 				<div
 					aria-hidden="true"
-					className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-[radial-gradient(ellipse_at_top,color-mix(in_srgb,var(--color-hero-glow)_34%,transparent),transparent_65%)]"
+					className="pointer-events-none absolute inset-x-0 -top-20 h-[560px] bg-[radial-gradient(ellipse_at_top,color-mix(in_srgb,var(--color-hero-glow)_28%,transparent),transparent_70%)]"
 				/>
 
 				<div className="relative flex flex-col items-center gap-10 text-center">
-					<div className="flex flex-col items-center gap-3">
-						<h1
-							id="judul-beranda"
-							className="max-w-3xl text-balance text-3xl font-extrabold text-foreground sm:text-4xl lg:text-display"
-						>
-							Nikmati Pengalaman Belajar Kuliner yang Lebih Mudah
-						</h1>
-						<p className="max-w-3xl text-balance font-heading text-3xl font-extrabold tracking-[-0.025em] text-foreground sm:text-4xl lg:text-display">
-							Dengan pembelajaran yang praktis dan terarah.
-						</p>
-					</div>
+					<h1
+						id="judul-beranda"
+						className="max-w-3xl text-balance text-3xl font-semibold text-foreground sm:text-4xl lg:text-display"
+					>
+						Nikmati Pengalaman Belajar Kuliner yang Lebih Mudah
+					</h1>
 
 					<Button asChild size="lg" variant="gold">
 						<Link href="#program">Lihat Program Kelas</Link>
 					</Button>
 
-					{/* Deret jenis kelas. Tepi kiri-kanan dilebur dengan mask agar
-					    tidak terpotong tajam, sama seperti referensi. Deret digandakan
-					    dua kali supaya gulirannya mulus tanpa lompatan. */}
+					{/* Deret jenis kelas tanpa mie ayam & bakso */}
 					<div
 						className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
 						aria-label="Jenis kelas yang tersedia"
@@ -179,16 +161,11 @@ export default async function Beranda() {
 					</div>
 				</div>
 
-				{/* Kaki hero: lengkungan cembung yang digambar CSS, bukan gambar.
-				    Aksen glow ungu tipis di belakangnya, sejajar dengan pola
-				    referensi (di sana memakai oranye). */}
+				{/* Pembatas lurus antara hero dan bagian berikutnya */}
 				<div
 					aria-hidden="true"
-					className="relative mt-10 h-16 overflow-hidden sm:h-24"
-				>
-					<div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,var(--color-hero-glow),transparent_70%)] before:opacity-25" />
-					<div className="absolute -left-1/2 top-1/2 aspect-[1/0.4] w-[200%] rounded-[100%] border-t-2 border-t-border bg-background" />
-				</div>
+					className="mt-12 sm:mt-16 border-b border-border"
+				/>
 			</section>
 
 			{/* Program dari data nyata aplikasi, bukan daftar duplikat. */}

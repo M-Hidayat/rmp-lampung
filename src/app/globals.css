@@ -96,7 +96,7 @@
 	   hanya pada breakpoint lg ke atas (lihat DESIGN.md bagian Typography). */
 	--text-display: 3.25rem;
 	--text-display--line-height: 1.05;
-	--text-display--font-weight: 800;
+	--text-display--font-weight: 600;
 	--text-display--letter-spacing: -0.025em;
 
 	/* Kedalaman. Tiga tingkat saja, sesuai bagian Elevation di DESIGN.md.
@@ -138,7 +138,7 @@
 	h6 {
 		font-family: var(--font-heading);
 		letter-spacing: -0.025em;
-		font-weight: 700;
+		font-weight: 600;
 		text-wrap: balance;
 	}
 	:focus-visible {
